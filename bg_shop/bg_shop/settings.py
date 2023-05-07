@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'frontend',
+    'frontend.apps.FrontendConfig',
+    'account.apps.AccountConfig',
+    'shop.apps.ShopConfig',
+    'payment.apps.PaymentConfig',
 ]
 
 MIDDLEWARE = [
