@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'frontend',  # diploma-frontend-0.6.tar.gz
+    'frontend',
 ]
 
 MIDDLEWARE = [
