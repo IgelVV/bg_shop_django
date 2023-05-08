@@ -30,6 +30,18 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+THIRD_PARTY_APPS = [
+    # "rest_framework",
+]
+
+LOCAL_APPS = [
+    'frontend.apps.FrontendConfig',
+    'common.apps.CommonConfig',
+    'account.apps.AccountConfig',
+    'shop.apps.ShopConfig',
+    'payment.apps.PaymentConfig',
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,11 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'frontend.apps.FrontendConfig',
-    'account.apps.AccountConfig',
-    'shop.apps.ShopConfig',
-    'payment.apps.PaymentConfig',
+    *THIRD_PARTY_APPS,
+    *LOCAL_APPS,
 ]
 
 MIDDLEWARE = [
@@ -59,7 +68,7 @@ ROOT_URLCONF = 'bg_shop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -116,11 +125,24 @@ USE_I18N = True
 
 USE_TZ = True
 
+USE_L10N = True
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale/'
+]
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-
+STATIC_ROOT = str(BASE_DIR / "static")
 STATIC_URL = 'static/'
+
+# MEDIA
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-root
+MEDIA_ROOT = str(BASE_DIR / "media")
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-url
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
