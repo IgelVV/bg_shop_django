@@ -29,7 +29,6 @@ class Payment(models.Model):
     )
     validity_period = models.DateField(verbose_name=_("validity period"))
     code = models.IntegerField(verbose_name=_("code"))
-
     payment_type = models.CharField(
         max_length=2,
         choices=TypeChoices.choices,
