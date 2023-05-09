@@ -1,7 +1,11 @@
+from datetime import date
+
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 
 class Product(models.Model):
@@ -32,7 +36,7 @@ class Product(models.Model):
         default=0,
         verbose_name=_("count")
     )
-    date = models.DateTimeField(verbose_name=_("date"))
+    release_date = models.DateTimeField(verbose_name=_("release date"))
     images = models.ManyToManyField("common.Image", verbose_name=_("images"))
     tags = models.ManyToManyField("Tag", verbose_name=_("tags"))
     specifications = models.ManyToManyField(
@@ -119,6 +123,23 @@ class Sale(models.Model):
     )
     date_from = models.DateField(verbose_name=_("date from"))
     date_to = models.DateField(verbose_name=_("date to"))
+
+    def clean(self):
+        if not self.date_from <= self.date_to:
+            raise ValidationError("End date cannot be before start date")
+
+    @property
+    def has_started(self) -> bool:
+        now = timezone.now()
+        return self.date_from <= now.date()
+
+    @property
+    def has_finished(self) -> bool:
+        now = timezone.now()
+        return self.date_to <= now.date()
+
+    # def is_within(self, x_date: date) -> bool:
+    #     return self.date_from <= x_date <= self.date_to
 
 
 class Specification(models.Model):

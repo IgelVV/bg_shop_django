@@ -38,3 +38,8 @@ class ReviewService:
             rate: float
     ) -> tuple['models.Review', bool]:
         ...
+
+
+class SaleService:
+    def create_sale(self):
+        ...
