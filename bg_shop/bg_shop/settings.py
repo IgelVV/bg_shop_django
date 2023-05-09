@@ -39,6 +39,7 @@ LOCAL_APPS = [
     'common.apps.CommonConfig',
     'account.apps.AccountConfig',
     'shop.apps.ShopConfig',
+    'orders.apps.OrdersConfig',
     'payment.apps.PaymentConfig',
 ]
 

@@ -23,11 +23,10 @@ class Profile(models.Model):
         blank=True,
         verbose_name=_("phone number"),
     )
-    # avatar = models.ForeignKey(  # todo ImageField (или оставить один класс для всех фоток)
-    #     "shop.Image",
-    #     on_delete=models.SET_NULL,
-    #     null=True,
-    #     blank=True,
-    #     verbose_name=_("avatar"),
-    # )
-
+    avatar = models.ForeignKey(
+        "common.Image",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("avatar"),
+    )

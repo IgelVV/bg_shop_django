@@ -1,0 +1,3 @@
+class PaymentService:
+    def pay(self):
+        ...
