@@ -1,6 +1,9 @@
-from django.core.validators import RegexValidator
+from django.core import validators
+from django.utils.translation import gettext_lazy as _
 
 
-class PhoneRegexValidator(RegexValidator):
-    def __int__(self, message: str):
-        super().__init__(regex=r'^d{10}$', message=message)
+class PhoneRegexValidator(validators.RegexValidator):
+    regex = r'^d{10}$'
+    message = _(
+        "Enter a valid phone. This value must contain 10 digits, "
+    )
