@@ -1,3 +1,8 @@
+"""
+Here are only reusable serializers,
+other ones are nested into ApiViews directly.
+"""
+
 from rest_framework import serializers
 from django.contrib.auth import password_validation
 from django.core import exceptions

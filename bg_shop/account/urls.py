@@ -16,7 +16,7 @@ urlpatterns = [
         apis.ChangePasswordApi.as_view(),
         name="password"
     ),
-    # path('profile/avatar/', views., name=""), # POST
+    path('profile/avatar/', apis.UpdateAvatarApi.as_view(), name="avatar"),
 ]
 
 # print(reverse_lazy("account:sign-up"))
