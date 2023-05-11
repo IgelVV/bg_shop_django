@@ -5,10 +5,10 @@ from rest_framework import exceptions as drf_exceptions
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 from rest_framework import views
-from django.core import exceptions
-from django.contrib.auth import password_validation, login, logout
+from django.contrib.auth import login, logout
 
 from account import services
+from account import serializers as account_serializers
 
 
 User = get_user_model()
@@ -42,24 +42,10 @@ class SignUpApi(views.APIView):
     """Creates new user and profile"""
     permission_classes = (permissions.AllowAny,)
 
-    class InputSerializer(serializers.Serializer):
+    class InputSerializer(account_serializers.PasswordSerializer):
         name = serializers.CharField(
             max_length=150, required=False, allow_blank=True)
         username = serializers.CharField(max_length=150)
-        password = serializers.CharField(max_length=128)
-
-        def validate(self, data):
-            """"""
-            password = data.get('password')
-            errors = dict()
-            try:
-                password_validation.validate_password(
-                    password=password)
-            except exceptions.ValidationError as e:
-                errors['password'] = list(e.messages)
-            if errors:
-                raise exceptions.ValidationError(errors)
-            return super().validate(data)
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """If user is successfully created performs log in."""
@@ -85,4 +71,23 @@ class SignOutApi(views.APIView):
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
         logout(request)
+        return drf_response.Response(status=status.HTTP_200_OK)
+
+
+class ChangePasswordApi(views.APIView):
+    """Change user password, it is prohibited to set the same password"""
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request: drf_request.Request) -> drf_response.Response:
+        print(request.data)
+        serializer = account_serializers.PasswordSerializer(data=request.data)
+        service = services.AccountService()
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        try:
+            service.change_password(
+                user=request.user, password=data['password'])
+        except ValueError as e:
+            raise drf_exceptions.APIException({'password': e})
+
         return drf_response.Response(status=status.HTTP_200_OK)

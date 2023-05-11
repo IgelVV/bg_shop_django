@@ -11,7 +11,11 @@ urlpatterns = [
     path('sign-up/', apis.SignUpApi.as_view(), name="sign-up"),
     path('sign-out/', apis.SignOutApi.as_view(), name="sign-out"),
     # path('profile/', views., name="profile"), # GET POST
-    # path('profile/password/', views., name=""), # POST
+    path(
+        'profile/password/',
+        apis.ChangePasswordApi.as_view(),
+        name="password"
+    ),
     # path('profile/avatar/', views., name=""), # POST
 ]
 
