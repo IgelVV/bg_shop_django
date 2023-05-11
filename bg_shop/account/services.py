@@ -19,5 +19,3 @@ class AccountService:
         except utils.IntegrityError:
             return None
 
-    def authenticate(self, user:UserType) -> None:
-        ...

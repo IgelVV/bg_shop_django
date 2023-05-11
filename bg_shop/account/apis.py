@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status, permissions
 from rest_framework import exceptions as drf_exceptions
@@ -6,7 +6,7 @@ from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 from rest_framework import views
 from django.core import exceptions
-from django.contrib.auth import password_validation, login
+from django.contrib.auth import password_validation, login, logout
 
 from account import services
 
@@ -23,7 +23,18 @@ class SignInApi(views.APIView):
         password = serializers.CharField(max_length=128)
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
-        input_serializer = self.InputSerializer(data=request.POST)
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        user = authenticate(
+            username=data.get('username'), password=data.get('password'))
+        if not user:
+            raise drf_exceptions.APIException(
+                detail={'username': ['Wrong username or password']},
+                code=status.HTTP_401_UNAUTHORIZED
+            )
+        if user is not None:
+            login(request, user)
         return drf_response.Response(status=status.HTTP_200_OK)
 
 
@@ -70,6 +81,8 @@ class SignUpApi(views.APIView):
 
 class SignOutApi(views.APIView):
     """Log out"""
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
+        logout(request)
         return drf_response.Response(status=status.HTTP_200_OK)
