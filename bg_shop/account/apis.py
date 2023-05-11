@@ -9,12 +9,12 @@ from django.contrib.auth import login, logout
 from account import services
 from account import serializers as account_serializers
 
-
 User = get_user_model()
 
 
 class SignInApi(views.APIView):
     """Log in"""
+
     class InputSerializer(serializers.Serializer):
         username = serializers.CharField(max_length=150)
         password = serializers.CharField(max_length=128)
@@ -40,6 +40,7 @@ class SignInApi(views.APIView):
 
 class SignUpApi(views.APIView):
     """Creates new user and profile"""
+
     class InputSerializer(account_serializers.PasswordSerializer):
         name = serializers.CharField(
             max_length=150, required=False, allow_blank=True)
@@ -96,6 +97,7 @@ class ChangePasswordApi(views.APIView):
 
 class UpdateAvatarApi(views.APIView):
     """Set new avatar or change it"""
+
     class InputSerializer(serializers.Serializer):
         avatar = serializers.ImageField()
 
@@ -108,3 +110,19 @@ class UpdateAvatarApi(views.APIView):
         data = serializer.validated_data
         service.update_avatar(user=request.user, avatar=data['avatar'])
         return drf_response.Response(status=status.HTTP_201_CREATED)
+
+
+class ProfileApi(views.APIView):
+    class ProfileSerializer(serializers.Serializer):
+        fullName = serializers.CharField(max_length=300, allow_blank=True)
+        email = serializers.EmailField(allow_blank=True)
+        phone = serializers.CharField(max_length=10, allow_blank=True)
+        avatar = serializers.ImageField()
+
+    serializer_class = ProfileSerializer
+
+    def get(self, request: drf_request.Request) -> drf_response.Response:
+        # selector = selectors.ProfileSelector()
+        # account = selector.get_account_data(request.user)
+        serializer = self.ProfileSerializer(accaunt)
+        return drf_response.Response(data=serializer.data, status=status.HTTP_200_OK)

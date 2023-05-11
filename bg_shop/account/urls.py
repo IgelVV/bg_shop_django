@@ -18,5 +18,3 @@ urlpatterns = [
     ),
     path('profile/avatar/', apis.UpdateAvatarApi.as_view(), name="avatar"),
 ]
-
-# print(reverse_lazy("account:sign-up"))
