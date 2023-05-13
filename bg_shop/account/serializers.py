@@ -12,7 +12,11 @@ class PasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=128)
 
     def validate(self, data):
-        """Validates password"""
+        """
+        Validates password using django
+        :param data:
+        :return:
+        """
         password = data.get('password')
         errors = dict()
         try:

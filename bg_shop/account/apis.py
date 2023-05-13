@@ -26,7 +26,7 @@ class SignInApi(views.APIView):
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """
-        
+        Logs user in using request credentials
         :param request: DRF request
         :return: DRF response
         """
@@ -57,7 +57,12 @@ class SignUpApi(views.APIView):
     serializer_class = InputSerializer
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
-        """If user is successfully created performs log in."""
+        """
+        If user is successfully created performs log in.
+        :param request: DRF request
+        :return: DRF response
+        :exception APIException: if user already exists
+        """
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         service = services.AccountService()
@@ -79,6 +84,12 @@ class SignOutApi(views.APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
+        """
+        Performs logging out. If the user has not been logged in,
+        it does nothing and returns 200.
+        :param request: DRF request
+        :return: DRF response
+        """
         logout(request)
         return drf_response.Response(status=status.HTTP_200_OK)
 
@@ -89,6 +100,11 @@ class ChangePasswordApi(views.APIView):
     serializer_class = account_serializers.PasswordSerializer
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
+        """
+        Change user password, validates password before sending to service.
+        :param request: DRF request
+        :return: DRF response
+        """
         serializer = self.serializer_class(data=request.data)
         service = services.AccountService()
         serializer.is_valid(raise_exception=True)
@@ -117,9 +133,10 @@ class UpdateAvatarApi(views.APIView):
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """
-
-        :param request:
-        :return:
+        First, creates new Image and relates to current user.
+        Second, gets data about new avatar to send back.
+        :param request: DRF request
+        :return: DRF response
         """
         service = services.AccountService()
         input_serializer = self.InputSerializer(data=request.data)
@@ -139,6 +156,8 @@ class UpdateAvatarApi(views.APIView):
 
 
 class ProfileApi(views.APIView):
+    """Provides data about User and related Profile (and Image),
+    allows change it"""
     class OutputSerializer(serializers.Serializer):
         class AvatarSerializer(serializers.Serializer):
             src = serializers.CharField()
@@ -150,10 +169,9 @@ class ProfileApi(views.APIView):
         avatar = AvatarSerializer(allow_null=True, required=False)
 
     class InputSerializer(serializers.Serializer):
-        # todo `If you need a nested serializer,
-        #  use the inline_serializer util.`
+        # `If you need a nested serializer,use the inline_serializer util.`
         class AvatarSerializer(serializers.Serializer):
-            src = serializers.CharField()  # serializers.ImageField()
+            src = serializers.CharField()
             alt = serializers.CharField(max_length=255)
 
         fullName = serializers.CharField(max_length=300, allow_blank=True)
@@ -165,6 +183,11 @@ class ProfileApi(views.APIView):
     serializer_class = InputSerializer
 
     def get(self, request: drf_request.Request) -> drf_response.Response:
+        """
+        Provides data about User and related Profile (and Image).
+        :param request: DRF request
+        :return: DRF response
+        """
         selector = selectors.AccountSelector()
         data: dict[str, Any] = selector.get_account_data(request.user)
         serializer = self.OutputSerializer(data=data)
@@ -174,16 +197,15 @@ class ProfileApi(views.APIView):
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """
-
-        :param request:
-        :return:
+        Changes User and Profile. Splits fullName to put it in the
+        database separately.
+        :param request: DRF request
+        :return: DRF response
         """
         service = services.AccountService()
         selector = selectors.AccountSelector()
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        print(serializer.data)
-        print(serializer.validated_data)
         full_name = serializer.validated_data["fullName"]
         try:
             first_name, last_name = utils.split_full_name(full_name)

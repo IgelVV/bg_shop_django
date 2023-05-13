@@ -17,16 +17,17 @@ class AccountService:
     @staticmethod
     @transaction.atomic
     def register_user(
-            username: str,
-            password: str,
+            username: str,  # todo validation of username (it is possible to set any symbols)
+            password: str,  # todo validate password (sets any password)
             **extra_fields
     ) -> Optional[UserType]:
         """
-        
-        :param username: 
-        :param password: 
-        :param extra_fields: 
-        :return: 
+        Try to create user, if it already exists returns None.
+        If new user created, also creates Profile.
+        :param username: str
+        :param password: str
+        :param extra_fields: declared in the User model
+        :return: created User obj or None if already exist
         """
         try:
             user = User.objects.create_user(username, password, **extra_fields)
@@ -37,11 +38,14 @@ class AccountService:
 
     @staticmethod
     def change_password(user: UserType, password: str) -> None:
+        # todo perform validation in
         """
-        
-        :param user: 
-        :param password: 
-        :return: 
+        Change user password, it is prohibited to set the same password.
+        It is possible to set any password,
+        so the password should be validated.
+        :param user: the user who changes password
+        :param password: already valid password
+        :return: None
         """
         is_old = user.check_password(password)
         if is_old:
@@ -53,7 +57,7 @@ class AccountService:
         """
         Creates new Image and binds with user's profile. Deletes previous
         avatar.
-        :param user: 
+        :param user: User obj
         :param avatar: Image
         :return: None
         """
@@ -68,6 +72,15 @@ class AccountService:
     @staticmethod
     def get_or_create_profile(
             user: UserType, commit: bool = True) -> Profile:
+        """
+        Use to get profile that related to user. The preferred way to create.
+        If commit is False, returns unsaved model to fill and save later.
+        empty profile.
+        :param user: User obj to bind new Profile or get from
+        :param commit: if is True, hits the database,
+        if False, Profile needs to be saved later.
+        :return:
+        """
         if hasattr(user, "profile"):
             profile = user.profile
         else:
@@ -87,6 +100,20 @@ class AccountService:
             avatar: Optional[Dict[str, Any]],  # todo handle `avatar`: None (when avatar is deleted and isn't replased)
             **kwargs,
     ) -> None:
+        """
+        Changes User model and related Profile.
+        If avatar = None, deletes Image that is related to profile,
+        otherwise does nothing with avatar field.
+        :param user:
+        :param first_name:
+        :param last_name:
+        :param email:
+        :param phone:
+        :param avatar: is None, deletes Image that is related to profile,
+        otherwise does nothing
+        :param kwargs: optional fields that sre ignored
+        :return:
+        """
         user.first_name = first_name
         user.last_name = last_name
         user.email = email
