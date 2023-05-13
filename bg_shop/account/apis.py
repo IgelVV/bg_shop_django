@@ -1,12 +1,14 @@
-from django.contrib.auth import get_user_model, authenticate
-from django.shortcuts import get_object_or_404
+from typing import Any
+
+from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.core import exceptions as django_exceptions
+
 from rest_framework import serializers, status, permissions, views
 from rest_framework import exceptions as drf_exceptions
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
-from django.contrib.auth import login, logout
 
-from account import services
+from account import selectors, services, utils
 from account import serializers as account_serializers
 
 User = get_user_model()
@@ -23,17 +25,22 @@ class SignInApi(views.APIView):
     serializer_class = InputSerializer  # for render
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
+        """
+        
+        :param request: DRF request
+        :return: DRF response
+        """
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         user = authenticate(
             username=data.get('username'), password=data.get('password'))
-        if not user:
+        if user is None:
             raise drf_exceptions.APIException(
                 detail={'username': ['Wrong username or password']},
                 code=status.HTTP_401_UNAUTHORIZED
             )
-        if user is not None:
+        else:
             login(request, user)
         return drf_response.Response(status=status.HTTP_200_OK)
 
@@ -98,31 +105,97 @@ class ChangePasswordApi(views.APIView):
 class UpdateAvatarApi(views.APIView):
     """Set new avatar or change it"""
 
+    class OutputSerializer(serializers.Serializer):
+        src = serializers.CharField()
+        alt = serializers.CharField()
+
     class InputSerializer(serializers.Serializer):
         avatar = serializers.ImageField()
 
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = InputSerializer
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
-        serializer = self.InputSerializer(data=request.data)
+        """
+
+        :param request:
+        :return:
+        """
         service = services.AccountService()
-        serializer.is_valid(raise_exception=True)
-        data = serializer.validated_data
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        data = input_serializer.validated_data
         service.update_avatar(user=request.user, avatar=data['avatar'])
-        return drf_response.Response(status=status.HTTP_201_CREATED)
+
+        selector = selectors.AccountSelector()
+        profile = service.get_or_create_profile(request.user)
+        output_serializer = self.OutputSerializer(
+            data=selector.get_avatar_data(profile))
+        output_serializer.is_valid()
+        return drf_response.Response(
+            data=output_serializer.validated_data,
+            status=status.HTTP_201_CREATED
+        )
 
 
 class ProfileApi(views.APIView):
-    class ProfileSerializer(serializers.Serializer):
+    class OutputSerializer(serializers.Serializer):
+        class AvatarSerializer(serializers.Serializer):
+            src = serializers.CharField()
+            alt = serializers.CharField(max_length=255)
+
         fullName = serializers.CharField(max_length=300, allow_blank=True)
         email = serializers.EmailField(allow_blank=True)
         phone = serializers.CharField(max_length=10, allow_blank=True)
-        avatar = serializers.ImageField()
+        avatar = AvatarSerializer(allow_null=True, required=False)
 
-    serializer_class = ProfileSerializer
+    class InputSerializer(serializers.Serializer):
+        # todo `If you need a nested serializer,
+        #  use the inline_serializer util.`
+        class AvatarSerializer(serializers.Serializer):
+            src = serializers.CharField()  # serializers.ImageField()
+            alt = serializers.CharField(max_length=255)
+
+        fullName = serializers.CharField(max_length=300, allow_blank=True)
+        email = serializers.EmailField(allow_blank=True)
+        phone = serializers.CharField(max_length=10, allow_blank=True)
+        avatar = AvatarSerializer(allow_null=True)
+
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = InputSerializer
 
     def get(self, request: drf_request.Request) -> drf_response.Response:
-        # selector = selectors.ProfileSelector()
-        # account = selector.get_account_data(request.user)
-        serializer = self.ProfileSerializer(accaunt)
-        return drf_response.Response(data=serializer.data, status=status.HTTP_200_OK)
+        selector = selectors.AccountSelector()
+        data: dict[str, Any] = selector.get_account_data(request.user)
+        serializer = self.OutputSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        return drf_response.Response(
+            data=serializer.validated_data, status=status.HTTP_200_OK)
+
+    def post(self, request: drf_request.Request) -> drf_response.Response:
+        """
+
+        :param request:
+        :return:
+        """
+        service = services.AccountService()
+        selector = selectors.AccountSelector()
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        print(serializer.data)
+        print(serializer.validated_data)
+        full_name = serializer.validated_data["fullName"]
+        try:
+            first_name, last_name = utils.split_full_name(full_name)
+        except ValueError as e:
+            raise drf_exceptions.ValidationError(e)
+        serializer.validated_data['first_name'] = first_name
+        serializer.validated_data['last_name'] = last_name
+        try:
+            service.update_account(
+                user=request.user, **serializer.validated_data)
+        except django_exceptions.ValidationError as e:
+            raise drf_exceptions.ValidationError(e)
+        data: dict[str, Any] = selector.get_account_data(user=request.user)
+        return drf_response.Response(
+            data=data, status=status.HTTP_200_OK)
