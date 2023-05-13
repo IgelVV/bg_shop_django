@@ -60,7 +60,7 @@ var mix = {
             formData.append('avatar', file)
 
             this.postData('/api/profile/avatar/', formData, {'Content-Type': 'multipart/form-data'}).then((data) => {
-                this.avatar = data.url
+                this.avatar = data.data
             }).catch(() => {
                  console.warn('Ошибка при обновлении изображения')
             })
