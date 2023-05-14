@@ -65,9 +65,20 @@ class Product(models.Model):
 
 
 class Category(models.Model):
+    """
+    Use service for CRUD.
+    It is a simple tree structure.
+    MAX_DEPTH - how many edges can be between node and root
+    (or level, counted from 0).
+    Parent's depth must be lower than node's one (to avoid circular reference).
+    """
+    # todo Максимальный уровень вложенности — 2. if self.parent.parent == None
+    # todo циклические ссылки
     class Meta:
         verbose_name = _("category")
         verbose_name_plural = _("categories")
+
+    MAX_DEPTH = 2  # from 0
 
     title = models.CharField(
         unique=True,
@@ -80,13 +91,17 @@ class Category(models.Model):
         on_delete=models.SET_NULL,
         verbose_name=_("image")
     )
-    # todo Максимальный уровень вложенности — 2.
     parent = models.ForeignKey(
         'self',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         verbose_name=_("parent"),
+    )
+    depth = models.SmallIntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(MAX_DEPTH)],
+        default=0,
+        verbose_name=_("depth")
     )
     sort_index = models.SmallIntegerField(
         default=0, verbose_name=_("sort index"))
@@ -99,10 +114,25 @@ class Category(models.Model):
         ),
     )
 
-    def save(self, *args, **kwargs):  # todo remove to services?
-        if self.parent and self.parent.title == self.title:
-            raise ValidationError("You can't have yourself as a parent!")
-        return super(Category, self).save(*args, **kwargs)
+    @property
+    def is_root(self) -> bool:
+        return self.parent is None
+
+    def clean(self): # todo to service (and setting depth)
+        if self.parent:
+            if self.parent.title == self.title:
+                raise ValidationError("Category can't have itself as a parent!")
+            elif not self.parent.depth < self.MAX_DEPTH:
+                raise ValidationError(f"Category max depth is {self.MAX_DEPTH}")
+
+    # def save(self, i_am_service=False, *args, **kwargs):
+    #     if i_am_service:
+    #         return super().save(*args, **kwargs)
+    #     else:
+    #         raise NotImplementedError('Use service to create or update Category')
+    #
+    # def delete(self, using=None, keep_parents=False):
+    #     return super().delete(using, keep_parents)
 
     def __str__(self):
         return f"Category({self.pk}):{self.title}"
