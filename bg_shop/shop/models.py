@@ -60,7 +60,11 @@ class Category(models.Model):
         verbose_name = _("category")
         verbose_name_plural = _("categories")
 
-    title = models.CharField(max_length=255, verbose_name=_("title"))
+    title = models.CharField(
+        unique=True,
+        max_length=255,
+        verbose_name=_("title"),
+    )
     image = models.ForeignKey(
         "common.Image",
         null=True,
@@ -72,8 +76,15 @@ class Category(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        verbose_name=_("parent")
+        verbose_name=_("parent"),
     )
+
+    def save(self, *args, **kwargs):
+        if self.parent and self.parent.title == self.title:
+            raise ValidationError("You can't have yourself as a parent!")
+        return super(Category, self).save(*args, **kwargs)
+
+    # todo add `sort_index` and maybe `is_activ=bool`
 
     def __str__(self):
         return f"Category({self.pk}):{self.title}"
