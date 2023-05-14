@@ -15,19 +15,3 @@ class ProductService:
 
     def is_free_delivery(self, product: models.Product) -> bool:
         ...
-
-
-class ReviewService:
-    def add_review(
-        self,
-        user: User,
-        product: 'models.Product',
-        text: str,
-        rate: float
-    ) -> tuple['models.Review', bool]:
-        ...
-
-
-class SaleService:
-    def create_sale(self):
-        ...

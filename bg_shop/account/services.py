@@ -118,9 +118,9 @@ class AccountService:
         user.first_name = first_name
         user.last_name = last_name
         user.email = email
-        user.clean_fields()
+        user.full_clean()
         user.save()
         profile = self.get_or_create_profile(user=user)
         profile.phone_number = phone
-        profile.clean_fields()
+        profile.full_clean()
         profile.save()
