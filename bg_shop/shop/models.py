@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 
+# todo Удаление товаров, заказов, пользователей и категорий товаров
+#  осуществляется только с использованием механизма мягкого удаления.
 class Product(models.Model):
     class Meta:
         verbose_name = _("product")
@@ -49,7 +51,14 @@ class Product(models.Model):
         max_length=255,
         verbose_name=_("manufacturer")
     )
-    archived = models.BooleanField(default=False, verbose_name=_("archived"))
+    is_active = models.BooleanField(
+        _("active"),
+        default=True,
+        help_text=_(
+            "Designates whether this product should be treated as active. "
+            "Unselect this instead of deleting products."
+        ),
+    )
 
     def __str__(self):
         return f"Product({self.pk}):{self.title}"
@@ -71,6 +80,7 @@ class Category(models.Model):
         on_delete=models.SET_NULL,
         verbose_name=_("image")
     )
+    # todo Максимальный уровень вложенности — 2.
     parent = models.ForeignKey(
         'self',
         null=True,
@@ -78,13 +88,21 @@ class Category(models.Model):
         on_delete=models.SET_NULL,
         verbose_name=_("parent"),
     )
+    sort_index = models.SmallIntegerField(
+        default=0, verbose_name=_("sort index"))
+    is_active = models.BooleanField(
+        _("active"),
+        default=True,
+        help_text=_(
+            "Designates whether this category should be treated as active. "
+            "Unselect this instead of deleting categories."
+        ),
+    )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):  # todo remove to services?
         if self.parent and self.parent.title == self.title:
             raise ValidationError("You can't have yourself as a parent!")
         return super(Category, self).save(*args, **kwargs)
-
-    # todo add `sort_index` and maybe `is_activ=bool`
 
     def __str__(self):
         return f"Category({self.pk}):{self.title}"

@@ -42,6 +42,14 @@ class Order(models.Model):
     city = models.CharField(max_length=255, verbose_name=_("city"))
     address = models.TextField(max_length=1024, verbose_name=_("address"))
     comment = models.TextField(max_length=1024, verbose_name=_("comment"))
+    is_active = models.BooleanField(
+        _("active"),
+        default=True,
+        help_text=_(
+            "Designates whether this order should be treated as active. "
+            "Unselect this instead of deleting orders."
+        ),
+    )
 
 
 class OrderedProduct(models.Model):

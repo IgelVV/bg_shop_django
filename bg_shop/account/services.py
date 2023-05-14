@@ -13,6 +13,7 @@ UserType = TypeVar('UserType', bound=AbstractUser)
 User: UserType = get_user_model()
 
 
+# todo учитывать что пользователь может быть is_active=False
 class AccountService:
     @staticmethod
     @transaction.atomic
