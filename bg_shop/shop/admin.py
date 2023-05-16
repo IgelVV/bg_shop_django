@@ -20,7 +20,7 @@ class CategoryAdmin(admin.ModelAdmin):
     # def save_model(self, request, obj, form, change):
     #     ... #use service
 
-    def delete_model(self, request, obj):
+    # def delete_model(self, request, obj):
         ...
 
     def get_form(self, request, obj=None, **kwargs):

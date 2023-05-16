@@ -1,0 +1,1 @@
+from shop.selectors.category_selectors import CategorySelector

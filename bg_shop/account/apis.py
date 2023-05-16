@@ -159,7 +159,7 @@ class ProfileApi(views.APIView):
     """Provides data about User and related Profile (and Image),
     allows change it"""
     class OutputSerializer(serializers.Serializer):
-        class AvatarSerializer(serializers.Serializer):
+        class AvatarSerializer(serializers.Serializer):  # todo import from common
             src = serializers.CharField()
             alt = serializers.CharField(max_length=255)
 

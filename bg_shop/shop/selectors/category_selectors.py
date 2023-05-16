@@ -1,0 +1,76 @@
+from typing import Any, Optional, Callable
+from django.db import models as db_models
+
+from shop import models, services
+
+
+class CategorySelector:
+    @staticmethod
+    def get_root_categories_queryset(
+            only_active: bool = True) -> db_models.QuerySet:
+        queryset = models.Category.objects\
+            .select_related('image')\
+            .select_related('parent').filter(parent=None)
+        if only_active:
+            queryset = queryset.filter(is_active=True)
+        return queryset
+
+    # def get_category_tree(
+    #         self,
+    #         start_node_id: int = None,
+    #         only_active: bool = True,
+    #         depth: int = 10,
+    #         formatter: Callable = None,
+    # ) -> list[Optional[dict[str, Any]]]:
+    #     """
+    #     Returns categories as a tree.
+    #     If start_node_id is not passed returns all categories.
+    #     :param depth:
+    #     :param start_node_id:
+    #     :param only_active: If False returns all categories (from start node)
+    #     :return:
+    #     """
+    #     queryset = models.Category.objects\
+    #         .select_related('image')\
+    #         .select_related('parent')
+    #     # to do get specific fields and rename
+    #     if only_active:
+    #         queryset =queryset.filter(is_active=True)
+    #     if start_node_id:
+    #         queryset = queryset.filter(id=start_node_id)
+    #     else:
+    #         queryset = queryset.filter(depth=0)
+    #
+    #     values = list(queryset.values())
+    #     for category in values:
+    #         category['subcategories'] = []
+    #         if depth > 0:
+    #             subcategories = self._get_subcategories(
+    #                 category_id=category["id"], only_active=only_active)
+    #             for subcategory in subcategories:
+    #                 subcategory_info = self.get_category_tree(
+    #                     start_node_id=subcategory.id,
+    #                     only_active=only_active,
+    #                     depth=depth-1,
+    #                 )
+    #                 category['subcategories'].extend(subcategory_info)
+    #     return values
+    #
+    # @staticmethod
+    # def _get_subcategories(
+    #         category_id: int,
+    #         only_active: bool = True,
+    # ) -> [models.Category]:
+    #     """
+    #
+    #     :param category_id:
+    #     :param only_active:
+    #     :return:
+    #     """
+    #     queryset = models.Category.objects.filter(parent=category_id)
+    #     if only_active:
+    #         queryset = queryset.filter(is_active=True)
+    #     return list(queryset)
+    #
+    # def format_category(self):
+    #     ...
