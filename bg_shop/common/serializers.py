@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from common import models
+from common import models, services
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -8,7 +8,8 @@ class ImageSerializer(serializers.ModelSerializer):
 
     def get_src(self, obj):
         if obj.img:
-            return obj.img.url
+            url = services.ImageService().get_img_url(obj)
+            return url
         else:
             return None
 

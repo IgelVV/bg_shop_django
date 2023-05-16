@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django import  forms
 from django.db import models as db_models
 from shop import models, services
 
@@ -10,15 +11,20 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(models.Category)
 class CategoryAdmin(admin.ModelAdmin):
-    # readonly_fields = ("depth",)
+    readonly_fields = ("depth",)
 
     def __init__(self, model, admin_site):
         super().__init__(model, admin_site)
         self.obj_depth_for_formfield = None
         self.obj_pk_for_formfield = None
 
-    # def save_model(self, request, obj, form, change):
-    #     ... #use service
+    # todo
+    def save_model(self, request, obj, form: forms.Form, change):
+        service = services.CategoryService()
+        form_data = form.cleaned_data
+        service.update_or_create(instance=obj, **form_data)
+
+
 
     # def delete_model(self, request, obj):
         ...

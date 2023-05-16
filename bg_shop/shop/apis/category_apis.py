@@ -1,13 +1,13 @@
-from rest_framework import serializers, status, permissions, views, generics
-from rest_framework import exceptions as drf_exceptions
+from rest_framework import serializers, status, permissions, views
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
-from shop import models, services, selectors
+from shop import models, selectors, services
 from common import serializers as common_serializers
 
 
 class CategoryApi(views.APIView):
+    """"""
     class OutputSerializer(serializers.ModelSerializer):
         subcategories = serializers.SerializerMethodField()
         image = common_serializers.ImageSerializer(allow_null=True)
@@ -27,6 +27,11 @@ class CategoryApi(views.APIView):
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request: drf_request.Request) -> drf_response.Response:
+        """
+
+        :param request:
+        :return:
+        """
         categories = selectors.CategorySelector.get_root_categories_queryset()
         serializer = self.OutputSerializer(
             instance=categories, many=True)

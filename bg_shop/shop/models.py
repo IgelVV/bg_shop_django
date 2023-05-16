@@ -125,15 +125,6 @@ class Category(models.Model):
             elif not self.parent.depth < self.MAX_DEPTH:
                 raise ValidationError(f"Category max depth is {self.MAX_DEPTH}")
 
-    # def save(self, i_am_service=False, *args, **kwargs):
-    #     if i_am_service:
-    #         return super().save(*args, **kwargs)
-    #     else:
-    #         raise NotImplementedError('Use service to create or update Category')
-    #
-    # def delete(self, using=None, keep_parents=False):
-    #     return super().delete(using, keep_parents)
-
     def __str__(self):
         return f"Category({self.pk}):{self.title}"
 
