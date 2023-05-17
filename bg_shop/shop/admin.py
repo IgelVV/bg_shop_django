@@ -37,8 +37,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         """
-        To restrict binding to itself,
-        of to category of the same level or less.
+        Restricts binding to itself,
+        or to category of the same level or higher.
+        Allow setting parent with higher level if previous parent was None.
         """
         if db_field.name == "parent":
             depth = self.obj_depth_for_formfield \

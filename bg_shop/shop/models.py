@@ -72,8 +72,6 @@ class Category(models.Model):
     (or level, counted from 0).
     Parent's depth must be lower than node's one (to avoid circular reference).
     """
-    # todo Максимальный уровень вложенности — 2. if self.parent.parent == None
-    # todo циклические ссылки
     class Meta:
         verbose_name = _("category")
         verbose_name_plural = _("categories")
@@ -117,13 +115,6 @@ class Category(models.Model):
     @property
     def is_root(self) -> bool:
         return self.parent is None
-
-    def clean(self): # todo to service (and setting depth)
-        if self.parent:
-            if self.parent.title == self.title:
-                raise ValidationError("Category can't have itself as a parent!")
-            elif not self.parent.depth < self.MAX_DEPTH:
-                raise ValidationError(f"Category max depth is {self.MAX_DEPTH}")
 
     def __str__(self):
         return f"Category({self.pk}):{self.title}"

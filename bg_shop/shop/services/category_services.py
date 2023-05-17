@@ -3,14 +3,12 @@ from typing import Optional
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
-from shop import models
+from shop import models, selectors
 
 User = get_user_model()
 
 
 class CategoryService:
-    #todo вызывать по цепочке метод save у подкатегорий,
-    # чтобы пересчитать depth или разрвать наследие (или оставить как есть)
     def update_or_create(
             self,
             *,
@@ -30,37 +28,41 @@ class CategoryService:
         if instance is None:
             instance = models.Category()
         attrs.pop("depth", None)  # you can't set it manually
-        title = attrs.get("title", instance.title)
+        new_title = attrs.get("title", None)
+        if new_title:
+            instance.title = new_title
         if "parent" in attrs:
             parent = attrs.pop("parent")
             self._set_parent(
                 instance=instance,
                 parent=parent,
-                title=title,
             )
         instance = self._set_attributes(category=instance, **attrs)
         if commit:
             instance.full_clean()
             instance.save()
+            subcategories = selectors.CategorySelector()\
+                .get_subcategories(category_id=instance.pk)
+            for subcategory in subcategories:
+                self._set_parent(
+                    instance=subcategory, parent=instance, commit=True)
         return instance
 
     def _set_parent(
             self,
             instance: models.Category,
-            title: str,
             parent: Optional[models.Category],
             commit: bool = False,
     ) -> models.Category:
         """
 
         :param instance:
-        :param title:
         :param parent:
         :param commit:
         :return:
         """
         if parent:
-            self._check_parent(parent=parent, title=title)
+            self._check_parent(parent=parent, title=instance.title)
             depth = parent.depth + 1
         else:
             depth = 0
@@ -69,6 +71,11 @@ class CategoryService:
         if commit:
             instance.full_clean()
             instance.save()
+            subcategories = selectors.CategorySelector()\
+                .get_subcategories(category_id=instance.pk)
+            for subcategory in subcategories:
+                self._set_parent(
+                    instance=subcategory, parent=instance, commit=True)
         return instance
 
     def _check_parent(self, parent: models.Category, title: str) -> None:
@@ -80,10 +87,11 @@ class CategoryService:
         """
         if parent.title == title:
             raise ValidationError(
-                "Category can't have itself as a parent!")
+                f"<{parent}> Category can't have itself as a parent!")
         elif parent.depth >= self.get_max_depth():
             raise ValidationError(
-                f"Category max depth is {self.get_max_depth()}")
+                f"<{parent}> Parent's depth must be less"
+                f" than max depth ({self.get_max_depth()})")
 
     def _set_attributes(
             self, category: models.Category, **attrs) -> models.Category:

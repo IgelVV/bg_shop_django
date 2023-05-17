@@ -15,6 +15,22 @@ class CategorySelector:
             queryset = queryset.filter(is_active=True)
         return queryset
 
+    @staticmethod
+    def get_subcategories(
+            category_id: int,
+            only_active: bool = True,
+    ) -> db_models.QuerySet:
+        """
+
+        :param category_id:
+        :param only_active:
+        :return:
+        """
+        queryset = models.Category.objects.filter(parent=category_id)
+        if only_active:
+            queryset = queryset.filter(is_active=True)
+        return queryset
+
     # def get_category_tree(
     #         self,
     #         start_node_id: int = None,
@@ -56,21 +72,6 @@ class CategorySelector:
     #                 category['subcategories'].extend(subcategory_info)
     #     return values
     #
-    # @staticmethod
-    # def _get_subcategories(
-    #         category_id: int,
-    #         only_active: bool = True,
-    # ) -> [models.Category]:
-    #     """
-    #
-    #     :param category_id:
-    #     :param only_active:
-    #     :return:
-    #     """
-    #     queryset = models.Category.objects.filter(parent=category_id)
-    #     if only_active:
-    #         queryset = queryset.filter(is_active=True)
-    #     return list(queryset)
     #
     # def format_category(self):
     #     ...
