@@ -21,7 +21,7 @@ class CategorySelector:
             only_active: bool = True,
     ) -> db_models.QuerySet:
         """
-
+        Returns only directly related records.
         :param category_id:
         :param only_active:
         :return:
@@ -30,6 +30,27 @@ class CategorySelector:
         if only_active:
             queryset = queryset.filter(is_active=True)
         return queryset
+
+    def get_all_descendants(
+            self,
+            category_id: int,
+            only_active: bool = True,
+    ) -> list[Optional[models.Category]]:
+        """
+        Returns all subcategories recursively.
+        :param category_id:
+        :param only_active: for checking is_active attribute
+        :return:
+        """
+        result = list()
+        children = self.get_subcategories(
+                category_id=category_id, only_active=only_active)
+        result.extend(list(children))
+        for child in children:
+            sub_descendants = self.get_all_descendants(
+                category_id=child.id, only_active=only_active)
+            result.extend(sub_descendants)
+        return result
 
     # def get_category_tree(
     #         self,

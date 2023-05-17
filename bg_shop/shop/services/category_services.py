@@ -109,8 +109,25 @@ class CategoryService:
                     f"'Category' object has no attribute '{name}'")
         return category
 
-    def delete(self):
-        ...
+    def delete(self, instance: models.Category, hard: bool = False) -> None:
+        """
+        Deactivates all descendants (all children recursively),
+        but doesn't change their depth.
+        :param instance: Category obj to delete
+        :param hard: if True, deletes from database,
+        if False, sets is_active=False
+        :return: None
+        """
+        descendants = selectors.CategorySelector()\
+            .get_all_descendants(category_id=instance.pk)
+        for descendant in descendants:
+            descendant.is_active = False
+            descendant.save()
+        if hard:
+            instance.delete()
+        else:
+            instance.is_active = False
+            instance.save()
 
     @staticmethod
     def get_max_depth():

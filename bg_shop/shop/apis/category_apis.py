@@ -32,8 +32,11 @@ class CategoryApi(views.APIView):
         :param request:
         :return:
         """
-        categories = selectors.CategorySelector.get_root_categories_queryset()
+        selector = selectors.CategorySelector()
+        categories = selector.get_root_categories_queryset()
         serializer = self.OutputSerializer(
             instance=categories, many=True)
+        print(selector.get_all_descendants(category_id=9))
+        services.CategoryService().delete(models.Category.objects.get(pk=14))
         return drf_response.Response(
             data=serializer.data, status=status.HTTP_200_OK)
