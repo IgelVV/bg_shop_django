@@ -1,6 +1,8 @@
-from django.contrib import admin
 from django import forms
 from django.db import models as db_models
+from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
+
 from shop import models, services
 
 
@@ -14,6 +16,7 @@ class CategoryAdmin(admin.ModelAdmin):
     readonly_fields = ("depth",)
     list_display = ('pk', 'title', 'parent_id', 'is_active')
     list_display_links = ('pk', 'title',)
+    actions = ["delete_categories", "mark_as_active", "mark_as_inactive"]
 
     def __init__(self, model, admin_site):
         super().__init__(model, admin_site)
@@ -29,8 +32,27 @@ class CategoryAdmin(admin.ModelAdmin):
         service = services.CategoryService()
         service.delete(instance=obj, hard=True)
 
-    # todo delete action
-    # todo is_active action
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        del actions['delete_selected']
+        return actions
+
+    @admin.action(description=_("Delete categories"))
+    def delete_categories(self, request, queryset) -> None:
+        for obj in queryset:
+            self.delete_model(request=request, obj=obj)
+
+    @admin.action(description=_("Mark as active"))
+    def mark_as_active(self, request, queryset) -> None:
+        for obj in queryset:
+            obj.is_active = True
+            obj.save()
+
+    @admin.action(description=_("Mark as inactive"))
+    def mark_as_inactive(self, request, queryset) -> None:
+        for obj in queryset:
+            obj.is_active = False
+            obj.save()
 
     def get_form(self, request, obj=None, **kwargs):
         if obj:
