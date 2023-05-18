@@ -15,7 +15,14 @@ class DynamicConfigAdmin(admin.ModelAdmin):
         )
 
     def changelist_view(self, request, extra_context=None):
-        super().changelist_view(request, extra_context)
+        return http.HttpResponseRedirect(
+            reverse(
+                "admin:dynamic_config_dynamicconfig_change",
+                kwargs={"object_id": 1}
+            )
+        )
+
+    def add_view(self, request, form_url="", extra_context=None):
         return http.HttpResponseRedirect(
             reverse(
                 "admin:dynamic_config_dynamicconfig_change",

@@ -10,6 +10,8 @@ class DynamicConfig(models.Model):
         verbose_name = _("dynamic config")
         verbose_name_plural = _("dynamic configs")
 
+    id = models.IntegerField(primary_key=True, default=1)
+
     regular_delivery_cost = models.DecimalField(
         default=0,
         max_digits=8,
@@ -20,14 +22,16 @@ class DynamicConfig(models.Model):
             "sets base cost of delivery"),
     )  # 200
     express_delivery_extra_charge = models.DecimalField(
-        default=0,
+        null=True,
+        blank=True,
         max_digits=8,
         decimal_places=2,
         validators=[MinValueValidator(0), ],
         verbose_name=_("express delivery extra charge"),
     )  # 500
     boundary_of_free_delivery = models.DecimalField(
-        default=0,
+        null=True,
+        blank=True,
         max_digits=8,
         decimal_places=2,
         validators=[MinValueValidator(0), ],
