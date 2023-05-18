@@ -27,7 +27,7 @@ class Product(models.Model):
         on_delete=models.SET_NULL,
         verbose_name=_("category")
     )
-    price = models.DecimalField(
+    price = models.DecimalField(  # todo not negative
         default=0,
         max_digits=8,
         decimal_places=2,

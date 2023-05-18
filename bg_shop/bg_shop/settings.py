@@ -40,6 +40,7 @@ LOCAL_APPS = [
     'orders.apps.OrdersConfig',
     'payment.apps.PaymentConfig',
     'api.apps.ApiConfig',
+    'dynamic_config.apps.DynamicConfigConfig',
 ]
 
 INSTALLED_APPS = [
