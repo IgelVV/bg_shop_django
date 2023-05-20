@@ -18,7 +18,4 @@ urlpatterns = [
     # path('sales/', views., name="sales"),  #GET
     # path('banners/', views., name="banners"),  #GET
     # path('tags/', views., name="tags"),  #GET
-    # path('basket/', views., name="basket"),  #GET POST DELETE
-    # path('orders/', views., name=""),  #GET POST
-    # path('orders/<int:id>/', views., name=""),  #GET POST
 ]
