@@ -14,7 +14,7 @@ urlpatterns = [
         apis.ProductDetailApi.as_view(),
         name="product-detail"
     ),  #GET
-    # path('product/<int:id>/review/', views., name=""),  #POST
+    path('product/<int:id>/review/', apis.ReviewApi.as_view(), name="review"),  #POST
     # path('sales/', views., name="sales"),  #GET
     # path('banners/', views., name="banners"),  #GET
     # path('tags/', views., name="tags"),  #GET

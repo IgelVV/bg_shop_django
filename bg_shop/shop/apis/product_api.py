@@ -11,6 +11,7 @@ from common import serializers as common_serializers
 
 class ProductDetailApi(views.APIView):
     """"""
+
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = models.Product
