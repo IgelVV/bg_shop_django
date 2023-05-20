@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from dynamic_config import models
 
 
-class AdminConfigService:
+class AdminConfigSelector:  # todo cache
     @staticmethod
     def get_config(key: str) -> Any:
         config = models.DynamicConfig.objects.get(pk=1)

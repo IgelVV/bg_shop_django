@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -18,7 +16,7 @@ class Product(models.Model):
     title = models.CharField(max_length=255, verbose_name=_("title"))
     description = models.TextField(
         max_length=5120,
-        verbose_name=_("description")
+        verbose_name=_("description"),
     )
     category = models.ForeignKey(
         "Category",
@@ -29,6 +27,7 @@ class Product(models.Model):
     )
     price = models.DecimalField(  # todo not negative
         default=0,
+        validators=[MinValueValidator(0)],
         max_digits=8,
         decimal_places=2,
         verbose_name=_("price"),
@@ -38,7 +37,7 @@ class Product(models.Model):
         default=0,
         verbose_name=_("count")
     )
-    release_date = models.DateTimeField(verbose_name=_("release date"))
+    release_date = models.DateField(verbose_name=_("release date"))
     images = models.ManyToManyField("common.Image", verbose_name=_("images"))
     tags = models.ManyToManyField("Tag", verbose_name=_("tags"))
     specifications = models.ManyToManyField(
@@ -59,6 +58,11 @@ class Product(models.Model):
             "Unselect this instead of deleting products."
         ),
     )
+
+    @property
+    def short_description(self):
+        if self.description:
+            return self.description[:255] + "..."
 
     def __str__(self):
         return f"Product({self.pk}):{self.title}"
@@ -145,6 +149,7 @@ class Review(models.Model):
         validators=[MinValueValidator(0)],
         verbose_name=_("rate"),
     )
+    date = models.DateTimeField(auto_now=True)
 
 
 class Sale(models.Model):
