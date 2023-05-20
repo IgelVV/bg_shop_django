@@ -38,7 +38,7 @@ var mix = {
                 this.review.author = ''
                 this.review.email = ''
                 this.review.text = ''
-                this.review.rate = 5
+//                this.review.rate =
             }).catch(() => {
                 console.warn('Ошибка при публикации отзыва')
             })
@@ -59,7 +59,7 @@ var mix = {
                 author: '',
                 email: '',
                 text: '',
-                rate: 5
+                rate: null
             }
         }
     },
