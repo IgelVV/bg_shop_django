@@ -6,7 +6,7 @@ app_name = "shop"
 
 urlpatterns = [
     path('categories/', apis.CategoryApi.as_view(), name="categories"),  #GET
-    # path('catalog/', views., name="catalog"),  #GET ${category.id} POST # todo POST add spec to swagger
+    path('catalog/', apis.CatalogApi.as_view(), name="catalog"),  #GET ${category.id}
     # path('products/popular/', views., name=""),  #GET
     # path('products/limited/', views., name=""),  #GET
     path(

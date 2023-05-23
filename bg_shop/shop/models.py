@@ -25,7 +25,7 @@ class Product(models.Model):
         on_delete=models.SET_NULL,
         verbose_name=_("category")
     )
-    price = models.DecimalField(  # todo not negative
+    price = models.DecimalField(
         default=0,
         validators=[MinValueValidator(0)],
         max_digits=8,
@@ -192,9 +192,13 @@ class Specification(models.Model):
     class Meta:
         verbose_name = _("specification")
         verbose_name_plural = _("specifications")
+        unique_together = ("name", "value",)
 
     name = models.CharField(max_length=255, verbose_name=_("name"))
     value = models.CharField(max_length=255, verbose_name=_("value"))
+
+    def __str__(self):
+        return f"Specification({self.pk}): {self.name}({self.value})"
 
 
 class Tag(models.Model):
