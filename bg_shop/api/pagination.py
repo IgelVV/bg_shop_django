@@ -26,7 +26,7 @@ class PageNumberPagination(pagination.PageNumberPagination):
         return Response(OrderedDict([
             ('items', data),
             ("currentPage", self.page.number),
-            ("lastPage", self.page.paginator.count)
+            ("lastPage", self.page.paginator.num_pages)
         ]))
 
     def get_results(self, data):
