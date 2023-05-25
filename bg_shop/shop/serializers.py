@@ -26,20 +26,14 @@ class ProductShortSerializer(serializers.ModelSerializer):
     category = serializers.IntegerField(source='category_id')
     date = serializers.DateField(source='release_date')
     description = serializers.CharField(source='short_description')
-    freeDelivery = serializers.SerializerMethodField()
+    freeDelivery = serializers.BooleanField()
     images = common_serializers.ImageSerializer(
         many=True, allow_null=True)
-    reviews = serializers.SerializerMethodField()
+    reviews = serializers.IntegerField()
     rating = serializers.SerializerMethodField()
 
-    def get_freeDelivery(self, obj):
-        return selectors.ProductSelector().is_free_delivery(obj)
-
-    def get_reviews(self, obj):
-        return selectors.ReviewSelector().count_reviews_for_product(obj.id)
-
     def get_rating(self, obj):
-        avg_rating = selectors.ProductSelector().get_rating(obj.id)
+        avg_rating = obj.rating
         if avg_rating is not None:
             return round(avg_rating, 2)
         else:

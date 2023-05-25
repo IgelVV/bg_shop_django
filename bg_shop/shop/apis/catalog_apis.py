@@ -1,4 +1,6 @@
-from rest_framework import serializers, status, permissions, views, filters
+from collections import OrderedDict
+
+from rest_framework import serializers, status, permissions, views
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
@@ -21,20 +23,21 @@ class CatalogApi(views.APIView):
             name = serializers.CharField(required=False, allow_blank=True)
             minPrice = serializers.IntegerField(required=False, allow_null=True)
             maxPrice = serializers.IntegerField(required=False, allow_null=True)
+            # means `only free delivery` (if False - select all)
             freeDelivery = serializers.BooleanField(required=False, allow_null=True)
             available = serializers.BooleanField(required=False, allow_null=True)
 
-        filter = FilterSerializer(required=False, allow_null=True, )
+        # it's better to remove nested query params and rewrite frontend
+        filter = FilterSerializer(required=False, allow_null=True,)
         currentPage = serializers.IntegerField(required=False, allow_null=True)
         sort = serializers.ChoiceField(
-            choices=["rating", "price", "reviews", "date"],
+            choices=["rating", "price", "reviews", "date", "title"],
             required=False,
             allow_blank=True)
         sortType = serializers.CharField(required=False, allow_blank=True)
         limit = serializers.IntegerField(required=False, allow_null=True)
-        # tags
-        # category
-
+        category = serializers.IntegerField(required=False)
+        # tags  # todo
 
     permission_classes = (permissions.AllowAny,)
 
@@ -48,13 +51,21 @@ class CatalogApi(views.APIView):
         selector = selectors.ProductSelector()
         output_serializer = shop_serializers.ProductShortSerializer
         params = api_utils.nested_query_params_parser(request)
-        query_params_serializer = self.QueryParamsSerializer(data=params)
+        params_serializer = self.QueryParamsSerializer(data=params)
 
-        query_params_serializer.is_valid(raise_exception=True)
-        query_params_serializer.validated_data['filter']["category"]=1
-        # print(query_params_serializer.validated_data)
-        # catalog = selector.get_catalog(filters=query_params_serializer.validated_data)
-        catalog = selector.get_catalog() # add sort and filter by category
+        params_serializer.is_valid(raise_exception=True)
+        validated_data = params_serializer.validated_data
+        filter_params = (
+            validated_data.get('filter', None)
+            or OrderedDict()
+        )
+        if category := validated_data.get('category', None):
+            filter_params['category'] = category
+        catalog = selector.get_catalog(
+            filters=filter_params,
+            sort_field=validated_data.get("sort", None),
+            order=validated_data.get("sortType", None),
+        )
 
         return pagination.get_paginated_response(
             pagination_class=self.Pagination,

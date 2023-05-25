@@ -12,3 +12,7 @@ class AdminConfigSelector:  # todo cache
             return getattr(config, key)
         else:
             raise KeyError(f"DynamicConfig has no attribute `{key}`.")
+
+    @property
+    def boundary_of_free_delivery(self):
+        return self.get_config(key="boundary_of_free_delivery")
