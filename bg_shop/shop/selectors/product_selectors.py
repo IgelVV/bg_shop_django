@@ -4,7 +4,10 @@ from django.contrib.auth import get_user_model
 from django.db.models import (
     Avg,
     Count,
+    Sum,
     QuerySet,
+    Subquery,
+    OuterRef,
     Case,
     When,
     Value,
@@ -14,12 +17,13 @@ from django.db.models import (
 
 from shop import models
 from shop import filters as shop_filters
+from orders import models as order_models
 from dynamic_config import selectors as conf_selectors
 
 User = get_user_model()
 
 POPULAR_PRODUCTS_LIMIT = 8  # todo remove to settings (or conf)
-POPULAR_LIMITED_LIMIT = POPULAR_PRODUCTS_LIMIT
+LIMITED_PRODUCTS_LIMIT = POPULAR_PRODUCTS_LIMIT
 
 
 class ProductSelector:
@@ -63,10 +67,16 @@ class ProductSelector:
             self,
             query_set: QuerySet[models.Product],
     ) -> QuerySet[models.Product]:
-        # todo change rating to popularity (number of sold) and reviews to rating
         qs = query_set.annotate(rating=Avg('review__rate'))\
             .annotate(reviews=Count('review'))\
             .annotate(date=F("release_date"))
+
+        sales = order_models.OrderedProduct.objects\
+            .filter(product=OuterRef("pk"))\
+            .filter(order__status=order_models.Order.Statuses.COMPLETED)\
+            .values("product")\
+            .annotate(sales=Sum("count")).values("sales")
+        qs = qs.annotate(popularity=Subquery(sales))
 
         boundary = conf_selectors.AdminConfigSelector()\
             .boundary_of_free_delivery
@@ -109,7 +119,7 @@ class ProductSelector:
         return qs
 
     def get_popular_products(self):
-        qs = self.get_catalog(sort_field='rating')  # todo change to popularity (number of sold)
+        qs = self.get_catalog(sort_field='popularity')
         qs = qs[:POPULAR_PRODUCTS_LIMIT]
         return qs
 
@@ -117,7 +127,5 @@ class ProductSelector:
         qs = self.get_active_products()
         qs = qs.filter(limited_edition=True)
         qs = self._annotate_for_product_short_view(query_set=qs)
-        qs = qs[:POPULAR_LIMITED_LIMIT]
+        qs = qs[:LIMITED_PRODUCTS_LIMIT]
         return qs
-
-

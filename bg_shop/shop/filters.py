@@ -15,8 +15,7 @@ class BaseProductFilter(django_filters.FilterSet):
     freeDelivery = django_filters.BooleanFilter(
         method="filter_free_delivery",)
     available = django_filters.BooleanFilter(
-        method="filter_available_in_stock",
-    )
+        method="filter_available_in_stock",)
     category = django_filters.NumberFilter(
         field_name='category', lookup_expr='exact')
 
