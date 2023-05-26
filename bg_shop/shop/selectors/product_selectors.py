@@ -46,14 +46,14 @@ class ProductSelector:
     ) -> QuerySet[models.Product]:
         filters = filters or {}
         qs = models.Product.objects.filter(is_active=True)
-        qs = self._annotate_for_catalog(query_set=qs)
+        qs = self._annotate_for_product_short_view(query_set=qs)
         qs = shop_filters.BaseProductFilter(data=filters, queryset=qs).qs
         if sort_field:
             qs = self._sort_catalog(
                 query_set=qs, sort_field=sort_field, order=order)
         return qs
 
-    def _annotate_for_catalog(
+    def _annotate_for_product_short_view(
             self,
             query_set: QuerySet[models.Product],
     ) -> QuerySet[models.Product]:
@@ -95,3 +95,8 @@ class ProductSelector:
                              f"str('dec') or None type, but '{order}' instead")
         query_set = query_set.order_by(sort_field)
         return query_set
+
+    def get_products_in_banners(self):
+        qs = models.Product.objects.filter(banner__isnull=False)
+        qs = self._annotate_for_product_short_view(query_set=qs)
+        return qs
