@@ -210,3 +210,15 @@ class Tag(models.Model):
 
     def __str__(self):
         return f"Tag({self.pk}):{self.name}"
+
+
+class Banner(models.Model):
+    class Meta:
+        verbose_name = _("banner")
+        verbose_name_plural = _("banners")
+
+    product = models.OneToOneField(
+        Product,
+        on_delete=models.CASCADE,
+        verbose_name=_("product"),
+    )

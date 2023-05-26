@@ -94,3 +94,8 @@ class SpecificationAdmin(admin.ModelAdmin):
 @admin.register(models.Tag)
 class TagAdmin(admin.ModelAdmin):
     ...
+
+
+@admin.register(models.Banner)
+class BannerAdmin(admin.ModelAdmin):
+    ...
