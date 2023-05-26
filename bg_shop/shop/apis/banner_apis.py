@@ -13,7 +13,7 @@ class BannerApi(views.APIView):
         selector = selectors.ProductSelector()
         banners = selector.get_products_in_banners()
         output_serializer = shop_serializers.ProductShortSerializer(
-            banners, many=True)
+            instance=banners, many=True)
 
         return drf_response.Response(
             data=output_serializer.data, status=status.HTTP_200_OK)

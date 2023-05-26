@@ -18,10 +18,16 @@ from dynamic_config import selectors as conf_selectors
 
 User = get_user_model()
 
+POPULAR_PRODUCTS_LIMIT = 8  # todo remove to settings (or conf)
+POPULAR_LIMITED_LIMIT = POPULAR_PRODUCTS_LIMIT
+
 
 class ProductSelector:
     def get_viewed_products(self, user: User) -> QuerySet:
         ...
+
+    def get_active_products(self) -> QuerySet:
+        return models.Product.objects.filter(is_active=True)
 
     def get_rating(self, product_id: int) -> float:
         reviews = models.Review.objects\
@@ -45,7 +51,7 @@ class ProductSelector:
             order: Optional[str] = None,
     ) -> QuerySet[models.Product]:
         filters = filters or {}
-        qs = models.Product.objects.filter(is_active=True)
+        qs = self.get_active_products()
         qs = self._annotate_for_product_short_view(query_set=qs)
         qs = shop_filters.BaseProductFilter(data=filters, queryset=qs).qs
         if sort_field:
@@ -57,6 +63,7 @@ class ProductSelector:
             self,
             query_set: QuerySet[models.Product],
     ) -> QuerySet[models.Product]:
+        # todo change rating to popularity (number of sold) and reviews to rating
         qs = query_set.annotate(rating=Avg('review__rate'))\
             .annotate(reviews=Count('review'))\
             .annotate(date=F("release_date"))
@@ -100,3 +107,17 @@ class ProductSelector:
         qs = models.Product.objects.filter(banner__isnull=False)
         qs = self._annotate_for_product_short_view(query_set=qs)
         return qs
+
+    def get_popular_products(self):
+        qs = self.get_catalog(sort_field='rating')  # todo change to popularity (number of sold)
+        qs = qs[:POPULAR_PRODUCTS_LIMIT]
+        return qs
+
+    def get_limited_products(self):
+        qs = self.get_active_products()
+        qs = qs.filter(limited_edition=True)
+        qs = self._annotate_for_product_short_view(query_set=qs)
+        qs = qs[:POPULAR_LIMITED_LIMIT]
+        return qs
+
+

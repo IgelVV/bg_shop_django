@@ -31,7 +31,7 @@ class CatalogApi(views.APIView):
         filter = FilterSerializer(required=False, allow_null=True,)
         currentPage = serializers.IntegerField(required=False, allow_null=True)
         sort = serializers.ChoiceField(
-            choices=["rating", "price", "reviews", "date", "title"],
+            choices=["rating", "price", "reviews", "date", "title"], # todo change rating to popularity (number of sold) and reviews to rating
             required=False,
             allow_blank=True)
         sortType = serializers.CharField(required=False, allow_blank=True)

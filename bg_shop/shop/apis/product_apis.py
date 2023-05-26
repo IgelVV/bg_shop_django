@@ -1,18 +1,18 @@
-from rest_framework import serializers, status, permissions, views
+from rest_framework import status, permissions, views
+from rest_framework import serializers as drf_serializers
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
-from django.core.validators import MinValueValidator
 from django.shortcuts import get_object_or_404
 
-from shop import models, selectors, services
+from shop import models, selectors, serializers
 from common import serializers as common_serializers
 
 
 class ProductDetailApi(views.APIView):
     """"""
 
-    class OutputSerializer(serializers.ModelSerializer):
+    class OutputSerializer(drf_serializers.ModelSerializer):
         class Meta:
             model = models.Product
             fields = (
@@ -32,25 +32,25 @@ class ProductDetailApi(views.APIView):
             )
             depth = 1
 
-        class ReviewSerializer(serializers.Serializer):
-            author = serializers.CharField(max_length=150)  # username
-            email = serializers.SerializerMethodField()
-            text = serializers.CharField(max_length=5120)
-            rate = serializers.IntegerField()
-            date = serializers.DateTimeField(format="%d/%b/%Y")
+        class ReviewSerializer(drf_serializers.Serializer):
+            author = drf_serializers.CharField(max_length=150)  # username
+            email = drf_serializers.SerializerMethodField()
+            text = drf_serializers.CharField(max_length=5120)
+            rate = drf_serializers.IntegerField()
+            date = drf_serializers.DateTimeField(format="%d/%b/%Y")
 
             def get_email(self, obj):
                 return obj.author.email
 
-        category = serializers.IntegerField(source='category_id')
-        date = serializers.DateField(source='release_date')
-        description = serializers.CharField(source='short_description')
-        fullDescription = serializers.CharField(source='description')
-        freeDelivery = serializers.SerializerMethodField()
+        category = drf_serializers.IntegerField(source='category_id')
+        date = drf_serializers.DateField(source='release_date')
+        description = drf_serializers.CharField(source='short_description')
+        fullDescription = drf_serializers.CharField(source='description')
+        freeDelivery = drf_serializers.SerializerMethodField()
         images = common_serializers.ImageSerializer(
             many=True, allow_null=True)
         reviews = ReviewSerializer(source='review_set', many=True)
-        rating = serializers.SerializerMethodField()
+        rating = drf_serializers.SerializerMethodField()
 
         def get_freeDelivery(self, obj):
             return selectors.ProductSelector().is_free_delivery(obj)
@@ -79,3 +79,39 @@ class ProductDetailApi(views.APIView):
             instance=instance)
         return drf_response.Response(
             data=serializer.data, status=status.HTTP_200_OK)
+
+
+class ProductPopularApi(views.APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request: drf_request.Request) -> drf_response.Response:
+        """
+
+        :param request:
+        :return:
+        """
+        selector = selectors.ProductSelector()
+        products = selector.get_popular_products()
+        output_serializer = serializers.ProductShortSerializer(
+            instance=products, many=True)
+
+        return drf_response.Response(
+            data=output_serializer.data, status=status.HTTP_200_OK)
+
+
+class ProductLimitedApi(views.APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request: drf_request.Request) -> drf_response.Response:
+        """
+
+        :param request:
+        :return:
+        """
+        selector = selectors.ProductSelector()
+        products = selector.get_limited_products()
+        output_serializer = serializers.ProductShortSerializer(
+            instance=products, many=True)
+
+        return drf_response.Response(
+            data=output_serializer.data, status=status.HTTP_200_OK)
