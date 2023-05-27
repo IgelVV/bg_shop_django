@@ -8,7 +8,8 @@ from shop import models, services
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
-    ...
+    list_display = ('pk', 'title', 'price', 'count', 'is_active',)
+    list_display_links = ('pk', 'title',)
 
 
 @admin.register(models.Category)

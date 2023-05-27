@@ -23,7 +23,7 @@ from dynamic_config import selectors as conf_selectors
 User = get_user_model()
 
 POPULAR_PRODUCTS_LIMIT = 8  # todo remove to settings (or conf)
-LIMITED_PRODUCTS_LIMIT = POPULAR_PRODUCTS_LIMIT
+LIMITED_PRODUCTS_LIMIT = 6
 
 
 class ProductSelector:
@@ -71,6 +71,7 @@ class ProductSelector:
             .annotate(reviews=Count('review'))\
             .annotate(date=F("release_date"))
 
+        # number of products sold
         sales = order_models.OrderedProduct.objects\
             .filter(product=OuterRef("pk"))\
             .filter(order__status=order_models.Order.Statuses.COMPLETED)\

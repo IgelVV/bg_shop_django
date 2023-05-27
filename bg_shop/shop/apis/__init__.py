@@ -7,3 +7,4 @@ from shop.apis.product_apis import (
 from shop.apis.review_apis import ReviewApi
 from shop.apis.catalog_apis import CatalogApi
 from shop.apis.banner_apis import BannerApi
+from shop.apis.sales_apis import SalesApi
