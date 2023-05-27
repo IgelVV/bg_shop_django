@@ -69,8 +69,8 @@ var mix = {
                     this.catalogCards = data.items
                     this.currentPage = data.currentPage
                     this.lastPage = data.lastPage
-
-                }).catch(() => {
+                })
+                .catch(() => {
                     console.warn('Ошибка при получении каталога')
                 })
         }

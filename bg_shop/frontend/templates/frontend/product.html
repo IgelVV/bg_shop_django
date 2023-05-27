@@ -23,7 +23,7 @@
 
               <!-- Основное фото -->
               <div class="ProductCard-photo">
-                <img :src="product?.images ? product.images[activePhoto].src : null" :alt="product?.images ? product.images[activePhoto].alt : null"/>
+                <img v-if="product?.images?.length" :src="product?.images ? product.images[activePhoto].src : null" :alt="product?.images ? product.images[activePhoto].alt : null"/>
               </div>
               <!-- Основное фото -->
               
