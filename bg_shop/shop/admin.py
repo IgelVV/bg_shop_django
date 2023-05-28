@@ -12,8 +12,20 @@ class ProductAdmin(admin.ModelAdmin):
     list_display_links = ('pk', 'title',)
 
 
+class ProductInline(admin.TabularInline):
+    model = models.Product
+    fk_name = "category"
+    extra = 0
+    can_delete = False
+    max_num = 0
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
 @admin.register(models.Category)
 class CategoryAdmin(admin.ModelAdmin):
+    inlines = (ProductInline,)
     readonly_fields = ("depth",)
     list_display = ('pk', 'title', 'parent_id', 'is_active')
     list_display_links = ('pk', 'title',)
@@ -23,6 +35,10 @@ class CategoryAdmin(admin.ModelAdmin):
         super().__init__(model, admin_site)
         self.obj_depth_for_formfield = None
         self.obj_pk_for_formfield = None
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related('product_set')
 
     def save_model(self, request, obj, form: forms.Form, change):
         service = services.CategoryService()
