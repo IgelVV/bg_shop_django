@@ -79,17 +79,20 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.Review)
 class ReviewAdmin(admin.ModelAdmin):
-    ...
+    list_display = ('pk', 'author', 'product', 'rate')
+    list_display_links = ('pk',)
 
 
 @admin.register(models.Sale)
 class SaleAdmin(admin.ModelAdmin):
-    ...
+    list_display = ('pk', 'product', 'discount', 'date_from', 'date_to',)
+    list_display_links = ('pk', 'product')
 
 
 @admin.register(models.Specification)
 class SpecificationAdmin(admin.ModelAdmin):
-    ...
+    list_display = ('pk', 'name', 'value')
+    list_display_links = ('pk', 'name')
 
 
 @admin.register(models.Tag)
@@ -99,4 +102,5 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(models.Banner)
 class BannerAdmin(admin.ModelAdmin):
-    ...
+    list_display = ('pk', 'product',)
+    list_display_links = ('pk', 'product')
