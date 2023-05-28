@@ -44,7 +44,7 @@ class CatalogApi(views.APIView):
         sortType = serializers.CharField(required=False, allow_blank=True)
         limit = serializers.IntegerField(required=False, allow_null=True)
         category = serializers.IntegerField(required=False)
-        # tags  # todo
+        tags = serializers.ListField(child=serializers.IntegerField(), required=False)
 
     permission_classes = (permissions.AllowAny,)
 
@@ -54,24 +54,26 @@ class CatalogApi(views.APIView):
         :param request:
         :return:
         """
-
         selector = selectors.ProductSelector()
         output_serializer = shop_serializers.ProductShortSerializer
-        params = api_utils.nested_query_params_parser(request)
+        params = api_utils.parse_query_params_square_brackets(request)
         params_serializer = self.QueryParamsSerializer(data=params)
-
         params_serializer.is_valid(raise_exception=True)
-        validated_data = params_serializer.validated_data
+        validated_params = params_serializer.validated_data
+
         filter_params = (
-            validated_data.get('filter', None)
+            validated_params.get('filter', None)
             or OrderedDict()
         )
-        if category := validated_data.get('category', None):
+        if category := validated_params.get('category', None):
             filter_params['category'] = category
+        if tags := validated_params.get('tags', None):
+            filter_params['tags'] = tags
+
         catalog = selector.get_catalog(
             filters=filter_params,
-            sort_field=validated_data.get("sort", None),
-            order=validated_data.get("sortType", None),
+            sort_field=validated_params.get("sort", None),
+            order=validated_params.get("sortType", None),
         )
 
         return pagination.get_paginated_response(

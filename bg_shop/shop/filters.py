@@ -18,6 +18,7 @@ class BaseProductFilter(django_filters.FilterSet):
         method="filter_available_in_stock",)
     category = django_filters.NumberFilter(
         field_name='category', lookup_expr='exact')
+    tags = django_filters.AllValuesMultipleFilter(method="filter_tags",)
 
     class Meta:
         model = models.Product
@@ -36,3 +37,11 @@ class BaseProductFilter(django_filters.FilterSet):
                 "count__gt": 0,
             })
         return queryset
+
+    def filter_tags(self, queryset, name, value) -> db_models.QuerySet:
+        if value:
+            return queryset.filter(**{
+                "tags__in": value,
+            })
+        else:
+            return queryset
