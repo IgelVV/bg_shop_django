@@ -7,6 +7,7 @@ from shop import selectors
 
 
 class TagApi(views.APIView):
+    """Represents Tags to display in the catalog."""
     class QueryParamsSerializer(drf_serializers.Serializer):
         category = drf_serializers.IntegerField(required=False)
 
@@ -18,9 +19,10 @@ class TagApi(views.APIView):
 
     def get(self, request: drf_request.Request) -> drf_response.Response:
         """
-
-        :param request:
-        :return:
+        Returns all tags, or only tags related with category if passed as
+        a query parameter.
+        :param request: drf request with optional query param `category`.
+        :return: tags
         """
         selector = selectors.TagSelector()
         params_serializer = self.QueryParamsSerializer(

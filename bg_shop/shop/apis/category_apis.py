@@ -2,13 +2,16 @@ from rest_framework import serializers, status, permissions, views
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
-from shop import models, selectors, services
+from shop import models, selectors
 from common import serializers as common_serializers
 
 
 class CategoryApi(views.APIView):
-    """"""
+    """
+    For representing of Category tree in a header.
+    """
     class OutputSerializer(serializers.ModelSerializer):
+        """Recursive structure of categories"""
         subcategories = serializers.SerializerMethodField()
         image = common_serializers.ImageSerializer(allow_null=True)
 
@@ -28,9 +31,9 @@ class CategoryApi(views.APIView):
 
     def get(self, request: drf_request.Request) -> drf_response.Response:
         """
-
-        :param request:
-        :return:
+        Returns tree of categories and subcategories.
+        :param request: request
+        :return: drf response
         """
         selector = selectors.CategorySelector()
         categories = selector.get_root_categories_queryset()

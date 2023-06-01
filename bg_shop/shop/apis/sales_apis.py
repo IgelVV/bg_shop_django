@@ -1,16 +1,17 @@
 from decimal import Decimal
 
-from rest_framework import status, permissions, views
+from rest_framework import permissions, views
 from rest_framework import serializers as drf_serializers
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
 from api import pagination
-from shop import models, selectors, serializers
+from shop import models, selectors
 from common import serializers as common_serializers
 
 
 class SalesApi(views.APIView):
+    """Represents all active sales"""
     class Pagination(pagination.PageNumberPagination):
         page_query_param = "currentPage"
         page_size = 20
@@ -25,7 +26,8 @@ class SalesApi(views.APIView):
         title = drf_serializers.CharField(source="product.title")
         images = common_serializers.ImageSerializer(source="product.images", many=True)
 
-        def get_salePrice(self, obj: models.Sale):
+        def get_salePrice(self, obj: models.Sale) -> Decimal:
+            """Price after discount"""
             original_price = obj.product.price
             sale_price = Decimal(1 - obj.discount * 0.01) * original_price
             sale_price = round(sale_price, 2)
@@ -35,9 +37,9 @@ class SalesApi(views.APIView):
 
     def get(self, request: drf_request.Request) -> drf_response.Response:
         """
-
-        :param request:
-        :return:
+        Returns information about current sales (products with discount)
+        :param request: drf request
+        :return: paginated response
         """
         selector = selectors.SaleSelector()
         sales = selector.get_sales()

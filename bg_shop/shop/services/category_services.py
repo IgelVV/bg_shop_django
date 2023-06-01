@@ -16,14 +16,14 @@ class CategoryService:
             commit: bool = True,
             **attrs
     ) -> models.Category:
-        """#
+        """
         Set passed attributes, except of depth. Calculates depth automatically,
         based on parent. It is prohibited change depth by setting attribute.
         If `parent` is passed (None, or Instance, or id) checks and sets it.
-        :param instance:
-        :param commit:
-        :param attrs:
-        :return:
+        :param instance: object to update
+        :param commit: if False, does not save() and does not validate
+        :param attrs: can contain fields of Category model
+        :return: Category with changed attributes
         """
         if instance is None:
             instance = models.Category()
@@ -55,11 +55,11 @@ class CategoryService:
             commit: bool = False,
     ) -> models.Category:
         """
-
-        :param instance:
-        :param parent:
-        :param commit:
-        :return:
+        Change `parent` field of Category instance (even can set it None)
+        :param instance: Category to change `parent`
+        :param parent: new parent or None to delete relation
+        :param commit: if False, does not save() and does not validate
+        :return: passed Category with changed parent
         """
         if parent:
             self._check_parent(parent=parent, title=instance.title)
@@ -80,10 +80,16 @@ class CategoryService:
 
     def _check_parent(self, parent: models.Category, title: str) -> None:
         """
-
-        :param parent:
-        :param title:
-        :return:
+        Validates that Category can be a parent for other category
+        with passed title.
+        Does two checks:
+            1) parent does not have the same title
+            (that mean it is the same obj, as titles are unique)
+            2) parent does not have max depth (so child would break the rule)
+        :param parent: Category instance to check
+        :param title: `title` field of expected child
+        :return: None
+        :raises ValidationError: if one of checks are failed.
         """
         if parent.title == title:
             raise ValidationError(
@@ -96,10 +102,11 @@ class CategoryService:
     def _set_attributes(
             self, category: models.Category, **attrs) -> models.Category:
         """
-        Set new attributes passed in arguments, if they are acceptable.
-        :param category:
-        :param attrs:
-        :return:
+        Set new attributes for Category obj. passed in arguments,
+        if they are acceptable. Does not save the object.
+        :param category: instance of Category to change
+        :param attrs: attrs for Category to set
+        :return: the same object
         """
         for name, value in attrs.items():
             if hasattr(models.Category, name):
@@ -131,4 +138,6 @@ class CategoryService:
 
     @staticmethod
     def get_max_depth():
+        """Returns MAX_DEPTH constant, that defines nesting.
+        0 - means flat structure"""
         return models.Category.MAX_DEPTH

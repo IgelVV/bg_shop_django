@@ -19,14 +19,14 @@ class ReviewService:
             commit: bool = True,
     ) -> models.Review:
         """
-
-        :param user_id:
-        :param product_id:
-        :param text:
-        :param rate:
-        :param date:
-        :param commit:
-        :return:
+        Creates new Review obj.
+        :param user_id: author's id
+        :param product_id: for which Product.
+        :param text: content
+        :param rate: score, grade
+        :param date: date of publication, if None, sets now.
+        :param commit: if False, doesn't save and doesn't validate
+        :return: created new Review obj
         """
         review = models.Review(
             author_id=user_id,

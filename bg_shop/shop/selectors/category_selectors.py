@@ -1,13 +1,19 @@
-from typing import Any, Optional, Callable
+from typing import Optional
 from django.db import models as db_models
 
-from shop import models, services
+from shop import models
 
 
 class CategorySelector:
+    """Category has self reference to implement tree structure."""
     @staticmethod
     def get_root_categories_queryset(
             only_active: bool = True) -> db_models.QuerySet:
+        """
+        Returns categories witch has no parent.
+        :param only_active: if True, ignores categories with field active=False
+        :return: queryset with categories without parent
+        """
         queryset = models.Category.objects\
             .select_related('image')\
             .select_related('parent').filter(parent=None)
@@ -22,9 +28,10 @@ class CategorySelector:
     ) -> db_models.QuerySet:
         """
         Returns only directly related records.
-        :param category_id:
-        :param only_active:
-        :return:
+        :param category_id: id that the subcategories should be associated with
+        :param only_active: if True, ignores categories with field active=False
+        :return: categories witch have reference to this category
+            in field parent
         """
         queryset = models.Category.objects.filter(parent=category_id)
         if only_active:
@@ -38,9 +45,9 @@ class CategorySelector:
     ) -> list[Optional[models.Category]]:
         """
         Returns all subcategories recursively.
-        :param category_id:
+        :param category_id: start of chain
         :param only_active: for checking is_active attribute
-        :return:
+        :return: tree of categories with one root category
         """
         result = list()
         children = self.get_subcategories(

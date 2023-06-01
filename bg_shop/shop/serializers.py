@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from shop import models, selectors
+from shop import models
 from common import serializers as common_serializers
 
 
 class ProductShortSerializer(serializers.ModelSerializer):
-    """"""
+    """Represents Product obj for displaying on cards. Product obj must
+    be annotated with additional fields: date, freeDelivery, rating."""
     class Meta:
         model = models.Product
         fields = (

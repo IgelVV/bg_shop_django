@@ -3,15 +3,16 @@ from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
 from django.core.validators import MinValueValidator
-from django.shortcuts import get_object_or_404
 
 from shop import models, selectors, services
-from common import serializers as common_serializers
 
 
 class ReviewApi(views.APIView):
+    """For adding reviews for products"""
 
     class InputSerializer(serializers.Serializer):
+        # todo rebuild
+        """Hire is a lot of fields that are unnecessary"""
         author = serializers.CharField(
             max_length=300, required=False, allow_null=True)  # useless (from current user)
         email = serializers.EmailField(required=False, allow_null=True)  #useless (from current user)
@@ -22,6 +23,7 @@ class ReviewApi(views.APIView):
         date = serializers.DateTimeField(required=False, allow_null=True)  # useless (auto now)
 
     class OutputSerializer(serializers.ModelSerializer):
+        """The same structure as in ProductDetailApi"""
         class Meta:
             model = models.Review
             fields = (
@@ -42,6 +44,12 @@ class ReviewApi(views.APIView):
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
+        """
+        Creates a new review related with product. Author is current user.
+        :param request: contains data for creating review
+        :param kwargs: contains id of product
+        :return: response
+        """
         product_id = kwargs["id"]
         author = request.user
 

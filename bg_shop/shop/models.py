@@ -213,6 +213,7 @@ class Tag(models.Model):
 
 
 class Banner(models.Model):
+    """It is a product that will be shown on the main page."""
     class Meta:
         verbose_name = _("banner")
         verbose_name_plural = _("banners")

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from rest_framework import status, permissions, views
 from rest_framework import serializers as drf_serializers
 from rest_framework import response as drf_response
@@ -10,9 +12,15 @@ from common import serializers as common_serializers
 
 
 class ProductDetailApi(views.APIView):
-    """"""
+    """Detailed view of each product."""
 
     class OutputSerializer(drf_serializers.ModelSerializer):
+        """Represents full information about product.
+        It is used only in this view.
+        It looks like ProductShortSerializer, but here are few differences:
+        fullDescription - new field,
+        reviews - represents all Review objects related to this Product.
+        """
         class Meta:
             model = models.Product
             fields = (
@@ -39,7 +47,8 @@ class ProductDetailApi(views.APIView):
             rate = drf_serializers.IntegerField()
             date = drf_serializers.DateTimeField(format="%d/%b/%Y")
 
-            def get_email(self, obj):
+            def get_email(self, obj: models.Review) -> str:
+                """Email of author of review"""
                 return obj.author.email
 
         category = drf_serializers.IntegerField(source='category_id')
@@ -52,10 +61,16 @@ class ProductDetailApi(views.APIView):
         reviews = ReviewSerializer(source='review_set', many=True)
         rating = drf_serializers.SerializerMethodField()
 
-        def get_freeDelivery(self, obj):
+        def get_freeDelivery(self, obj: models.Product) -> bool:
+            """
+            Answers: Is it free for delivery?
+            :param obj: Product
+            :return: bool
+            """
             return selectors.ProductSelector().is_free_delivery(obj)
 
-        def get_rating(self, obj):
+        def get_rating(self, obj: models.Product) -> Optional[float]:
+            """Rating for product from reviews."""
             avg_rating = selectors.ProductSelector().get_rating(obj.id)
             if avg_rating is not None:
                 return round(avg_rating, 2)
@@ -70,7 +85,7 @@ class ProductDetailApi(views.APIView):
             **kwargs
     ) -> drf_response.Response:
         """
-
+        Returns detailed information about Product.
         :param request:
         :return:
         """
@@ -82,11 +97,12 @@ class ProductDetailApi(views.APIView):
 
 
 class ProductPopularApi(views.APIView):
+    """Represents the best-selling products"""
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request: drf_request.Request) -> drf_response.Response:
         """
-
+        Represents the best-selling products witch are active
         :param request:
         :return:
         """
@@ -100,11 +116,13 @@ class ProductPopularApi(views.APIView):
 
 
 class ProductLimitedApi(views.APIView):
+    """Represents products that are marked as limited"""
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request: drf_request.Request) -> drf_response.Response:
         """
-
+        Represents products that are marked as limited
+        (and witch are active as well)
         :param request:
         :return:
         """
