@@ -138,7 +138,7 @@
 
             <!-- Получаем товары по фильтрам -->
             <div v-for="card in catalogCards" class="Card" :key="id">
-              <a class="Card-picture" :href="`/product/${card.id}`"><img :src="card.images[0].src" :alt="card.images[0].alt"/></a>
+              <a class="Card-picture" :href="`/product/${card.id}`"><img v-if="card.images.length > 0" :src="card.images[0].src" :alt="card.images[0].alt"/></a>
               <div class="Card-content">
                 <strong class="Card-title"><a :href="`/product/${card.id}`">${ card.title }$</a></strong>
                 <div class="Card-description">

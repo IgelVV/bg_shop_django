@@ -1,10 +1,38 @@
+//var mix = {
+//    methods: {
+//        getUserAccount() {
+//            this.getData("/api/account/").then(data => {
+//                this.firstname = data.firstname
+//                this.secondname = data.secondname
+//                this.surname = data.surname
+//                this.avatar = data.avatar
+//                this.orders = data.orders
+//            })
+//        },
+//    },
+//    mounted() {
+//        this.getUserAccount();
+//    },
+//    data() {
+//        return {
+//            firstname: "",
+//            secondname: "",
+//            surname: "",
+//            avatar: {},
+//            orders: [],
+//        }
+//    },
+//    computed: {
+//        fullName() {
+//            return [this.surname, this.firstname, this.secondname].join(" ")
+//        },
+//    },
+//}
 var mix = {
     methods: {
         getUserAccount() {
-            this.getData("/api/account/").then(data => {
-                this.firstname = data.firstname
-                this.secondname = data.secondname
-                this.surname = data.surname
+            this.getData("/api/profile/").then(data => {
+                this.fullName = data.fullName
                 this.avatar = data.avatar
                 this.orders = data.orders
             })
@@ -23,8 +51,10 @@ var mix = {
         }
     },
     computed: {
-        fullName() {
-            return [this.surname, this.firstname, this.secondname].join(" ")
-        },
+//        getOrders() {
+//            this.getData("/api/orders/").then(data => {
+//                ...data
+//            })
+//        }
     },
 }

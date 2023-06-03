@@ -5,7 +5,11 @@ from django.utils.translation import gettext_lazy as _
 
 
 class DynamicConfig(models.Model):
-    """Singleton"""
+    """
+    Singleton. It can't be deleted by delete method.
+    If delete object using other ways it can lead to errors.
+    It possible to create and update only instance with id `1`.
+    """
     class Meta:
         verbose_name = _("dynamic config")
         verbose_name_plural = _("dynamic configs")
@@ -62,10 +66,17 @@ class DynamicConfig(models.Model):
     )
 
     def save(self, *args, **kwargs):
+        """
+        It prevents the creation objects with id other than 1.
+        :param args:
+        :param kwargs:
+        :return:
+        """
         self.pk = 1
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+        """To prevent deletion by the django admin."""
         pass
 
     # @classmethod

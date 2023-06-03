@@ -1,3 +1,0 @@
-class SaleService:
-    def create_sale(self):
-        ...

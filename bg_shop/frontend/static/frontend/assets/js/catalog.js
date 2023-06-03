@@ -69,8 +69,8 @@ var mix = {
                     this.catalogCards = data.items
                     this.currentPage = data.currentPage
                     this.lastPage = data.lastPage
-
-                }).catch(() => {
+                })
+                .catch(() => {
                     console.warn('Ошибка при получении каталога')
                 })
         }
@@ -81,7 +81,7 @@ var mix = {
             :  null
 
         if(location.pathname.startsWith('/catalog/')) {
-            const category = location.pathname.replace('/catalog/', '')
+            const category = location.pathname.replace('/catalog/', '').replace('/', '')
             this.category = category.length ? Number(category) : null
         }
 

@@ -53,7 +53,7 @@
             <div class="row ControlPanel-rowSplit">
                 {% if user.is_authenticated %}
                   <div class="row-block">
-                    <a class="ControlPanel-title" href="/profile">{{ user.username }}</a>
+                    <a class="ControlPanel-title" href="/account">{{ user.username }}</a>
                   </div>
                   <div class="row-block">
                     <a class="ControlPanel-title" href="#" @click.prevent="signOut()">Log out</a>
@@ -128,7 +128,7 @@
 
                 <div v-if="category.subcategories.length > 0" class="CategoriesButton-submenu">
                   <div v-for="subcategory in category.subcategories">
-                    <a class="CategoriesButton-link" :href="`/catalog/${category.id}`">
+                    <a class="CategoriesButton-link" :href="`/catalog/${subcategory.id}`">
                     <div class="CategoriesButton-icon">
                       <img v-if="subcategory.image != null" :src="subcategory.image.src" :alt="subcategory.image.alt"/>
                       <img v-else src="{% static 'frontend/assets/img/icons/star.svg' %}" alt="star.svg"/>
