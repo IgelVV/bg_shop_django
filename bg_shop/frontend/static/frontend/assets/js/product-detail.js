@@ -27,7 +27,7 @@ var mix = {
             })
         },
         submitReview () {
-            this.postData(`/api/product/${this.product.id}/reviews/`, {
+            this.postData(`/api/product/${this.product.id}/review/`, {
                 author: this.review.author,
                 email: this.review.email,
                 text: this.review.text,
@@ -38,7 +38,7 @@ var mix = {
                 this.review.author = ''
                 this.review.email = ''
                 this.review.text = ''
-                this.review.rate = 5
+//                this.review.rate =
             }).catch(() => {
                 console.warn('Ошибка при публикации отзыва')
             })
@@ -59,7 +59,7 @@ var mix = {
                 author: '',
                 email: '',
                 text: '',
-                rate: 5
+                rate: null
             }
         }
     },

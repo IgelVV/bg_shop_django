@@ -109,7 +109,7 @@
           <div class="CategoriesButton">
             <div class="CategoriesButton-title">
               <div class="CategoriesButton-icon"><img src="{% static 'frontend/assets/img/icons/allDep.svg' %}" alt="allDep.svg"/>
-              </div><span class="CategoriesButton-text">All Departments</span>
+              </div><span class="CategoriesButton-text">Categories</span>
               <div class="CategoriesButton-arrow">
               </div>
             </div>
@@ -118,7 +118,10 @@
               <!-- Получаем категории и подкатегории  -->
               <div class="CategoriesButton-link" v-for="category in categories">
                 <a :href="`/catalog/${category.id}`">
-                  <div class="CategoriesButton-icon"><img :src="category.image.src" :alt="category.image.alt"/>
+                  <div class="CategoriesButton-icon">
+                    <img v-if="category.image != null" :src="category.image.src" :alt="category.image.alt"/>
+                    <img v-else src="{% static 'frontend/assets/img/icons/star.svg' %}" alt="star.svg"/>
+<!--                    <img :src="category.image.src" :alt="category.image.alt"/>-->
                   </div><span class="CategoriesButton-text">${ category.title }$</span>
                 </a>
                 <a v-if="category.subcategories.length > 0" class="CategoriesButton-arrow" href="#"></a>
@@ -127,7 +130,8 @@
                   <div v-for="subcategory in category.subcategories">
                     <a class="CategoriesButton-link" :href="`/catalog/${category.id}`">
                     <div class="CategoriesButton-icon">
-                      <img :src="subcategory.image.src" :alt="subcategory.image.alt"/>
+                      <img v-if="subcategory.image != null" :src="subcategory.image.src" :alt="subcategory.image.alt"/>
+                      <img v-else src="{% static 'frontend/assets/img/icons/star.svg' %}" alt="star.svg"/>
                     </div>
                     <span class="CategoriesButton-text">${ subcategory.title }$</span></a>
                   </div>

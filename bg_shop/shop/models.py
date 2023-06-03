@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -8,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 
+# todo Удаление товаров, заказов, пользователей и категорий товаров
+#  осуществляется только с использованием механизма мягкого удаления.
 class Product(models.Model):
     class Meta:
         verbose_name = _("product")
@@ -16,7 +16,7 @@ class Product(models.Model):
     title = models.CharField(max_length=255, verbose_name=_("title"))
     description = models.TextField(
         max_length=5120,
-        verbose_name=_("description")
+        verbose_name=_("description"),
     )
     category = models.ForeignKey(
         "Category",
@@ -25,8 +25,9 @@ class Product(models.Model):
         on_delete=models.SET_NULL,
         verbose_name=_("category")
     )
-    price = models.DecimalField(
+    price = models.DecimalField(  # todo not negative
         default=0,
+        validators=[MinValueValidator(0)],
         max_digits=8,
         decimal_places=2,
         verbose_name=_("price"),
@@ -36,7 +37,7 @@ class Product(models.Model):
         default=0,
         verbose_name=_("count")
     )
-    release_date = models.DateTimeField(verbose_name=_("release date"))
+    release_date = models.DateField(verbose_name=_("release date"))
     images = models.ManyToManyField("common.Image", verbose_name=_("images"))
     tags = models.ManyToManyField("Tag", verbose_name=_("tags"))
     specifications = models.ManyToManyField(
@@ -49,18 +50,43 @@ class Product(models.Model):
         max_length=255,
         verbose_name=_("manufacturer")
     )
-    archived = models.BooleanField(default=False, verbose_name=_("archived"))
+    is_active = models.BooleanField(
+        _("active"),
+        default=True,
+        help_text=_(
+            "Designates whether this product should be treated as active. "
+            "Unselect this instead of deleting products."
+        ),
+    )
+
+    @property
+    def short_description(self):
+        if self.description:
+            return self.description[:255] + "..."
 
     def __str__(self):
         return f"Product({self.pk}):{self.title}"
 
 
 class Category(models.Model):
+    """
+    Use service for CRUD.
+    It is a simple tree structure.
+    MAX_DEPTH - how many edges can be between node and root
+    (or level, counted from 0).
+    Parent's depth must be lower than node's one (to avoid circular reference).
+    """
     class Meta:
         verbose_name = _("category")
         verbose_name_plural = _("categories")
 
-    title = models.CharField(max_length=255, verbose_name=_("title"))
+    MAX_DEPTH = 2  # from 0
+
+    title = models.CharField(
+        unique=True,
+        max_length=255,
+        verbose_name=_("title"),
+    )
     image = models.ForeignKey(
         "common.Image",
         null=True,
@@ -72,8 +98,27 @@ class Category(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        verbose_name=_("parent")
+        verbose_name=_("parent"),
     )
+    depth = models.SmallIntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(MAX_DEPTH)],
+        default=0,
+        verbose_name=_("depth")
+    )
+    sort_index = models.SmallIntegerField(
+        default=0, verbose_name=_("sort index"))
+    is_active = models.BooleanField(
+        _("active"),
+        default=True,
+        help_text=_(
+            "Designates whether this category should be treated as active. "
+            "Unselect this instead of deleting categories."
+        ),
+    )
+
+    @property
+    def is_root(self) -> bool:
+        return self.parent is None
 
     def __str__(self):
         return f"Category({self.pk}):{self.title}"
@@ -104,6 +149,7 @@ class Review(models.Model):
         validators=[MinValueValidator(0)],
         verbose_name=_("rate"),
     )
+    date = models.DateTimeField(auto_now=True)
 
 
 class Sale(models.Model):

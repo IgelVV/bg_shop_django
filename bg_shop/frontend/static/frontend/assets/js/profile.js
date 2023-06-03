@@ -41,7 +41,7 @@ var mix = {
                 alert('В форме присутствуют незаполненные поля или пароли не совпадают')
                 return
             }
-            this.postData('/api/profile/password/')
+            this.postData('/api/profile/password/', {'password': this.password})
               .then(({data}) => {
                    alert('Успешно сохранено')
                     this.passwordCurrent = ''
@@ -60,7 +60,7 @@ var mix = {
             formData.append('avatar', file)
 
             this.postData('/api/profile/avatar/', formData, {'Content-Type': 'multipart/form-data'}).then((data) => {
-                this.avatar = data.url
+                this.avatar = data.data
             }).catch(() => {
                  console.warn('Ошибка при обновлении изображения')
             })

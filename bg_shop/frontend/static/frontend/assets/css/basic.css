@@ -422,6 +422,7 @@ textarea {
   letter-spacing: 0.8px;
   padding-left: 38px;
   padding-right: 38px;
+  cursor: pointer;
 }
 .btn.btn_outline {
   background: transparent;

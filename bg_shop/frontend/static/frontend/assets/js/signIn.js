@@ -3,7 +3,8 @@ var mix = {
 		signIn () {
 			const username = document.querySelector('#login').value
 			const password = document.querySelector('#password').value
-			this.postData('/api/sign-in/', JSON.stringify({ username, password }))
+			// this.postData('/api/sign-in/', JSON.stringify({ username, password }))
+			this.postData('/api/sign-in/', { username, password })
 				.then(({ data, status }) => {
 					location.assign(`/`)
 				})
