@@ -1183,6 +1183,7 @@ a.Cart-title {
   align-items: center;
   border: 1px solid transparent;
   transition: all 300ms;
+  cursor: pointer;
 }
 @media screen and (min-width: 990px) {
   .Cart-delete:hover {
