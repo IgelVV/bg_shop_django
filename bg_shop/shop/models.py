@@ -149,7 +149,7 @@ class Review(models.Model):
         validators=[MinValueValidator(0)],
         verbose_name=_("rate"),
     )
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(default=timezone.now)
 
 
 class Sale(models.Model):

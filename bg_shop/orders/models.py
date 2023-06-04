@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from django.db import models
 
 
@@ -25,7 +26,7 @@ class Order(models.Model):
         verbose_name=_("user"),
     )
     created_at = models.DateTimeField(
-        auto_now=True,
+        default=timezone.now,
         verbose_name=_("created at"),
     )
     delivery_type = models.CharField(
