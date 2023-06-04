@@ -10,6 +10,11 @@ from common import serializers as common_serializers
 
 
 class CartApi(views.APIView):
+    """
+    If user is anonymous saves cart in sessions.
+    If user is authenticated, returns Order related with the user
+    and that has an editing status, and adds session cart data in the order.
+    """
     def get(
             self,
             request: drf_request.Request,
