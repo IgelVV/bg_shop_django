@@ -9,11 +9,3 @@ User = get_user_model()
 class OrderService:
     def change_status(self, order: models.Order, status: str) -> bool:
         ...
-
-
-class CartService:
-    def add_product_to_cart(
-            self, user: User,
-            product: product_models.Product,
-            count: int) -> None:
-        ...

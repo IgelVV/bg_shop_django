@@ -57,6 +57,7 @@ class OrderedProduct(models.Model):
     class Meta:
         verbose_name = _("ordered product")
         verbose_name_plural = _("ordered products")
+        unique_together = ("product", "order",)
 
     product = models.ForeignKey(
         "shop.Product",
@@ -68,7 +69,7 @@ class OrderedProduct(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("order"),
     )
-    # In moment
+    # In a moment of confirmation order
     price = models.DecimalField(
         default=0,
         max_digits=8,

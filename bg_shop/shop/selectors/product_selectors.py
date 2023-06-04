@@ -97,6 +97,7 @@ class ProductSelector:
             .annotate(reviews=Count('review'))\
             .annotate(date=F("release_date"))
 
+        # todo remove to other place. it is not for shortProduct
         # number of products sold
         sales = order_models.OrderedProduct.objects\
             .filter(product=OuterRef("pk"))\
