@@ -5,7 +5,6 @@ from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
 from django.db import models as db_models
-from django.shortcuts import get_object_or_404
 
 from orders import models, services, selectors
 from shop import models as shop_models
@@ -27,7 +26,6 @@ class CartApi(views.APIView):
 
     class CartSerializer(serializers.ModelSerializer):
         """"""
-        # todo
         class Meta:
             model = shop_models.Product
             fields = (

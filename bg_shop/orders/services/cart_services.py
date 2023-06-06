@@ -4,7 +4,6 @@ from django.conf import settings
 from rest_framework import request as drf_request
 
 from orders import models, services, selectors
-from shop import models as product_models
 
 User = get_user_model()
 
@@ -50,8 +49,8 @@ class CartService:
     ) -> None:
         current_order = selectors.OrderSelector() \
             .get_current_order(user=self.request.user)
-        order_service = services.OrderService()
-        order_service.add_product_to_order(
+        service = services.OrderedProductService()
+        service.add_item(
             order=current_order,
             product_id=product_id,
             quantity=quantity,

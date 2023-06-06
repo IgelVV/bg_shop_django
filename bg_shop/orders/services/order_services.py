@@ -1,10 +1,4 @@
-from typing import Optional
-
-from django.contrib.auth import get_user_model
-from django.db import models as db_models
-
 from orders import models, selectors
-from shop import models as product_models
 
 
 class OrderService:
@@ -41,14 +35,30 @@ class OrderService:
                     f"'Order' object has no attribute '{name}'")
         return order
 
-    # todo move to orderedproduct service
-    def add_product_to_order(
+
+class OrderedProductService:
+    def add_item(
             self,
             order: models.Order,
             product_id: int,
             quantity: int,
             override_quantity: bool = False,
     ) -> None:
+        """
+        Increase `count` of OrderedProduct of overrides it.
+        :param order:
+        :param product_id:
+        :param quantity:
+        :param override_quantity:
+        :return:
+        """
+        if quantity < 0:
+            OrderedProductService().reduce_or_delete(
+                order=order,
+                product_id=product_id,
+                quantity=-quantity,
+            )
+
         ord_prod_selector = selectors.OrderedProductSelector()
         ordered_product = ord_prod_selector.get_ordered_product_from_order(
             order=order,
@@ -69,7 +79,6 @@ class OrderService:
         ordered_product.save()
 
 
-class OrderedProductService:
     def reduce_or_delete(
             self,
             order: models.Order,
