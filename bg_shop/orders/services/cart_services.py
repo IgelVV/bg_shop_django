@@ -90,3 +90,17 @@ class CartService:
             product_id=product_id,
             quantity=quantity,
         )
+
+    def merge_carts(self, session_cart: dict) -> None:
+        """
+        Transfers cart items from session to Order.
+        It is used for saving cart when oser logging in.
+        :param session_cart:
+        :return:
+        """
+        for product_id, quantity in session_cart.items():
+            self._add_to_order(
+                product_id=product_id,
+                quantity=quantity,
+                override_quantity=True,
+            )

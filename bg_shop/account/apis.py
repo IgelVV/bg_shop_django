@@ -1,6 +1,6 @@
 from typing import Any
 
-from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.contrib.auth import get_user_model, authenticate, logout
 from django.core import exceptions as django_exceptions
 
 from rest_framework import serializers, status, permissions, views
@@ -41,7 +41,7 @@ class SignInApi(views.APIView):
                 code=status.HTTP_401_UNAUTHORIZED
             )
         else:
-            login(request, user)
+            services.AccountService().login(request, user)
         return drf_response.Response(status=status.HTTP_200_OK)
 
 
@@ -75,7 +75,7 @@ class SignUpApi(views.APIView):
                 code=status.HTTP_409_CONFLICT
             )
         if user is not None:
-            login(request, user)
+            service.login(request, user)
         return drf_response.Response(status=status.HTTP_201_CREATED)
 
 

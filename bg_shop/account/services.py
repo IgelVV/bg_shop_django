@@ -1,13 +1,16 @@
 from typing import TypeVar, Optional, Any, Dict
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.core.files.uploadedfile import UploadedFile
 from django.db import transaction
+
+from  rest_framework import request as drf_request
 
 from django.db import utils
 
 from account.models import Profile
 from common.models import Image
+from orders import services as order_services
 
 UserType = TypeVar('UserType', bound=AbstractUser)
 User: UserType = get_user_model()
@@ -124,3 +127,25 @@ class AccountService:
         profile.phone_number = phone
         profile.full_clean()
         profile.save()
+
+    def login(
+            self,
+            request: drf_request.Request,
+            user: UserType,
+            *args,
+            **kwargs
+    ) -> None:
+        """
+        Transfers cart from anonymous session to new one
+        when user is logging in.
+        :param request:
+        :param user:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        cart_service = order_services.CartService(request=request)
+        anonymous_cart = cart_service.cart
+        login(request=request, user=user, *args, **kwargs,)
+        cart_service.merge_carts(session_cart=anonymous_cart)
+
