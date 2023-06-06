@@ -18,6 +18,9 @@ class CartService:
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
 
+    def save_session(self):
+        self.session.modified = True
+
     def add(self, product_id: int, quantity: int = 1, override_quantity=False):
         if self.request.user.is_anonymous:
             self._add_to_session(product_id, quantity, override_quantity)
@@ -39,16 +42,13 @@ class CartService:
             self.cart[product_id_key] += quantity
         self.save_session()
 
-    def save_session(self):
-        self.session.modified = True
-
     def _add_to_order(
             self,
             product_id: int,
             quantity: int = 1,
             override_quantity=False
     ) -> None:
-        current_order = selectors.OrderSelector()\
+        current_order = selectors.OrderSelector() \
             .get_current_order(user=self.request.user)
         order_service = services.OrderService()
         order_service.add_product_to_order(
@@ -58,9 +58,35 @@ class CartService:
             override_quantity=override_quantity
         )
 
-    # def remove(self, product):
-    #     product_id = str(product.id)
-    #     if product_id in self.cart:
-    #         del self.cart[product_id]
-    #         self.save()
+    def remove(self, product_id: int, quantity: int = 1,
+               override_quantity=False):
+        if self.request.user.is_anonymous:
+            self._remove_from_session(product_id, quantity)
+        else:
+            self._remove_from_order(product_id, quantity)
 
+    def _remove_from_session(
+            self,
+            product_id: int,
+            quantity: int = 1,
+    ) -> None:
+        product_id_key = str(product_id)
+        if product_id_key in self.cart:
+            self.cart[product_id_key] -= quantity
+            if self.cart[product_id_key] <= 0:
+                del self.cart[product_id_key]
+        self.save_session()
+
+    def _remove_from_order(
+            self,
+            product_id: int,
+            quantity: int = 1,
+    ) -> None:
+        current_order = selectors.OrderSelector() \
+            .get_current_order(user=self.request.user)
+        ord_prod_service = services.OrderedProductService()
+        ord_prod_service.reduce_or_delete(
+            order=current_order,
+            product_id=product_id,
+            quantity=quantity,
+        )

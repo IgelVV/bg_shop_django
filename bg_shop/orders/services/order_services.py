@@ -3,7 +3,7 @@ from typing import Optional
 from django.contrib.auth import get_user_model
 from django.db import models as db_models
 
-from orders import models
+from orders import models, selectors
 from shop import models as product_models
 
 
@@ -41,6 +41,7 @@ class OrderService:
                     f"'Order' object has no attribute '{name}'")
         return order
 
+    # todo move to orderedproduct service
     def add_product_to_order(
             self,
             order: models.Order,
@@ -48,8 +49,8 @@ class OrderService:
             quantity: int,
             override_quantity: bool = False,
     ) -> None:
-        ord_prod_service = OrderedProductService()
-        ordered_product = ord_prod_service.get_ordered_product_from_order(
+        ord_prod_selector = selectors.OrderedProductSelector()
+        ordered_product = ord_prod_selector.get_ordered_product_from_order(
             order=order,
             product_id=product_id,
         )
@@ -69,36 +70,27 @@ class OrderService:
 
 
 class OrderedProductService:
-    def get_ordered_product_from_order(
+    def reduce_or_delete(
             self,
-            *,
-            order: Optional[models.Order] = None,
-            order_id: Optional[int] = None,
+            order: models.Order,
             product_id: int,
-    ) -> Optional[models.OrderedProduct]:
-        """
-
-        :param order:
-        :param order_id:
-        :param product_id:
-        :return:
-        """
-        if (order and order_id) or not (order or order_id):
-            raise ValueError(
-                f"Only one of args ('oder' or 'order_id') can be passed, "
-                f"but it is passed: {order=}, {order_id=}."
-            )
-        if order:
-            ordered_products: db_models.QuerySet[models.OrderedProduct] = \
-                order.orderedproduct_set.all()
+            quantity: int,
+            remove_all: bool = False,
+    ) -> None:
+        ord_prod_selector = selectors.OrderedProductSelector()
+        ordered_product = ord_prod_selector.get_ordered_product_from_order(
+            order=order,
+            product_id=product_id,
+        )
+        if ordered_product:
+            if remove_all:
+                ordered_product.delete()
+            else:
+                if ordered_product.count > quantity:
+                    ordered_product.count -= quantity
+                    ordered_product.full_clean()
+                    ordered_product.save()
+                else:
+                    ordered_product.delete()
         else:
-            ordered_products = models.OrderedProduct.objects\
-                .filter(order_id=order_id)
-        ordered_product: Optional[models.OrderedProduct] = None
-        if ordered_products:
-            try:
-                ordered_product = ordered_products.get(product_id=product_id)
-            except models.OrderedProduct.DoesNotExist:
-                ordered_product = None
-
-        return ordered_product
+            raise ValueError(f"{order} has no Product with id {product_id}")

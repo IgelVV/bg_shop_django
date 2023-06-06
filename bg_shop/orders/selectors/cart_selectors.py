@@ -14,17 +14,20 @@ UserType = TypeVar('UserType', bound=AbstractUser)
 
 class CartSelector:
     """"""
-    def get_cart(
-            self,
-            request: drf_request.Request,
-    ) -> list[shop_models.Product]:
-        user: UserType = request.user
+
+    def __init__(self, request: drf_request.Request) -> None:
+        self.request = request
+        self.session = request.session
+        cart = request.session.get(settings.CART_SESSION_ID)
+        if not cart:
+            cart = self.session[settings.CART_SESSION_ID] = {}
+        self.cart = cart
+
+    def get_cart(self,) -> list[shop_models.Product]:
+        user: UserType = self.request.user
         if user.is_anonymous:
-            cart: dict = request.session.get(settings.CART_SESSION_ID)
-            if not cart:
-                cart = {}
             cart_products = shop_models.Product.objects\
-                .filter(id__in=cart.keys())
+                .filter(id__in=self.cart.keys())
 
         else:
             cart_products = shop_models.Product.objects\
@@ -51,6 +54,6 @@ class CartSelector:
         # to `annotate` but in is not the same
         if user.is_anonymous:
             for product in cart_products:
-                product.quantity_ordered = cart[str(product.id)]
+                product.quantity_ordered = self.cart[str(product.id)]
 
         return cart_products

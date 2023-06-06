@@ -89,8 +89,8 @@ class CartApi(views.APIView):
             **kwargs
     ) -> drf_response.Response:
         """Get items in basket"""
-        selector = selectors.CartSelector()
-        cart = selector.get_cart(request=request)
+        selector = selectors.CartSelector(request=request)
+        cart = selector.get_cart()
         output_serializer = self.CartSerializer(cart, many=True)
         response_data = output_serializer.data
         return drf_response.Response(
@@ -116,8 +116,8 @@ class CartApi(views.APIView):
             quantity=validated_data.get("count"),
         )
 
-        selector = selectors.CartSelector()
-        cart = selector.get_cart(request=request)
+        selector = selectors.CartSelector(request=request)
+        cart = selector.get_cart()
         output_serializer = self.CartSerializer(cart, many=True)
         response_data = output_serializer.data
         return drf_response.Response(
@@ -134,31 +134,18 @@ class CartApi(views.APIView):
         :param kwargs:
         :return:
         """
-        response_data = [
-            {
-                "id": 123,
-                "category": 55,
-                "price": 500.67,
-                "count": 10,
-                "date": "Thu Feb 09 2023 21:39:52 GMT+0100 (Central European Standard Time)",
-                "title": "video card",
-                "description": "description of the product",
-                "freeDelivery": True,
-                "images": [
-                    {
-                        "src": "/3.png",
-                        "alt": "Image alt string"
-                    }
-                ],
-                "tags": [
-                    {
-                        "id": 12,
-                        "name": "Gaming"
-                    }
-                ],
-                "reviews": 5,
-                "rating": 4.6
-            }
-        ]
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        validated_data = input_serializer.validated_data
+        service = services.CartService(request=request)
+        service.remove(
+            product_id=validated_data.get("id"),
+            quantity=validated_data.get("count"),
+        )
+
+        selector = selectors.CartSelector(request=request)
+        cart = selector.get_cart()
+        output_serializer = self.CartSerializer(cart, many=True)
+        response_data = output_serializer.data
         return drf_response.Response(
             data=response_data, status=status.HTTP_200_OK)
