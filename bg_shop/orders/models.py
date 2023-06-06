@@ -32,6 +32,7 @@ class Order(models.Model):
     delivery_type = models.CharField(
         max_length=2,
         choices=DeliveryTypes.choices,
+        default=DeliveryTypes.REGULAR,
         verbose_name=_("delivery type")
     )
     status = models.CharField(
@@ -40,9 +41,24 @@ class Order(models.Model):
         default=Statuses.EDITING,
         verbose_name=_("status"),
     )
-    city = models.CharField(max_length=255, verbose_name=_("city"))
-    address = models.TextField(max_length=1024, verbose_name=_("address"))
-    comment = models.TextField(max_length=1024, verbose_name=_("comment"))
+    city = models.CharField(
+        max_length=255,
+        verbose_name=_("city"),
+        null=True,
+        blank=True,
+    )
+    address = models.TextField(
+        max_length=1024,
+        verbose_name=_("address"),
+        null=True,
+        blank=True,
+    )
+    comment = models.TextField(
+        max_length=1024,
+        verbose_name=_("comment"),
+        null=True,
+        blank=True,
+    )
     is_active = models.BooleanField(
         _("active"),
         default=True,
