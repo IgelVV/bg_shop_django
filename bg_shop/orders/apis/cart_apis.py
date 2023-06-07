@@ -1,9 +1,9 @@
-from rest_framework import serializers, status, permissions, views
+from rest_framework import status, permissions, views
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
+from rest_framework import serializers as drf_serializers
 
-from orders import services, selectors
-from orders import serializers as order_serializers
+from orders import services, selectors, serializers
 
 
 class CartApi(views.APIView):
@@ -14,9 +14,9 @@ class CartApi(views.APIView):
     and that has an editing status, and adds session cart data in the order.
     """
 
-    class InputSerializer(serializers.Serializer):
-        id = serializers.IntegerField()
-        count = serializers.IntegerField()
+    class InputSerializer(drf_serializers.Serializer):
+        id = drf_serializers.IntegerField()
+        count = drf_serializers.IntegerField()
 
     permission_classes = (permissions.AllowAny,)
 
@@ -28,7 +28,7 @@ class CartApi(views.APIView):
         """Get items in basket"""
         selector = selectors.CartSelector(request=request)
         cart = selector.get_cart()
-        output_serializer = order_serializers.CartSerializer(cart, many=True)
+        output_serializer = serializers.CartSerializer(cart, many=True)
         response_data = output_serializer.data
         return drf_response.Response(
             data=response_data, status=status.HTTP_200_OK)
@@ -55,7 +55,7 @@ class CartApi(views.APIView):
 
         selector = selectors.CartSelector(request=request)
         cart = selector.get_cart()
-        output_serializer = order_serializers.CartSerializer(cart, many=True)
+        output_serializer = serializers.CartSerializer(cart, many=True)
         response_data = output_serializer.data
         return drf_response.Response(
             data=response_data, status=status.HTTP_200_OK)
@@ -82,7 +82,7 @@ class CartApi(views.APIView):
 
         selector = selectors.CartSelector(request=request)
         cart = selector.get_cart()
-        output_serializer = order_serializers.CartSerializer(cart, many=True)
+        output_serializer = serializers.CartSerializer(cart, many=True)
         response_data = output_serializer.data
         return drf_response.Response(
             data=response_data, status=status.HTTP_200_OK)

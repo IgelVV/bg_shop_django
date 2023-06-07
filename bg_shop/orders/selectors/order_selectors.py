@@ -33,11 +33,43 @@ class OrderSelector:
                 user=user, status=models.Order.Statuses.CART)
         return order
 
+    def get_order_history(
+            self,
+            user: UserType,
+    ) -> db_models.QuerySet[models.Order]:
+        """
+
+        :param user:
+        :return:
+        """
+        ordered_products_prefetch_qs = models.OrderedProduct.objects\
+            .select_related('product')\
+            .prefetch_related("product__images")\
+            .prefetch_related("product__review_set")
+
+        orders = models.Order.objects\
+            .filter(user=user)\
+            .filter(is_active=True)\
+            .exclude(status=models.Order.Statuses.CART)\
+            .prefetch_related(
+                db_models.Prefetch(
+                    'orderedproduct_set',
+                    queryset=ordered_products_prefetch_qs
+                )
+            ).select_related("user__profile")
+        return orders
+
     def get_order_of_user(
             self,
-            order_id:int,
+            order_id: int,
             user: UserType,
     ) -> Optional[models.Order]:
+        """
+        return ony if this order related with the user
+        :param order_id:
+        :param user:
+        :return:
+        """
         ...
 
 
