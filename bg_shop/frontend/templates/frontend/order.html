@@ -42,7 +42,7 @@
           {% endif %}
         </div>
         <div class="Section-content">
-          {% if user.is_authenticated %}
+<!--          {% if user.is_authenticated %}-->
           <form class="form" action="#" method="post" @submit.prevent="confirmOrder">
             <div class="Order-block Order-block_OPEN" id="step1">
               <header class="Section-header Section-header_sm">
@@ -213,26 +213,27 @@
                 </div>
               </div>
           </form>
-         {% else %}
-        <div class="row-block">
-          <form method="post" @submit.prevent="auth">
-            {% csrf_token %}
-            <div class="form-group">
-              <label class="form-label" for="username">Логин</label>
-              <input class="form-input" id="username" name="username" type="text" placeholder="Login"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="password">Пароль</label>
-              <input class="form-input" id="password" name="password" type="password" placeholder="Password"/>
-            </div>
-            <div class="form-group">
-              <button class="btn btn_muted Order-btnReg" type="submit">Авторизация</button>
-            </div>
-            <div class="form-group"><a class="btn btn_muted Order-btnReg" href="/sign-up/">Регистрация</a>
-          </div>
-          </form>
-        </div>
-        {% endif %}
+<!--          this logic is removed to cart.html -->
+<!--         {% else %}-->
+<!--        <div class="row-block">-->
+<!--          <form method="post" @submit.prevent="auth">-->
+<!--            {% csrf_token %}-->
+<!--            <div class="form-group">-->
+<!--              <label class="form-label" for="username">Логин</label>-->
+<!--              <input class="form-input" id="username" name="username" type="text" placeholder="Login"/>-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--              <label class="form-label" for="password">Пароль</label>-->
+<!--              <input class="form-input" id="password" name="password" type="password" placeholder="Password"/>-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--              <button class="btn btn_muted Order-btnReg" type="submit">Авторизация</button>-->
+<!--            </div>-->
+<!--            <div class="form-group"><a class="btn btn_muted Order-btnReg" href="/sign-up/">Регистрация</a>-->
+<!--          </div>-->
+<!--          </form>-->
+<!--        </div>-->
+<!--        {% endif %}-->
         </div>
       </div>
     </div>

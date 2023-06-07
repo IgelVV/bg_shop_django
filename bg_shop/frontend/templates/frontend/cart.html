@@ -19,7 +19,7 @@
     </div>
     <div class="Section">
       <div class="wrap">
-        <form class="form Cart" @submit.prevent="submitBasket">
+        <form class="form Cart" @submit.prevent="">
           {% csrf_token %}
           <!-- Данные по товару в корзине -->
           <div v-for="product in Object.values(basket)" class="Cart-product">
@@ -65,7 +65,11 @@
               <span class="Cart-price">${ basketCount.price }$$</span>
             </div>
             <div class="Cart-block" v-if="basketCount.count">
-              <button type="submit" class="btn btn_success btn_lg" >Оформить заказ</button>
+              {% if user.is_authenticated %}
+              <button type="submit" class="btn btn_success btn_lg" @click="submitBasket" >Оформить заказ</button>
+              {% else %}
+              <button type="submit" class="btn btn_success btn_lg" @click="goLogin" >Оформить заказ</button>
+              {% endif %}
             </div>
           </div>
         </form>
