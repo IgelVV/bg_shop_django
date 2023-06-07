@@ -7,7 +7,7 @@ class OrderService:
         ...
 
     def change_status(self, order: models.Order, status: str) -> bool:
-        # only one `editing` order can exist
+        # only one `cart` order can exist
         ...
 
     def create_order(self, **attrs):

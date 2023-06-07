@@ -15,14 +15,14 @@ UserType = TypeVar('UserType', bound=AbstractUser)
 
 
 class OrderSelector:
-    def get_current_order(
+    def get_cart_order(
             self,
             user: UserType,
             prefetch_ordered_products: bool = True
     ) -> models.Order:
         qs = models.Order.objects.filter(
             user_id=user.pk,
-            status=models.Order.Statuses.EDITING,
+            status=models.Order.Statuses.CART,
         )
         if prefetch_ordered_products:
             qs = qs.prefetch_related("orderedproduct_set")
@@ -30,8 +30,15 @@ class OrderSelector:
             order = qs[0]
         else:
             order = services.OrderService().create_order(
-                user=user, status=models.Order.Statuses.EDITING)
+                user=user, status=models.Order.Statuses.CART)
         return order
+
+    def get_order_of_user(
+            self,
+            order_id:int,
+            user: UserType,
+    ) -> Optional[models.Order]:
+        ...
 
 
 class OrderedProductSelector:

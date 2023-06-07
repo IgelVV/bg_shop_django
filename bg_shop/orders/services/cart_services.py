@@ -48,7 +48,7 @@ class CartService:
             override_quantity=False
     ) -> None:
         current_order = selectors.OrderSelector() \
-            .get_current_order(user=self.request.user)
+            .get_cart_order(user=self.request.user)
         service = services.OrderedProductService()
         service.add_item(
             order=current_order,
@@ -82,7 +82,7 @@ class CartService:
             quantity: int = 1,
     ) -> None:
         current_order = selectors.OrderSelector() \
-            .get_current_order(user=self.request.user)
+            .get_cart_order(user=self.request.user)
         ord_prod_service = services.OrderedProductService()
         ord_prod_service.reduce_or_delete(
             order=current_order,

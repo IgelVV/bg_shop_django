@@ -15,6 +15,7 @@ class Order(models.Model):
         EXPRESS = "EX", _("express")
 
     class Statuses(models.TextChoices):
+        CART = "CT", _("cart")
         EDITING = "ED", _("editing")
         ACCEPTED = "AC", _("accepted")
         REJECTED = "RJ", _("rejected")

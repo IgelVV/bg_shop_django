@@ -10,13 +10,53 @@ from common import serializers as common_serializers
 
 
 class OrdersApi(views.APIView):
+    class InputSerializer(serializers.Serializer):
+        class TagSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            name = serializers.CharField()
+
+        id = serializers.IntegerField()
+        category = serializers.IntegerField()
+        price = serializers.DecimalField(
+            default=0,
+            max_digits=8,
+            decimal_places=2,
+        )
+        count = serializers.IntegerField()
+        date = serializers.DateTimeField()
+        title = serializers.CharField()
+        description = serializers.CharField()
+        freeDelivery = serializers.BooleanField(required=False,)
+        images = common_serializers.ImageSerializer(
+            many=True,
+            required=False,
+            allow_null=True,
+        )
+        tags = TagSerializer(many=True, required=False,)
+        reviews = serializers.IntegerField()
+        rating = serializers.DecimalField(
+            max_digits=8,
+            decimal_places=2,
+            required=False,
+            allow_null=True,
+        )
+
+    class OrderSerializer(serializers.ModelSerializer):
+        ...
+
+    class PostOutputSerializer(serializers.Serializer):
+        orderId = serializers.IntegerField()
+
+    permission_classes = (permissions.AllowAny,)
+
+    # todo manage permissions
     def get(
             self,
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
         """Get all (active) orders as history"""
-        response_data =[
+        response_data = [
             {
                 "id": 123,
                 "createdAt": "2023-05-05 12:12",
@@ -71,14 +111,23 @@ class OrdersApi(views.APIView):
         :param kwargs:
         :return:
         """
-        response_data ={
-            "orderId": 123
-        }
+        if not request.user.is_anonymous:
+            response_data = {
+                "orderId": 0
+            }
+        else:
+            response_data = {
+                "orderId": 0
+            }
         return drf_response.Response(
             data=response_data, status=status.HTTP_200_OK)
 
 
 class OrderDetailApi(views.APIView):
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    # todo user can get only his orders
     def get(
             self,
             request: drf_request.Request,
@@ -90,7 +139,7 @@ class OrderDetailApi(views.APIView):
         :param kwargs:
         :return:
         """
-        response_data ={
+        response_data = {
             "id": 123,
             "createdAt": "2023-05-05 12:12",
             "fullName": "Annoying Orange",

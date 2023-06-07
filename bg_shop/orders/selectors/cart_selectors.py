@@ -33,13 +33,13 @@ class CartSelector:
             cart_products = shop_models.Product.objects\
                 .filter(
                     orderedproduct__order__user=user,
-                    orderedproduct__order__status=models.Order.Statuses.EDITING
+                    orderedproduct__order__status=models.Order.Statuses.CART
                 )\
                 .annotate(quantity_ordered=db_models.Subquery(
                     models.OrderedProduct.objects.filter(
                         product=db_models.OuterRef("pk"),
                         order__user=user,
-                        order__status=models.Order.Statuses.EDITING
+                        order__status=models.Order.Statuses.CART
                     )
                     .values("count")
                 ))
