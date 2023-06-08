@@ -15,8 +15,31 @@ from common import serializers as common_serializers
 User = get_user_model()
 
 
+# filling cart >
+# orders/ POST - creating order from cart >
+# filling order >
+# orders/id/ POST - confirmation > ...
+
+# existed order >
+# orders/id/ Get - to edit order (if EDITING) >
+# editing >
+# orders/id/ POST - confirmation > ...
+
+# new order from api without using cart >
+# orders/ POST - create order with passed data >
+# if cart exists, fill it with passed data, if not create new order ED
 class OrdersApi(views.APIView):
     class InputSerializer(drf_serializers.Serializer):
+        """Short Product"""
+        class ImageSerializer(drf_serializers.Serializer):
+            src = drf_serializers.CharField()
+            alt = drf_serializers.CharField(
+                max_length=255,
+                required=False,
+                allow_null=True,
+                allow_blank=True
+            )
+
         class TagSerializer(drf_serializers.Serializer):
             id = drf_serializers.IntegerField()
             name = drf_serializers.CharField()
@@ -48,11 +71,10 @@ class OrdersApi(views.APIView):
         )
 
     class PostOutputSerializer(drf_serializers.Serializer):
-        orderId = drf_serializers.IntegerField()
+        orderId = drf_serializers.IntegerField(source="pk")
 
     permission_classes = (permissions.IsAuthenticated,)
 
-    # todo manage permissions
     def get(
             self,
             request: drf_request.Request,
@@ -66,26 +88,31 @@ class OrdersApi(views.APIView):
         return drf_response.Response(
             data=serializer.data, status=status.HTTP_200_OK)
 
-
     def post(
             self,
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
         """
-        Create new order. request body - basket[ordered product]
+        Create new order. request body - basket[ordered product].
+        It does not really create new Order, if cart exists,
+        but changes status of existing Order that is used as cart,
+        and updates data about products.
         :param request:
         :param kwargs:
         :return:
         """
-        if not request.user.is_anonymous:
-            response_data = {
-                "orderId": 0
-            }
-        else:
-            response_data = {
-                "orderId": 0
-            }
+        input_serializer = self.InputSerializer(data=request.data, many=True)
+        input_serializer.is_valid(raise_exception=True)
+        validated_data = input_serializer.validated_data
+
+        selector = selectors.OrderSelector()
+        cart_order = selector.get_or_create_cart_order(user=request.user)
+
+        service = services.OrderService()
+        order = service.edit(order=cart_order, products=validated_data)
+
+        response_data = self.PostOutputSerializer(order).data
         return drf_response.Response(
             data=response_data, status=status.HTTP_200_OK)
 
@@ -105,54 +132,26 @@ class OrderDetailApi(views.APIView):
         :param kwargs:
         :return:
         """
-        response_data = {
-            "id": 123,
-            "createdAt": "2023-05-05 12:12",
-            "fullName": "Annoying Orange",
-            "email": "no-reply@mail.ru",
-            "phone": "88002000600",
-            "deliveryType": "free",
-            "paymentType": "online",
-            "totalCost": 567.8,
-            "status": "accepted",
-            "city": "Moscow",
-            "address": "red square 1",
-            "products": [
-                {
-                    "id": 123,
-                    "category": 55,
-                    "price": 500.67,
-                    "count": 12,
-                    "date": "Thu Feb 09 2023 21:39:52 GMT+0100 (Central European Standard Time)",
-                    "title": "video card",
-                    "description": "description of the product",
-                    "freeDelivery": True,
-                    "images": [
-                        {
-                            "src": "/3.png",
-                            "alt": "Image alt string"
-                        }
-                    ],
-                    "tags": [
-                        {
-                            "id": 12,
-                            "name": "Gaming"
-                        }
-                    ],
-                    "reviews": 5,
-                    "rating": 4.6
-                }
-            ]
-        }
-        return drf_response.Response(
-            data=response_data, status=status.HTTP_200_OK)
+        selector = selectors.OrderSelector()
+        order = selector.get_order_of_user(
+            order_id=kwargs.get('id'), user=request.user)
+        if order:
+            serializer = serializers.OrderSerializer(order)
+            return drf_response.Response(
+                data=serializer.data, status=status.HTTP_200_OK)
+        else:
+            return drf_response.Response(status=status.HTTP_404_NOT_FOUND)
 
     def post(
             self,
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
-        # todo check that order status was cart (or editing)
+        # todo change frontend history: if order ED - redirect
+        #  to creating order
+
+        # todo check that order status was cart or editing,
+        #  if editing - different behaviour
         """
         Confirm order. Url args: <int: id> -Order id.
         Request body: Order

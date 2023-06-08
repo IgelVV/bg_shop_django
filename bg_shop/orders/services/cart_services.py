@@ -47,11 +47,11 @@ class CartService:
             quantity: int = 1,
             override_quantity=False
     ) -> None:
-        current_order = selectors.OrderSelector() \
-            .get_cart_order(user=self.request.user)
+        cart_order = selectors.OrderSelector() \
+            .get_or_create_cart_order(user=self.request.user)
         service = services.OrderedProductService()
         service.add_item(
-            order=current_order,
+            order=cart_order,
             product_id=product_id,
             quantity=quantity,
             override_quantity=override_quantity
@@ -81,11 +81,11 @@ class CartService:
             product_id: int,
             quantity: int = 1,
     ) -> None:
-        current_order = selectors.OrderSelector() \
-            .get_cart_order(user=self.request.user)
+        cart_order = selectors.OrderSelector() \
+            .get_or_create_cart_order(user=self.request.user)
         ord_prod_service = services.OrderedProductService()
         ord_prod_service.reduce_or_delete(
-            order=current_order,
+            order=cart_order,
             product_id=product_id,
             quantity=quantity,
         )

@@ -15,11 +15,30 @@ UserType = TypeVar('UserType', bound=AbstractUser)
 
 
 class OrderSelector:
+    def get_or_create_cart_order(
+            self,
+            user: UserType,
+            prefetch_ordered_products: bool = True,
+    ) -> models.Order:
+        order = self.get_cart_order(
+            user=user, prefetch_ordered_products=prefetch_ordered_products)
+        if order:
+            return order
+        else:
+            order = services.OrderService().create_order(
+                user=user, status=models.Order.Statuses.CART)
+        return order
+
     def get_cart_order(
             self,
             user: UserType,
             prefetch_ordered_products: bool = True
-    ) -> models.Order:
+    ) -> Optional[models.Order]:
+        """
+        :param user:
+        :param prefetch_ordered_products:
+        :return:
+        """
         qs = models.Order.objects.filter(
             user_id=user.pk,
             status=models.Order.Statuses.CART,
@@ -29,8 +48,7 @@ class OrderSelector:
         if qs.count():  # todo if more than 1...
             order = qs[0]
         else:
-            order = services.OrderService().create_order(
-                user=user, status=models.Order.Statuses.CART)
+            order = None
         return order
 
     def get_order_history(
@@ -70,7 +88,12 @@ class OrderSelector:
         :param user:
         :return:
         """
-        ...
+        orders = self.get_order_history(user=user)
+        try:
+            order = orders.get(pk=order_id)
+        except models.Order.DoesNotExist:
+            order = None
+        return order
 
 
 class OrderedProductSelector:
@@ -102,7 +125,9 @@ class OrderedProductSelector:
         ordered_product: Optional[models.OrderedProduct] = None
         if ordered_products:
             try:
+                # todo it hits db even if ordered prod were prefetched
                 ordered_product = ordered_products.get(product_id=product_id)
+                # ordered_product = ordered_products[0] it does not hit db
             except models.OrderedProduct.DoesNotExist:
                 ordered_product = None
 

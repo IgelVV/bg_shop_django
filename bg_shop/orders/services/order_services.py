@@ -1,6 +1,14 @@
 from decimal import Decimal
+from typing import Optional, TypeVar
+
+from rest_framework import request as drf_request
+
+from django.db import models as db_models
+from django.contrib.auth.models import AbstractUser
 
 from orders import models, selectors
+
+UserType = TypeVar('UserType', bound=AbstractUser)
 
 
 class OrderService:
@@ -8,20 +16,34 @@ class OrderService:
     def confirm(self):
         ...
 
-    def change_status(self, order: models.Order, status: str) -> bool:
-        # only one `cart` order can exist
-        ...
+    # def change_status(self, order: models.Order, status: str) -> models.Order:
+    #     # only one `cart` order can exist
+    #     if order.status == status:
+    #         return order
+    #     if status == models.Order.Statuses.CART:
+    #         user_carts = order.user.order_set\
+    #             .filter(status=models.Order.Statuses.CART).count()
+    #         if user_carts:
+    #             raise ValueError('User can have only one cart')
+    #     else:
+    #         order.status = status
+    #     order.full_clean()
+    #     order.save()
+    #     return order
 
-    def create_order(self, **attrs):
+
+    def create_order(self, *, commit: bool = True, **attrs):
         new_order = models.Order()
         new_order = self._set_attributes(new_order, **attrs)
-        new_order.full_clean()
-        new_order.save()
+        if commit:
+            new_order.full_clean()
+            new_order.save()
         return new_order
 
     def _set_attributes(
             self, order: models.Order,
-            **attrs) -> models.Order:
+            **attrs,
+    ) -> models.Order:
         """
         Set new attributes for Order obj. passed in arguments,
         if they are acceptable. Does not save the object.
@@ -43,8 +65,62 @@ class OrderService:
             total_cost += ordered_prod.price * ordered_prod.count
         return total_cost
 
+    def edit(
+            self,
+            order: Optional[models.Order],
+            products: list[dict],
+            commit: bool = True,
+    ) -> models.Order:
+        order.status = models.Order.Statuses.EDITING
+        self.update_ordered_products(order=order, products=products)
+        if commit:
+            order.full_clean()
+            order.save()
+        return order
+
+    def update_ordered_products(
+            self,
+            order: models.Order,
+            products: list[dict],
+    ) -> None:
+        simple_products = self._simplify_products(products=products)
+        ordered_products: db_models.QuerySet[models.OrderedProduct] = \
+            order.orderedproduct_set.all()
+        for ord_prod in ordered_products:
+            if ord_prod.product_id not in simple_products:
+                ord_prod.delete()
+            else:
+                ord_prod.count = simple_products.pop(ord_prod.product_id)
+                ord_prod.full_clean()
+                ord_prod.save()
+        for product_id, count in simple_products.items():
+            OrderedProductService().create_ordered_product(
+                order=order, product_id=product_id, quantity=count)
+
+    def _simplify_products(self, products: list[dict]) -> dict[int, int]:
+        simple_products = {}
+        for product in products:
+            simple_products[product['id']] = product['count']
+        return simple_products
+
 
 class OrderedProductService:
+    def create_ordered_product(
+            self,
+            order: models.Order,
+            product_id: int,
+            quantity: int,
+            commit:bool = True,
+    ) -> None:
+        ordered_product = models.OrderedProduct(
+            order=order,
+            product_id=product_id,
+            count=quantity
+        )
+        if commit:
+            ordered_product.full_clean()
+            ordered_product.save()
+
     def add_item(
             self,
             order: models.Order,
@@ -52,6 +128,8 @@ class OrderedProductService:
             quantity: int,
             override_quantity: bool = False,
     ) -> None:
+        # todo redo, it hits db a lot. and use create_ord_prod()
+        #  it is better to use orderedproduct obj directly.
         """
         Increase `count` of OrderedProduct of overrides it.
         :param order:
