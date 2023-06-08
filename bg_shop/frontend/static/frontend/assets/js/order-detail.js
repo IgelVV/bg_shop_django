@@ -54,6 +54,13 @@ var mix = {
 		if(location.pathname.startsWith('/orders/')) {
 			const orderId = location.pathname.replace('/orders/', '').replace('/', '')
 			this.orderId = orderId.length ? Number(orderId) : null
+			this.id = this.orderId
+			this.getOrder(this.orderId);
+		}
+		else if (location.pathname.startsWith('/order-detail/')) {
+			const orderId = location.pathname.replace('/order-detail/', '').replace('/', '')
+			this.orderId = orderId.length ? Number(orderId) : null
+			this.id = this.orderId
 			this.getOrder(this.orderId);
 		}
 		else if (location.pathname.startsWith('/order-detail/')) {
