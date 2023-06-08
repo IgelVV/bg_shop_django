@@ -21,6 +21,9 @@ var mix = {
 						this.paymentError = data.paymentError
 					}
 				})
+				.catch(() => {
+					console.warn('Ошибка при получении заказа')
+				})
 		},
 		confirmOrder() {
 			if (this.orderId !== null) {
@@ -50,6 +53,11 @@ var mix = {
 	mounted() {
 		if(location.pathname.startsWith('/orders/')) {
 			const orderId = location.pathname.replace('/orders/', '').replace('/', '')
+			this.orderId = orderId.length ? Number(orderId) : null
+			this.getOrder(this.orderId);
+		}
+		else if (location.pathname.startsWith('/order-detail/')) {
+			const orderId = location.pathname.replace('/order-detail/', '').replace('/', '')
 			this.orderId = orderId.length ? Number(orderId) : null
 			this.getOrder(this.orderId);
 		}

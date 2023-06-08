@@ -78,12 +78,12 @@
                 <div v-for="product in products" class="Cart-product">
                   <div class="Cart-block Cart-block_row">
                     <div class="Cart-block Cart-block_pict">
-                      <a class="Cart-pict" href="#">
-                        <img class="Cart-img" :src="product.images[0].src" :alt="product.images[0].alt"/>
+                      <a class="Cart-pict" :href="`/product/${product.id}`">
+                        <img class="Cart-img" v-if="product.images.length > 0" :src="product.images[0].src" :alt="product.images[0].alt"/>
                       </a>
                     </div>
                     <div class="Cart-block Cart-block_info">
-                      <a class="Cart-title" href="#">${product.title}$</a>
+                      <a class="Cart-title" :href="`/product/${product.id}`">${product.title}$</a>
                       <div class="Cart-desc">${product.shortDescription}$</div>
                     </div>
                     <div class="Cart-block Cart-block_price">
@@ -99,7 +99,7 @@
                     <strong class="Cart-title">Итого:<span class="Cart-price">${totalCost}$$</span>
                     </strong>
                   </div>
-                  <div class="Cart-block"><a class="btn btn_primary btn_lg" :href="`/payment/${orderId}/`">Оплатить</a>
+                  <div class="Cart-block" v-if="status==='editing'"><a class="btn btn_primary btn_lg" :href="`/payment/${orderId}/`">Оплатить</a>
                   </div>
                 </div>
               </div>
