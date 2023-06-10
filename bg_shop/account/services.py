@@ -34,7 +34,11 @@ class AccountService:
         :return: created User obj or None if already exist
         """
         try:
-            user = User.objects.create_user(username, password, **extra_fields)
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                **extra_fields
+            )
         except utils.IntegrityError:
             return None
         Profile(user=user)
