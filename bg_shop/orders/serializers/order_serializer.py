@@ -9,6 +9,8 @@ from orders import models, services
 import orders.serializers.ordered_product_serializer \
     as ordered_product_serializer
 
+from common import serializers as common_serializers
+
 
 # ._state.fields_cache
 # ._prefetched_objects_cache
@@ -44,12 +46,12 @@ class OrderSerializer(drf_serializers.ModelSerializer):
     createdAt = drf_serializers.DateTimeField(source="created_at")
     fullName = drf_serializers.CharField(source="user.get_full_name")
     email = drf_serializers.EmailField(source="user.email")
-    phone = drf_serializers.IntegerField(source="user.profile.phone_number")
+    phone = drf_serializers.CharField(source="user.profile.phone_number", allow_null=True)
     deliveryType = drf_serializers.CharField(
         source="get_delivery_type_display")
     totalCost = drf_serializers.SerializerMethodField()
     status = drf_serializers.CharField(source="get_status_display")
-    products = ordered_product_serializer.OrderedProductSerializer(
+    products = ordered_product_serializer.OrderedProductOutputSerializer(
         source="orderedproduct_set", many=True, allow_null=True)
 
     def get_totalCost(self, obj: models.Order) -> Decimal:

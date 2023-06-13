@@ -11,7 +11,7 @@ class Order(models.Model):
         verbose_name_plural = _("orders")
 
     class DeliveryTypes(models.TextChoices):
-        REGULAR = "RE", _("regular")
+        ORDINARY = "OR", _("ordinary")
         EXPRESS = "EX", _("express")
 
     class Statuses(models.TextChoices):
@@ -33,7 +33,7 @@ class Order(models.Model):
     delivery_type = models.CharField(
         max_length=2,
         choices=DeliveryTypes.choices,
-        default=DeliveryTypes.REGULAR,
+        default=DeliveryTypes.ORDINARY,
         verbose_name=_("delivery type")
     )
     status = models.CharField(

@@ -9,7 +9,7 @@ from orders import models
 from dynamic_config import selectors as conf_selectors
 
 
-class OrderedProductSerializer(drf_serializers.ModelSerializer):
+class OrderedProductOutputSerializer(drf_serializers.ModelSerializer):
     """
     Following fields should be prefetched....
     """
@@ -70,3 +70,45 @@ class OrderedProductSerializer(drf_serializers.ModelSerializer):
                 return round(avg_rating, 2)
             else:
                 return None
+
+
+class OrderedProductInputSerializer(drf_serializers.Serializer):
+    """Short Product"""
+    class ImageSerializer(drf_serializers.Serializer):
+        src = drf_serializers.CharField()
+        alt = drf_serializers.CharField(
+            max_length=255,
+            required=False,
+            allow_null=True,
+            allow_blank=True
+        )
+
+    class TagSerializer(drf_serializers.Serializer):
+        id = drf_serializers.IntegerField()
+        name = drf_serializers.CharField()
+
+    id = drf_serializers.IntegerField()
+    category = drf_serializers.IntegerField()
+    price = drf_serializers.DecimalField(
+        default=0,
+        max_digits=8,
+        decimal_places=2,
+    )
+    count = drf_serializers.IntegerField()
+    date = drf_serializers.DateTimeField()
+    title = drf_serializers.CharField()
+    description = drf_serializers.CharField()
+    freeDelivery = drf_serializers.BooleanField(required=False, )
+    images = common_serializers.ImageSerializer(
+        many=True,
+        required=False,
+        allow_null=True,
+    )
+    tags = TagSerializer(many=True, required=False, )
+    reviews = drf_serializers.IntegerField()
+    rating = drf_serializers.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        required=False,
+        allow_null=True,
+    )

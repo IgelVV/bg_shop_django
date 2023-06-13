@@ -17,3 +17,6 @@ class Image(models.Model):
         upload_to='images',
         verbose_name=_("image")
     )
+
+    def __str__(self):
+        return f"Image({self.pk}): {self.description[:10]}"

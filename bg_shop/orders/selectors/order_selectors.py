@@ -1,20 +1,27 @@
 from typing import TypeVar, Optional
 
-from django.contrib.auth import get_user_model
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models as db_models
+from django.http import Http404
 
-from rest_framework import request as drf_request
-
-from orders import models, services, selectors
-from shop import models as product_models
-
+from orders import models, services
+from orders import filters as order_filters
 
 UserType = TypeVar('UserType', bound=AbstractUser)
 
 
 class OrderSelector:
+    def get_orders(
+            self,
+            *,
+            filters: Optional[dict] = None,
+    ) -> db_models.QuerySet[models.Order]:
+        orders = models.Order.objects.all()
+        if filters:
+            orders = order_filters.BaseOrderFilter(
+                data=filters, queryset=orders).qs
+        return orders
+
     def get_or_create_cart_order(
             self,
             user: UserType,
@@ -45,11 +52,18 @@ class OrderSelector:
         )
         if prefetch_ordered_products:
             qs = qs.prefetch_related("orderedproduct_set")
-        if qs.count():  # todo if more than 1...
-            order = qs[0]
-        else:
-            order = None
+        order = qs.first()
+
         return order
+
+    def get_orders_of_user(
+            self,
+            user: UserType,
+    ) -> db_models.QuerySet[models.Order]:
+        orders = models.Order.objects \
+            .filter(user=user) \
+            .filter(is_active=True)
+        return orders
 
     def get_order_history(
             self,
@@ -60,75 +74,95 @@ class OrderSelector:
         :param user:
         :return:
         """
-        ordered_products_prefetch_qs = models.OrderedProduct.objects\
-            .select_related('product')\
-            .prefetch_related("product__images")\
-            .prefetch_related("product__review_set")
-
-        orders = models.Order.objects\
-            .filter(user=user)\
-            .filter(is_active=True)\
-            .exclude(status=models.Order.Statuses.CART)\
-            .prefetch_related(
-                db_models.Prefetch(
-                    'orderedproduct_set',
-                    queryset=ordered_products_prefetch_qs
-                )
-            ).select_related("user__profile")
+        orders = self.get_orders_of_user(user=user)
+        orders = orders.exclude(status=models.Order.Statuses.CART)
+        orders = self._prefetch_data(
+            orders_qs=orders,
+            with_user_profile=True,
+            with_images_and_reviews=True
+        )
         return orders
+
+    def _prefetch_data(
+            self,
+            orders_qs: db_models.QuerySet[models.Order],
+            with_images_and_reviews: bool = False,
+            with_user_profile: bool = False,
+    ) -> db_models.QuerySet[models.Order]:
+        """
+        Does prefetch_related for 'orderedproduct_set'
+        and 'product' related with them.
+        Optionally, also prefetches 'images', 'review_set' related with product
+        and 'user' and 'profile' related with Order.
+        :param orders_qs:
+        :param with_images_and_reviews:
+        :param with_user_profile:
+        :return:
+        """
+        ordered_products_prefetch_qs = models.OrderedProduct.objects \
+            .select_related('product')
+        if with_images_and_reviews:
+            ordered_products_prefetch_qs = ordered_products_prefetch_qs \
+                .prefetch_related("product__images") \
+                .prefetch_related("product__review_set")
+
+        orders_qs = orders_qs \
+            .prefetch_related(
+            db_models.Prefetch(
+                'orderedproduct_set',
+                queryset=ordered_products_prefetch_qs
+            )
+        )
+        if with_user_profile:
+            orders_qs = orders_qs.select_related("user__profile")
+        return orders_qs
 
     def get_order_of_user(
             self,
             order_id: int,
             user: UserType,
+            exclude_cart: bool = True,
     ) -> Optional[models.Order]:
         """
         return ony if this order related with the user
         :param order_id:
         :param user:
+        :param exclude_cart:
         :return:
         """
-        orders = self.get_order_history(user=user)
+        orders = self.get_orders_of_user(user=user)
+        if exclude_cart:
+            orders = orders.exclude(status=models.Order.Statuses.CART)
+        orders = self._prefetch_data(
+            orders_qs=orders,
+            with_user_profile=True,
+            with_images_and_reviews=True,
+        )
         try:
             order = orders.get(pk=order_id)
         except models.Order.DoesNotExist:
             order = None
         return order
 
-
-class OrderedProductSelector:
-    def get_ordered_product_from_order(
+    def get_editing_order_of_user(
             self,
-            *,
-            order: Optional[models.Order] = None,
-            order_id: Optional[int] = None,
-            product_id: int,
-    ) -> Optional[models.OrderedProduct]:
-        """
+            order_id: int,
+            user: UserType,
+            or_404: bool = True,
+    ) -> Optional[models.Order]:
+        orders = self.get_orders_of_user(user=user)
+        orders = orders.filter(status=models.Order.Statuses.EDITING)
+        orders = self._prefetch_data(orders_qs=orders)
+        try:
+            order = orders.get(pk=order_id)
+        except models.Order.DoesNotExist:
+            if or_404:
+                raise Http404(
+                    f"Order (id={order_id}) related with {user} doesn't "
+                    f"have status EDITING or doesn't exist."
+                )
+            else:
+                order = None
+        return order
 
-        :param order:
-        :param order_id:
-        :param product_id:
-        :return:
-        """
-        if (order and order_id) or not (order or order_id):
-            raise ValueError(
-                f"Only one of args ('oder' or 'order_id') can be passed, "
-                f"but it is passed: {order=}, {order_id=}."
-            )
-        if order:
-            ordered_products: db_models.QuerySet[models.OrderedProduct] = \
-                order.orderedproduct_set.all()
-        else:
-            ordered_products = models.OrderedProduct.objects\
-                .filter(order_id=order_id)
-        ordered_product: Optional[models.OrderedProduct] = None
-        if ordered_products:
-            try:
-                # todo it hits db even if ordered prod were prefetched
-                ordered_product = ordered_products.get(product_id=product_id)
-                # ordered_product = ordered_products[0] it does not hit db
-            except models.OrderedProduct.DoesNotExist:
-                ordered_product = None
 
-        return ordered_product

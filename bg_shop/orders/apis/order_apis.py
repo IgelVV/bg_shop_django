@@ -3,73 +3,14 @@ from rest_framework import serializers as drf_serializers
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
-from django.db import models as db_models
-from django.core.validators import MinValueValidator
-from django.shortcuts import get_object_or_404
-from django.contrib.auth import get_user_model
+from orders import services, serializers, selectors
+from account import validators as acc_validators
 
-from orders import models, services, serializers, selectors
-from common import serializers as common_serializers
+import orders.serializers.ordered_product_serializer \
+    as ordered_product_serializer
 
 
-User = get_user_model()
-
-
-# filling cart >
-# orders/ POST - creating order from cart >
-# filling order >
-# orders/id/ POST - confirmation > ...
-
-# existed order >
-# orders/id/ Get - to edit order (if EDITING) >
-# editing >
-# orders/id/ POST - confirmation > ...
-
-# new order from api without using cart >
-# orders/ POST - create order with passed data >
-# if cart exists, fill it with passed data, if not create new order ED
 class OrdersApi(views.APIView):
-    class InputSerializer(drf_serializers.Serializer):
-        """Short Product"""
-        class ImageSerializer(drf_serializers.Serializer):
-            src = drf_serializers.CharField()
-            alt = drf_serializers.CharField(
-                max_length=255,
-                required=False,
-                allow_null=True,
-                allow_blank=True
-            )
-
-        class TagSerializer(drf_serializers.Serializer):
-            id = drf_serializers.IntegerField()
-            name = drf_serializers.CharField()
-
-        id = drf_serializers.IntegerField()
-        category = drf_serializers.IntegerField()
-        price = drf_serializers.DecimalField(
-            default=0,
-            max_digits=8,
-            decimal_places=2,
-        )
-        count = drf_serializers.IntegerField()
-        date = drf_serializers.DateTimeField()
-        title = drf_serializers.CharField()
-        description = drf_serializers.CharField()
-        freeDelivery = drf_serializers.BooleanField(required=False, )
-        images = common_serializers.ImageSerializer(
-            many=True,
-            required=False,
-            allow_null=True,
-        )
-        tags = TagSerializer(many=True, required=False, )
-        reviews = drf_serializers.IntegerField()
-        rating = drf_serializers.DecimalField(
-            max_digits=8,
-            decimal_places=2,
-            required=False,
-            allow_null=True,
-        )
-
     class PostOutputSerializer(drf_serializers.Serializer):
         orderId = drf_serializers.IntegerField(source="pk")
 
@@ -93,6 +34,8 @@ class OrdersApi(views.APIView):
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
+        # todo orderedproducts must contain actual prices after this method
+        #  it displayed on order-detail page
         """
         Create new order. request body - basket[ordered product].
         It does not really create new Order, if cart exists,
@@ -102,7 +45,8 @@ class OrdersApi(views.APIView):
         :param kwargs:
         :return:
         """
-        input_serializer = self.InputSerializer(data=request.data, many=True)
+        input_serializer = ordered_product_serializer\
+            .OrderedProductInputSerializer(data=request.data, many=True)
         input_serializer.is_valid(raise_exception=True)
         validated_data = input_serializer.validated_data
 
@@ -118,9 +62,26 @@ class OrdersApi(views.APIView):
 
 
 class OrderDetailApi(views.APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    class InputSerializer(drf_serializers.Serializer):
+        """Order[OrderedProduct]"""
+        id = drf_serializers.IntegerField()
+        createdAt = drf_serializers.DateTimeField()
+        fullName = drf_serializers.CharField(max_length=300)
+        email = drf_serializers.EmailField()
+        phone = drf_serializers.CharField(
+            validators=[acc_validators.PhoneRegexValidator()])
+        deliveryType = drf_serializers.CharField()
+        totalCost = drf_serializers.DecimalField(
+            max_digits=8, decimal_places=2,)
+        status = drf_serializers.CharField()
+        city = drf_serializers.CharField()
+        address = drf_serializers.CharField()
+        products = ordered_product_serializer.OrderedProductInputSerializer(
+            many=True, required=False)
 
-    # todo user can get only his orders
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = InputSerializer
+
     def get(
             self,
             request: drf_request.Request,
@@ -147,11 +108,6 @@ class OrderDetailApi(views.APIView):
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
-        # todo change frontend history: if order ED - redirect
-        #  to creating order
-
-        # todo check that order status was cart or editing,
-        #  if editing - different behaviour
         """
         Confirm order. Url args: <int: id> -Order id.
         Request body: Order
@@ -159,5 +115,14 @@ class OrderDetailApi(views.APIView):
         :param kwargs:
         :return:
         """
-        if True:
-            return drf_response.Response(status=status.HTTP_200_OK)
+        order_id = kwargs.get('id')
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        validated_data = input_serializer.validated_data
+
+        service = services.OrderService()
+        service.confirm(
+            order_id=order_id, user=request.user, order_data=validated_data)
+
+        return drf_response.Response(
+            data=validated_data, status=status.HTTP_200_OK)

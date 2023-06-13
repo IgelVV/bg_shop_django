@@ -1,37 +1,18 @@
 from decimal import Decimal
-from typing import Optional, TypeVar
-
-from rest_framework import request as drf_request
+from typing import Optional, TypeVar, Any
 
 from django.db import models as db_models
+from django.db import transaction
 from django.contrib.auth.models import AbstractUser
 
 from orders import models, selectors
+
+import orders.services.ordered_product_services as ord_prod_services
 
 UserType = TypeVar('UserType', bound=AbstractUser)
 
 
 class OrderService:
-    # todo check before confirmation that products are available and active
-    def confirm(self):
-        ...
-
-    # def change_status(self, order: models.Order, status: str) -> models.Order:
-    #     # only one `cart` order can exist
-    #     if order.status == status:
-    #         return order
-    #     if status == models.Order.Statuses.CART:
-    #         user_carts = order.user.order_set\
-    #             .filter(status=models.Order.Statuses.CART).count()
-    #         if user_carts:
-    #             raise ValueError('User can have only one cart')
-    #     else:
-    #         order.status = status
-    #     order.full_clean()
-    #     order.save()
-    #     return order
-
-
     def create_order(self, *, commit: bool = True, **attrs):
         new_order = models.Order()
         new_order = self._set_attributes(new_order, **attrs)
@@ -67,12 +48,29 @@ class OrderService:
 
     def edit(
             self,
-            order: Optional[models.Order],
-            products: list[dict],
+            order: models.Order,
+            order_attrs: Optional[dict] = None,
+            products: Optional[list[dict]] = None,
             commit: bool = True,
     ) -> models.Order:
+        """
+        order_attrs_example = {
+            "delivery_type": "EX",
+            "city": "Moscow",
+            "address": "red square 1",
+            "comment": "",
+        }
+        :param order:
+        :param order_attrs:
+        :param products:
+        :param commit:
+        :return:
+        """
         order.status = models.Order.Statuses.EDITING
-        self.update_ordered_products(order=order, products=products)
+        if order_attrs:
+            order = self._set_attributes(order=order, **order_attrs)
+        if products:
+            self.update_ordered_products(order=order, products=products)
         if commit:
             order.full_clean()
             order.save()
@@ -83,109 +81,70 @@ class OrderService:
             order: models.Order,
             products: list[dict],
     ) -> None:
+        ordered_product_service = ord_prod_services.OrderedProductService()
         simple_products = self._simplify_products(products=products)
         ordered_products: db_models.QuerySet[models.OrderedProduct] = \
-            order.orderedproduct_set.all()
+            order.orderedproduct_set.all().select_related("product")
         for ord_prod in ordered_products:
             if ord_prod.product_id not in simple_products:
                 ord_prod.delete()
             else:
+                ordered_product_service.update_price(ord_prod, commit=False)
                 ord_prod.count = simple_products.pop(ord_prod.product_id)
                 ord_prod.full_clean()
                 ord_prod.save()
         for product_id, count in simple_products.items():
-            OrderedProductService().create_ordered_product(
+            ordered_product_service.create_ordered_product(
                 order=order, product_id=product_id, quantity=count)
 
     def _simplify_products(self, products: list[dict]) -> dict[int, int]:
+        # todo it should be in serializer maybe (or create parse method)
         simple_products = {}
         for product in products:
             simple_products[product['id']] = product['count']
         return simple_products
 
-
-class OrderedProductService:
-    def create_ordered_product(
+    def confirm(
             self,
-            order: models.Order,
-            product_id: int,
-            quantity: int,
-            commit:bool = True,
+            order_id: int,
+            user: UserType,
+            order_data: dict,
     ) -> None:
-        ordered_product = models.OrderedProduct(
-            order=order,
-            product_id=product_id,
-            count=quantity
-        )
-        if commit:
-            ordered_product.full_clean()
-            ordered_product.save()
+        # todo with transaction atomic
+        selector = selectors.OrderSelector()
+        ordered_product_service = ord_prod_services.OrderedProductService()
 
-    def add_item(
-            self,
-            order: models.Order,
-            product_id: int,
-            quantity: int,
-            override_quantity: bool = False,
-    ) -> None:
-        # todo redo, it hits db a lot. and use create_ord_prod()
-        #  it is better to use orderedproduct obj directly.
-        """
-        Increase `count` of OrderedProduct of overrides it.
-        :param order:
-        :param product_id:
-        :param quantity:
-        :param override_quantity:
-        :return:
-        """
-        if quantity < 0:
-            OrderedProductService().reduce_or_delete(
-                order=order,
-                product_id=product_id,
-                quantity=-quantity,
-            )
+        order = selector.get_editing_order_of_user(
+            order_id=order_id, user=user, or_404=True)
+        order_attrs = self._parse_order_data(order_data=order_data)
+        order = self.edit(order=order, order_attrs=order_attrs, commit=False)
 
-        ord_prod_selector = selectors.OrderedProductSelector()
-        ordered_product = ord_prod_selector.get_ordered_product_from_order(
-            order=order,
-            product_id=product_id,
-        )
-        if ordered_product:
-            if override_quantity:
-                ordered_product.count = quantity
-            else:
-                ordered_product.count += quantity
+        ordered_products = order.orderedproduct_set.all()
+        ordered_product_service.deduct_amount_from_product(
+            ord_prod_qs=ordered_products)
+        for ord_prod in ordered_products:
+            ordered_product_service.update_price(
+                ordered_product=ord_prod, commit=True)
+
+        order.status = order.Statuses.ACCEPTED
+        order.full_clean()
+        order.save()
+
+    def _parse_order_data(self, order_data: dict) -> dict:
+        order_attrs: dict[str, Any | None] = dict()
+
+        delivery_type = order_data["deliveryType"]
+        if delivery_type == "express" or delivery_type == "EX":
+            order_attrs["delivery_type"] = models.Order.DeliveryTypes.EXPRESS
+        elif delivery_type == "ordinary" or delivery_type == "OR":
+            order_attrs["delivery_type"] = models.Order.DeliveryTypes.ORDINARY
         else:
-            ordered_product = models.OrderedProduct(
-                order=order,
-                product_id=product_id,
-                count=quantity
-            )
-        ordered_product.full_clean()
-        ordered_product.save()
+            raise ValueError(
+                "Order.delivery_type must be: "
+                "'express'('EX') or 'ordinary'('OR')")
 
+        order_attrs["city"] = order_data.get("city", None)
+        order_attrs["address"] = order_data["address"]
+        order_attrs["comment"] = order_data.get("comment", None)
+        return order_attrs
 
-    def reduce_or_delete(
-            self,
-            order: models.Order,
-            product_id: int,
-            quantity: int,
-            remove_all: bool = False,
-    ) -> None:
-        ord_prod_selector = selectors.OrderedProductSelector()
-        ordered_product = ord_prod_selector.get_ordered_product_from_order(
-            order=order,
-            product_id=product_id,
-        )
-        if ordered_product:
-            if remove_all:
-                ordered_product.delete()
-            else:
-                if ordered_product.count > quantity:
-                    ordered_product.count -= quantity
-                    ordered_product.full_clean()
-                    ordered_product.save()
-                else:
-                    ordered_product.delete()
-        else:
-            raise ValueError(f"{order} has no Product with id {product_id}")

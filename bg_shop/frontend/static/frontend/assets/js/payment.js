@@ -1,7 +1,7 @@
 var mix = {
 	methods: {
 		submitPayment() {
-			console.log('qweqwewqeqweqw')
+			console.log('submitPayment is called')
 			const orderId = location.pathname.startsWith('/payment/')
 				? Number(location.pathname.replace('/payment/', '').replace('/', ''))
 				: null
