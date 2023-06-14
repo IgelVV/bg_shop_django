@@ -1,4 +1,4 @@
-from typing import Any, TypeVar, Optional
+from typing import TypeVar
 
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
@@ -47,7 +47,8 @@ class CartSelector:
         cart_products = cart_products.prefetch_related("tags")\
             .prefetch_related("images")\
             .prefetch_related("review_set")\
-            .prefetch_related("orderedproduct_set")
+            .prefetch_related("orderedproduct_set")\
+            .prefetch_related("sale_set")
 
         cart_products = list(cart_products)
 

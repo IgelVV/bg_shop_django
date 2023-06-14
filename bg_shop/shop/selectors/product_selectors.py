@@ -1,3 +1,5 @@
+import datetime
+from decimal import Decimal
 from typing import Optional
 
 from django.contrib.auth import get_user_model
@@ -8,12 +10,9 @@ from django.db.models import (
     QuerySet,
     Subquery,
     OuterRef,
-    Case,
-    When,
-    Value,
     F,
-    BooleanField,
 )
+from django.utils import timezone
 
 from shop import models
 from shop import filters as shop_filters
@@ -72,57 +71,27 @@ class ProductSelector:
         """
         filters = filters or {}
         qs = self.get_active_products()
-        qs = self._annotate_for_product_short_view(query_set=qs)
+        qs = self._prefetch_for_product_short_serializer(query_set=qs)
         qs = shop_filters.BaseProductFilter(data=filters, queryset=qs).qs
         if sort_field:
             qs = self._sort_catalog(
                 query_set=qs, sort_field=sort_field, order=order)
         return qs
 
-    def _annotate_for_product_short_view(
+    def _prefetch_for_product_short_serializer(
             self,
             query_set: QuerySet[models.Product],
     ) -> QuerySet[models.Product]:
         """
-        Annotates query set of Products to simplify serializing and filtering.
-        Adds following fields:
-            rating,
-            date,
-            popularity,
-            freeDelivery,
-        :param query_set: queryset of products to annotate
-        :return: queryset with new fields
+        Prefetches data for using in serializer
+        :param query_set:
+        :return:
         """
-        qs = query_set.annotate(rating=Avg('review__rate'))\
-            .annotate(reviews=Count('review'))\
-            .annotate(date=F("release_date"))
-
-        # todo remove to other place. it is not for shortProduct
-        # number of products sold
-        sales = order_models.OrderedProduct.objects\
-            .filter(product=OuterRef("pk"))\
-            .filter(order__status=order_models.Order.Statuses.COMPLETED)\
-            .values("product")\
-            .annotate(sales=Sum("count")).values("sales")
-        qs = qs.annotate(popularity=Subquery(sales))
-
-        boundary = conf_selectors.AdminConfigSelector()\
-            .boundary_of_free_delivery
-        if boundary:
-            qs = qs.annotate(
-                freeDelivery=Case(
-                    When(
-                        price__gte=boundary,
-                        then=Value(True),
-                    ),
-                    default=Value(False),
-                    output_field=BooleanField()
-                )
-            )
-        else:
-            qs = qs.annotate(freeDelivery=False)
-
-        return qs
+        query_set = query_set.prefetch_related("review_set")\
+            .prefetch_related("images")\
+            .prefetch_related("tags")\
+            .prefetch_related("sale_set")
+        return query_set
 
     def _sort_catalog(
             self,
@@ -143,6 +112,19 @@ class ProductSelector:
         :param order: `dec` or `inc` (decrease, increase)
         :return: sorted qs
         """
+        if sort_field == "popularity":
+            # sales - number of products sold. Subquery
+            sales = order_models.OrderedProduct.objects \
+                .filter(product=OuterRef("pk")) \
+                .filter(order__status=order_models.Order.Statuses.COMPLETED) \
+                .values("product") \
+                .annotate(sales=Sum("count")).values("sales")
+            query_set = query_set.annotate(popularity=Subquery(sales))
+        else:
+            query_set = query_set.annotate(rating=Avg('review__rate')) \
+                .annotate(reviews=Count('review')) \
+                .annotate(date=F("release_date"))
+
         if (order is None) or (order == 'dec'):
             sort_field = "-" + sort_field
         elif order == 'inc':
@@ -159,7 +141,7 @@ class ProductSelector:
         :return: query set of Products, that related to Banners
         """
         qs = models.Product.objects.filter(banner__isnull=False)
-        qs = self._annotate_for_product_short_view(query_set=qs)
+        qs = self._prefetch_for_product_short_serializer(query_set=qs)
         return qs
 
     def get_popular_products(self) -> QuerySet[models.Product]:
@@ -180,6 +162,29 @@ class ProductSelector:
         """
         qs = self.get_active_products()
         qs = qs.filter(limited_edition=True)
-        qs = self._annotate_for_product_short_view(query_set=qs)
+        qs = self._prefetch_for_product_short_serializer(query_set=qs)
         qs = qs[:LIMITED_PRODUCTS_LIMIT]
         return qs
+
+    def get_discounted_price(
+            self,
+            product: models.Product,
+            date: Optional[datetime.date] = None,
+    ) -> Decimal:
+        """It is better to prefetch Sale objects related to product.
+        Uses active sale with the biggest discount"""
+        if date is None:
+            date = timezone.now().date()
+        sale = product.sale_set.filter(
+            date_from__lte=date,
+            date_to__gte=date,
+        ) \
+            .order_by("-discount") \
+            .first()
+        original_price = product.price
+        if sale:
+            discounted_price = Decimal(1 - sale.discount * 0.01) * original_price
+            discounted_price = round(discounted_price, 2)
+            return discounted_price
+        else:
+            return original_price

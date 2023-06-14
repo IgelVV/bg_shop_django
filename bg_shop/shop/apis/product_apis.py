@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Optional
 
 from rest_framework import status, permissions, views
@@ -6,6 +7,7 @@ from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from shop import models, selectors, serializers
 from common import serializers as common_serializers
@@ -52,6 +54,7 @@ class ProductDetailApi(views.APIView):
                 return obj.author.email
 
         category = drf_serializers.IntegerField(source='category_id')
+        price = drf_serializers.SerializerMethodField()
         date = drf_serializers.DateField(source='release_date')
         description = drf_serializers.CharField(source='short_description')
         fullDescription = drf_serializers.CharField(source='description')
@@ -60,6 +63,15 @@ class ProductDetailApi(views.APIView):
             many=True, allow_null=True)
         reviews = ReviewSerializer(source='review_set', many=True)
         rating = drf_serializers.SerializerMethodField()
+
+        def get_price(self, obj) -> Decimal:
+            discounted_price = selectors.ProductSelector() \
+                .get_discounted_price(
+                product=obj,
+                date=timezone.now().date()
+            )
+            return discounted_price
+
 
         def get_freeDelivery(self, obj: models.Product) -> bool:
             """

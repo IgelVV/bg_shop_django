@@ -4,6 +4,7 @@ import django_filters
 from django.db import models as db_models
 
 from shop import models
+from dynamic_config import selectors as conf_selectors
 
 
 class BaseProductFilter(django_filters.FilterSet):
@@ -40,6 +41,22 @@ class BaseProductFilter(django_filters.FilterSet):
         :return: filtered qs
         """
         if value:
+            boundary = conf_selectors.AdminConfigSelector() \
+                .boundary_of_free_delivery
+            if boundary:
+                queryset = queryset.annotate(
+                    freeDelivery=db_models.Case(
+                        db_models.When(
+                            price__gte=boundary,
+                            then=db_models.Value(True),
+                        ),
+                        default=db_models.Value(False),
+                        output_field=db_models.BooleanField()
+                    )
+                )
+            else:
+                queryset = queryset.annotate(freeDelivery=False)
+
             return queryset.filter(**{name: True})
         return queryset
 

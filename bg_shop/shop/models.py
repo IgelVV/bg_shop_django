@@ -184,6 +184,10 @@ class Sale(models.Model):
         now = timezone.now()
         return self.date_to <= now.date()
 
+    def is_running(self) -> bool:
+        today = timezone.now().date()
+        return self.date_from <= today <= self.date_to
+
     # def is_within(self, x_date: date) -> bool:
     #     return self.date_from <= x_date <= self.date_to
 

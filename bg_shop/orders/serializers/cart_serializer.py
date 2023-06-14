@@ -1,11 +1,14 @@
+from decimal import Decimal
 from typing import Optional
 
 from django.db import models as db_models
+from django.utils import timezone
 
 from rest_framework import serializers
 
 from common import serializers as common_serializers
 from shop import models as shop_models
+from shop import selectors as shop_selectors
 from dynamic_config import selectors as conf_selectors
 
 
@@ -31,6 +34,7 @@ class CartSerializer(serializers.ModelSerializer):
         depth = 1
 
     category = serializers.IntegerField(source='category_id')
+    price = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
     date = serializers.DateField(source='release_date')
     description = serializers.CharField(source='short_description')
@@ -44,6 +48,15 @@ class CartSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
         self.boundary_of_free_delivery = conf_selectors \
             .AdminConfigSelector().boundary_of_free_delivery
+        self.today = timezone.now().date()
+
+    def get_price(self, obj) -> Decimal:
+        discounted_price = shop_selectors.ProductSelector()\
+            .get_discounted_price(
+                product=obj,
+                date=self.today
+            )
+        return discounted_price
 
     def get_count(self, obj) -> int:
         return obj.quantity_ordered
