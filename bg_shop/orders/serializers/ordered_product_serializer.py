@@ -11,7 +11,11 @@ from dynamic_config import selectors as conf_selectors
 
 class OrderedProductOutputSerializer(drf_serializers.ModelSerializer):
     """
-    Following fields should be prefetched....
+    Following fields should be prefetched:
+        - product (select_related)
+        - images
+        - review_set
+        - sale_set
     """
 
     class TagSerializer(drf_serializers.Serializer):

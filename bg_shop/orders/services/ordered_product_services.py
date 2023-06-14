@@ -3,6 +3,7 @@ from django.db import transaction
 
 from orders import models, selectors
 from shop import models as shop_models
+from shop import selectors as shop_selectors
 
 
 class OrderedProductService:
@@ -98,8 +99,9 @@ class OrderedProductService:
             ordered_product: models.OrderedProduct,
             commit: bool = True
     ) -> None:
-        # todo taking into account actual sales
-        ordered_product.price = ordered_product.product.price
+        product_selector = shop_selectors.ProductSelector()
+        ordered_product.price = product_selector.get_discounted_price(
+            product=ordered_product.product)
         if commit:
             ordered_product.full_clean()
             ordered_product.save()

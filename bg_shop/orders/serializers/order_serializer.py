@@ -21,6 +21,7 @@ class OrderSerializer(drf_serializers.ModelSerializer):
             - product (select_related)
                 - images
                 - review_set
+                - sale_set
         - user (select_related)
             - profile (select_related)
     (e.g qs_orders.prefetch_related(

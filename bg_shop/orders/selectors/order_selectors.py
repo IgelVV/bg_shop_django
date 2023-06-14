@@ -100,7 +100,8 @@ class OrderSelector:
         :return:
         """
         ordered_products_prefetch_qs = models.OrderedProduct.objects \
-            .select_related('product')
+            .select_related('product') \
+            .prefetch_related("product__sale_set")
         if with_images_and_reviews:
             ordered_products_prefetch_qs = ordered_products_prefetch_qs \
                 .prefetch_related("product__images") \
