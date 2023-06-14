@@ -35,6 +35,8 @@ var mix = {
                 this.fullName = data.fullName
                 this.avatar = data.avatar
                 this.orders = data.orders
+                this.email = data.email
+                this.phone = data.phone
             })
         },
     },
