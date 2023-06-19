@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "bg-shop-django"
+version = "0.1.0"
+description = ""
+authors = ["Vadim Veshkin <vadim.veshkin@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Django = "4.2"
+django-filter = "23.2"
+djangorestframework = "3.14.0"
+Pillow = "9.5.0"
+celery = "^5.3.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
