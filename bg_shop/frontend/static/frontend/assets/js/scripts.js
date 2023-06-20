@@ -170,7 +170,7 @@ var form = function(){
                             break;
                         case 'pay':
                             var val = $this.val().replaceAll(' ', '');
-                            if (val.length !== 16) {
+                            if (val.length !== 8) {
                                 message += 'Некорректный номер карты.';
                                 error = true;
                             }
