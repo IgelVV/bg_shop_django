@@ -68,6 +68,7 @@ class Order(models.Model):
             "Unselect this instead of deleting orders."
         ),
     )
+    paid = models.BooleanField(default=False, verbose_name=_("paid"))
 
 
 class OrderedProduct(models.Model):
