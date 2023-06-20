@@ -99,9 +99,9 @@
                     <strong class="Cart-title">Итого:<span class="Cart-price">${totalCost}$$</span>
                     </strong>
                   </div>
-                  <div class="Cart-block" v-if="status==='editing'"><a class="btn btn_primary btn_lg" :href="`/orders/${orderId}/`">Продолжить оформление</a>
+                  <div class="Cart-block" v-if="status==='ED'"><a class="btn btn_primary btn_lg" :href="`/orders/${orderId}/`">Продолжить оформление</a>
                   </div>
-                  <div class="Cart-block" v-if="status==='accepted'"><a class="btn btn_primary btn_lg" :href="`/payment/${orderId}/`">Оплатить</a>
+                  <div class="Cart-block" v-if="status==='AC'"><a class="btn btn_primary btn_lg" :href="`/payment/${orderId}/`">Оплатить</a>
                   </div>
                 </div>
               </div>
