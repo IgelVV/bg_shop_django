@@ -3,7 +3,7 @@ from rest_framework import serializers as drf_serializers
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
-from orders import services, serializers, selectors
+from orders import services, serializers, selectors, tasks
 from account import validators as acc_validators
 
 import orders.serializers.ordered_product_serializer \
@@ -71,6 +71,7 @@ class OrderDetailApi(views.APIView):
         phone = drf_serializers.CharField(
             validators=[acc_validators.PhoneRegexValidator()])
         deliveryType = drf_serializers.CharField()
+        paymentType = drf_serializers.CharField()  # todo choice
         totalCost = drf_serializers.DecimalField(
             max_digits=8, decimal_places=2,)
         status = drf_serializers.CharField()
@@ -123,6 +124,8 @@ class OrderDetailApi(views.APIView):
         service = services.OrderService()
         service.confirm(
             order_id=order_id, user=request.user, order_data=validated_data)
+
+        tasks.order_confirmed.delay(order_id)
 
         return drf_response.Response(
             data=validated_data, status=status.HTTP_200_OK)
