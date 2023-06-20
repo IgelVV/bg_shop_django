@@ -1,7 +1,20 @@
 # bg_shop_django
 
-## Instalation
+## Installation
 - install poetry
+
+## Dev run
+- starting RabbitMQ
+```shell
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:management
+```
+
+- starting Celery worker (in prod Daemonization instead)
+```shell
+celery -A bg_shop worker -l info
+```
+
+
 
 ## Name
 
