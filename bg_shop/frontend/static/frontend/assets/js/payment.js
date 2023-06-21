@@ -37,7 +37,7 @@ var mix = {
 					this.year = ''
 					this.month = ''
 					this.code = ''
-					location.assign('/')
+					location.assign(`/order-detail/${orderId}/`)
 				})
 				.catch(() => {
 					console.warn('Ошибка при оплате')
