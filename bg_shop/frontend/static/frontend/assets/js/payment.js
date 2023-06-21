@@ -22,9 +22,10 @@ var mix = {
 			else {
 				var orderId = null
 			}
+			const numero1 = document.getElementById('numero1').value.replace(' ', '');
 			this.postData(`/api/payment/${orderId}/`, {
 				name: this.name,
-				number: this.number,
+				number: numero1,
 				year: this.year,
 				month: this.month,
 				code: this.code
