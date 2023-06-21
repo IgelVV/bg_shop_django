@@ -175,3 +175,9 @@ EMAIL_HOST_USER = 'your_account@gmail.com'
 EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+# Payment
+
+# Test payment
+PAYMENT_SERVICE_SIGNATURE = "secret key"
+
