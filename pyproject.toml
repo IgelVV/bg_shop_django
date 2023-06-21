@@ -12,6 +12,7 @@ django-filter = "23.2"
 djangorestframework = "3.14.0"
 Pillow = "9.5.0"
 celery = "^5.3.1"
+requests = "^2.31.0" # to imitate payment service
 
 
 [build-system]
