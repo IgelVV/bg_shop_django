@@ -4,16 +4,26 @@
 - install poetry
 
 ## Dev run
+- starting Docker 
+```shell
+sudo systemctl start docker
+```
+
 - starting RabbitMQ
 ```shell
 docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:management
 ```
 
-- starting Celery worker (in prod Daemonization instead)
+- starting Celery worker in proj directory
+(in prod Daemonization instead)
 ```shell
 celery -A bg_shop worker -l info
 ```
 
+- run django server
+```shell
+py manage.py runserver
+```
 
 
 ## Name
