@@ -14,6 +14,7 @@ var mix = {
 					this.address = data.address
 					this.paymentType = data.paymentType
 					this.status = data.status
+					this.deliveryCost = data.deliveryCost
 					this.totalCost = data.totalCost
 					this.paid = data.paid
 					this.products = data.products
@@ -87,6 +88,7 @@ var mix = {
 			address: null,
 			paymentType: null,
 			status: null,
+			deliveryCost: null,
 			totalCost: null,
 			paid: null,
 			products: [],
