@@ -12,7 +12,7 @@ import orders.serializers.ordered_product_serializer \
 from common import serializers as common_serializers
 
 
-class OrderSerializer(drf_serializers.ModelSerializer):
+class OrderOutputSerializer(drf_serializers.ModelSerializer):
     """
     Following fields should be prefetched
         - orderedproduct_set
@@ -37,6 +37,7 @@ class OrderSerializer(drf_serializers.ModelSerializer):
             "deliveryType",
             "totalCost",
             "status",
+            "paid",
             "city",
             "address",
             "products",

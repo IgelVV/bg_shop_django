@@ -22,7 +22,7 @@ class OrdersApi(views.APIView):
 
         selector = selectors.OrderSelector()
         orders = selector.get_order_history(user=request.user)
-        serializer = serializers.OrderSerializer(orders, many=True)
+        serializer = serializers.OrderOutputSerializer(orders, many=True)
         return drf_response.Response(
             data=serializer.data, status=status.HTTP_200_OK)
 
@@ -95,7 +95,7 @@ class OrderDetailApi(views.APIView):
         order = selector.get_one_order_of_user(
             order_id=kwargs.get('id'), user=request.user)
         if order:
-            serializer = serializers.OrderSerializer(order)
+            serializer = serializers.OrderOutputSerializer(order)
             return drf_response.Response(
                 data=serializer.data, status=status.HTTP_200_OK)
         else:
