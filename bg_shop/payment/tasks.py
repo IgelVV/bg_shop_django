@@ -26,9 +26,9 @@ def third_party_payment_service(
         raise ValueError("Card number must contain 8 digits")
     card_number = int(card_number)
     if (card_number % 2 == 0) and (card_number % 10 != 0):
-        body["status"] = enums.PaymentStatuses.SUCCESS
+        body["status"] = enums.PaymentStatuses.SUCCESS.value
     else:
-        body["status"] = enums.PaymentStatuses.FAIL
+        body["status"] = enums.PaymentStatuses.FAIL.value
         body["errors"].append("wrong number")
 
     response = requests.post(url, json=body, headers=headers)
