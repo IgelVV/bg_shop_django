@@ -20,7 +20,6 @@ def stripe_webhook(request):
     order_id = payload.get("order_id", None)
     errors = payload.get("errors", None)
     payment_id = payload.get("payment_id", None)
-    print(payment_id)
 
     order = Order.objects.get(pk=order_id)
     if order.paid:
