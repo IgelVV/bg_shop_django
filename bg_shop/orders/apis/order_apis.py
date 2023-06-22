@@ -21,7 +21,7 @@ class OrdersApi(views.APIView):
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
-        """Get all (active, not CART status) orders of user as history"""
+        """Get all (active, not CART status) orders of user as a history"""
 
         selector = selectors.OrderSelector()
         orders = selector.get_order_history(user=request.user)
@@ -95,7 +95,7 @@ class OrderDetailApi(views.APIView):
         :return:
         """
         selector = selectors.OrderSelector()
-        order = selector.get_order_of_user(
+        order = selector.get_one_order_of_user(
             order_id=kwargs.get('id'), user=request.user)
         if order:
             serializer = serializers.OrderSerializer(order)

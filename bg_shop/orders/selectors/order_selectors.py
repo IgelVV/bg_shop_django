@@ -59,23 +59,30 @@ class OrderSelector:
     def get_orders_of_user(
             self,
             user: UserType,
+            exclude_cart: bool = True,
     ) -> db_models.QuerySet[models.Order]:
+        """"""
         orders = models.Order.objects \
             .filter(user=user) \
             .filter(is_active=True)
+        if exclude_cart:
+            orders = orders.exclude(status=models.Order.Statuses.CART)
         return orders
 
     def get_order_history(
             self,
             user: UserType,
+            order_by_date: bool = True,
     ) -> db_models.QuerySet[models.Order]:
         """
 
         :param user:
+        :param order_by_date:
         :return:
         """
         orders = self.get_orders_of_user(user=user)
-        orders = orders.exclude(status=models.Order.Statuses.CART)
+        if order_by_date:
+            orders = orders.order_by('-created_at')
         orders = self._prefetch_data(
             orders_qs=orders,
             with_user_profile=True,
@@ -118,22 +125,18 @@ class OrderSelector:
             orders_qs = orders_qs.select_related("user__profile")
         return orders_qs
 
-    def get_order_of_user(
+    def get_one_order_of_user(
             self,
             order_id: int,
             user: UserType,
-            exclude_cart: bool = True,
     ) -> Optional[models.Order]:
         """
         return ony if this order related with the user
         :param order_id:
         :param user:
-        :param exclude_cart:
         :return:
         """
         orders = self.get_orders_of_user(user=user)
-        if exclude_cart:
-            orders = orders.exclude(status=models.Order.Statuses.CART)
         orders = self._prefetch_data(
             orders_qs=orders,
             with_user_profile=True,
