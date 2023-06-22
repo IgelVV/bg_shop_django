@@ -48,17 +48,18 @@
                     <a class="Order-title" :href="`/order-detail/${order.id}/`">
                       Заказ&#32;
                       <span class="Order-numberOrder">№${order.id}$</span>
-                      &#32;от&#32;<span class="Order-dateOrder">${order.createdAt}$</span>
+                      &#32;от&#32;<span class="Order-dateOrder">${new Date(order.createdAt).toLocaleString('ru-RU')}$</span>
                     </a>
                   </div>
                   <div class="row-block">
                     <div class="Order-info Order-info_delivery">
                       <div class="Order-infoType">Тип доставки:</div>
-                      <div class="Order-infoContent">${order.deliveryType}$</div>
+                      <div class="Order-infoContent">${deliveryTypes[order.deliveryType]}$</div>
                     </div>
                     <div class="Order-info Order-info_pay">
                       <div class="Order-infoType">Оплата:</div>
-                      <div class="Order-infoContent">${order.paymentType}$</div>
+                      <div v-if="order.paid" class="Order-infoContent">Оплачено</div>
+                      <div v-else class="Order-infoContent">Не оплачено</div>
                     </div>
                     <div class="Order-info">
                       <div class="Order-infoType">Общая стоимость:
@@ -69,7 +70,7 @@
                     </div>
                     <div class="Order-info Order-info_status">
                       <div class="Order-infoType">Статус:</div>
-                      <div class="Order-infoContent">${order.status}$</div>
+                      <div class="Order-infoContent">${orderStatuses[order.status]}$</div>
                     </div>
                   </div>
                 </div>
