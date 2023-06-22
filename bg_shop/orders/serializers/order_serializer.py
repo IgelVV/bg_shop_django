@@ -12,8 +12,6 @@ import orders.serializers.ordered_product_serializer \
 from common import serializers as common_serializers
 
 
-# ._state.fields_cache
-# ._prefetched_objects_cache
 class OrderSerializer(drf_serializers.ModelSerializer):
     """
     Following fields should be prefetched

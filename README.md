@@ -25,6 +25,15 @@ celery -A bg_shop worker -l info
 py manage.py runserver
 ```
 
+## Dev Notes
+- get select related cache
+```python
+obj._state.fields_cache
+``` 
+- get prefetch related cache
+```python
+obj._prefetched_objects_cache
+```
 
 ## Name
 
