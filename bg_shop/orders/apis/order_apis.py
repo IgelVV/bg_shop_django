@@ -6,9 +6,6 @@ from rest_framework import request as drf_request
 from orders import services, serializers, selectors, tasks
 from account import validators as acc_validators
 
-import orders.serializers.ordered_product_serializer \
-    as ordered_product_serializer
-
 
 class OrdersApi(views.APIView):
     class PostOutputSerializer(drf_serializers.Serializer):
@@ -45,8 +42,8 @@ class OrdersApi(views.APIView):
         :param kwargs:
         :return:
         """
-        input_serializer = ordered_product_serializer\
-            .OrderedProductInputSerializer(data=request.data, many=True)
+        input_serializer = serializers.OrderedProductInputSerializer(
+            data=request.data, many=True)
         input_serializer.is_valid(raise_exception=True)
         validated_data = input_serializer.validated_data
 
@@ -77,7 +74,7 @@ class OrderDetailApi(views.APIView):
         status = drf_serializers.CharField()
         city = drf_serializers.CharField()
         address = drf_serializers.CharField()
-        products = ordered_product_serializer.OrderedProductInputSerializer(
+        products = serializers.OrderedProductInputSerializer(
             many=True, required=False)
 
     permission_classes = (permissions.IsAuthenticated,)
