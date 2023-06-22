@@ -5,7 +5,7 @@ from django.db import models as db_models
 
 from rest_framework import serializers as drf_serializers
 
-from orders import models, services
+from orders import models, services, selectors
 import orders.serializers.ordered_product_serializer \
     as ordered_product_serializer
 
@@ -35,6 +35,7 @@ class OrderOutputSerializer(drf_serializers.ModelSerializer):
             "email",
             "phone",
             "deliveryType",
+            "deliveryCost",
             "totalCost",
             "status",
             "paid",
@@ -49,10 +50,13 @@ class OrderOutputSerializer(drf_serializers.ModelSerializer):
     phone = drf_serializers.CharField(
         source="user.profile.phone_number", allow_null=True)
     deliveryType = drf_serializers.CharField(source="delivery_type")
+    deliveryCost = drf_serializers.SerializerMethodField()
     totalCost = drf_serializers.SerializerMethodField()
     status = drf_serializers.CharField()
     products = ordered_product_serializer.OrderedProductOutputSerializer(
         source="orderedproduct_set", many=True, allow_null=True)
 
     def get_totalCost(self, obj: models.Order) -> Decimal:
-        return services.OrderService().get_total_cost(obj)
+        return selectors.OrderSelector().get_total_cost(order=obj)
+    def get_deliveryCost(self, obj: models.Order) -> Decimal:
+        return selectors.OrderSelector().get_delivery_cost(order=obj)

@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import TypeVar, Optional
 
 from django.contrib.auth.models import AbstractUser
@@ -6,6 +7,7 @@ from django.http import Http404
 
 from orders import models, services
 from orders import filters as order_filters
+from dynamic_config import selectors as dynamic_selectors
 
 UserType = TypeVar('UserType', bound=AbstractUser)
 
@@ -169,4 +171,43 @@ class OrderSelector:
                 order = None
         return order
 
+    def get_total_cost(self, order: models.Order) -> Decimal:
+        main_cost = self.get_order_main_cost(order=order)
+        is_express = order.delivery_type == models.Order.DeliveryTypes.EXPRESS
+        delivery_cost = self.get_delivery_cost(
+            main_cost=main_cost,
+            is_express=is_express
+        )
+        total_cost = main_cost + delivery_cost
+        return total_cost
+
+    def get_order_main_cost(self, order: models.Order) -> Decimal:
+        """Cost of ordered products"""
+        cost = Decimal()
+        for ordered_prod in order.orderedproduct_set.all():
+            cost += ordered_prod.price * ordered_prod.count
+        return cost
+
+    def get_delivery_cost(
+            self,
+            main_cost: Optional[Decimal] = None,
+            is_express: Optional[bool] = None,
+            order: Optional[models.Order] = None,
+    ) -> Decimal:
+        """If `order` arg is passed, finds other args value from order obj."""
+        if order and ((is_express is not None) or (main_cost is not None)):
+            raise AttributeError("It's prohibited to pass `order` "
+                                 "with alter args")
+        if order:
+            is_express = (
+                order.delivery_type == models.Order.DeliveryTypes.EXPRESS
+            )
+            main_cost = self.get_order_main_cost(order=order)
+        conf_selector = dynamic_selectors.AdminConfigSelector()
+        delivery_cost = Decimal(0)
+        if main_cost < conf_selector.boundary_of_free_delivery:
+            delivery_cost += conf_selector.ordinary_delivery_cost
+        if is_express:
+            delivery_cost += conf_selector.express_delivery_extra_charge
+        return delivery_cost
 

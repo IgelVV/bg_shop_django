@@ -1,8 +1,6 @@
-from decimal import Decimal
 from typing import Optional, TypeVar, Any
 
 from django.db import models as db_models
-from django.db import transaction
 from django.contrib.auth.models import AbstractUser
 
 from orders import models, selectors
@@ -39,12 +37,6 @@ class OrderService:
                 raise AttributeError(
                     f"'Order' object has no attribute '{name}'")
         return order
-
-    def get_total_cost(self, order: models.Order) -> Decimal:
-        total_cost = Decimal()
-        for ordered_prod in order.orderedproduct_set.all():
-            total_cost += ordered_prod.price * ordered_prod.count
-        return total_cost
 
     def edit(
             self,
