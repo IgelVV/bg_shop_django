@@ -15,6 +15,7 @@ var mix = {
 					this.paymentType = data.paymentType
 					this.status = data.status
 					this.totalCost = data.totalCost
+					this.paid = data.paid
 					this.products = data.products
 					console.log(this.products)
 					if (typeof data.paymentError !== 'undefined') {
@@ -87,6 +88,7 @@ var mix = {
 			paymentType: null,
 			status: null,
 			totalCost: null,
+			paid: null,
 			products: [],
 			paymentError: null,
 		}
