@@ -161,7 +161,7 @@
                       <div class="Order-info Order-info_delivery">
                         <div class="Order-infoType">Тип доставки:
                         </div>
-                        <div class="Order-infoContent">${ deliveryType }$
+                        <div class="Order-infoContent">${ deliveryTypes[deliveryType] }$
                         </div>
                       </div>
                       <div class="Order-info">
@@ -176,10 +176,14 @@
                         <div class="Order-infoContent">${ address }$
                         </div>
                       </div>
+                      <div class="Order-info">
+                        <div class="Order-infoType">Комментарий:</div>
+                        <div class="Order-infoContent">${comment}$</div>
+                      </div>
                       <div class="Order-info Order-info_pay">
                         <div class="Order-infoType">Оплата:
                         </div>
-                        <div class="Order-infoContent">${ paymentType }$
+                        <div class="Order-infoContent">${ paymentTypes[paymentType] }$
                         </div>
                       </div>
                     </div>

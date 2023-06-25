@@ -65,10 +65,7 @@
                     </div>
                     <div class="Order-info Order-info_pay">
                       <div class="Order-infoType">Тип оплаты:</div>
-                      <div v-if="paymentType==='SO'" class="Order-infoContent">Случайно</div>
-                      <div v-else-if="paymentType==='ON'" class="Order-infoContent">Онлайн</div>
-                      <div v-else-if="paymentType==='CA'" class="Order-infoContent">При получении</div>
-                      <div v-else class="Order-infoContent">Не указано</div>
+                      <div class="Order-infoContent">${paymentTypes[paymentType]}$</div>
                     </div>
                     <div class="Order-info Order-info_pay">
                       <div class="Order-infoType">Оплата:</div>
