@@ -19,6 +19,7 @@
     </div>
     <div class="Section">
       <div class="wrap">
+        <h2 v-if="isBasketEmpty()">Корзина пуста</h2>
         <form class="form Cart" @submit.prevent="">
           {% csrf_token %}
           <!-- Данные по товару в корзине -->

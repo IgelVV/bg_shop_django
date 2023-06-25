@@ -10,7 +10,10 @@ var mix = {
         },
         goLogin () {
             location.assign(`/sign-in/`)
-        }
+        },
+        isBasketEmpty () {
+            return JSON.stringify(this.basket) === '{}'
+        },
     },
     mounted() {},
     data() {
