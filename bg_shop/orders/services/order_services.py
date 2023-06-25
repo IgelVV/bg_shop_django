@@ -136,6 +136,18 @@ class OrderService:
                 "Order.delivery_type must be: "
                 "'express'('EX') or 'ordinary'('OR')")
 
+        payment_type = order_data["paymentType"]
+        if payment_type == "ON":
+            order_attrs["payment_type"] = models.Order.PaymentTypes.ONLINE
+        elif payment_type == "SO":
+            order_attrs["payment_type"] = models.Order.PaymentTypes.SOMEONE
+        elif payment_type == "CA":
+            order_attrs["payment_type"] = models.Order.PaymentTypes.CASH
+        else:
+            raise ValueError(
+                "Order.payment_type must be: "
+                "'ON'(online), or 'SO'(someone), or 'CA'(cash)")
+
         order_attrs["city"] = order_data.get("city", None)
         order_attrs["address"] = order_data["address"]
         order_attrs["comment"] = order_data.get("comment", None)

@@ -34,7 +34,8 @@ class OrdersApi(views.APIView):
         # todo orderedproducts must contain actual prices after this method
         #  it displayed on order-detail page
         """
-        Create new order. request body - basket[ordered product].
+        Create new order (with ordered products information only).
+        request body - basket[ordered product].
         It does not really create new Order, if cart exists,
         but changes status of existing Order that is used as cart,
         and updates data about products.
