@@ -42,6 +42,7 @@ class OrderOutputSerializer(drf_serializers.ModelSerializer):
             "paymentType",
             "city",
             "address",
+            "comment",
             "products",
         )
 
