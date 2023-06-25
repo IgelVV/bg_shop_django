@@ -106,16 +106,22 @@
               <div class="form-group">
                 <div>
                   <label class="toggle">
-                    <input type="radio" v-model="paymentType" name="pay" value="online" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Онлайн картой</span>
+                    <input type="radio" v-model="paymentType" name="pay" value="ON" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Онлайн картой</span>
                   </label>
                 </div>
                 <div>
                   <label class="toggle">
-                    <input type="radio" v-model="paymentType" name="pay" value="someone"/><span class="toggle-box"></span><span class="toggle-text">Онлайн со случайного чужого счета</span>
+                    <input type="radio" v-model="paymentType" name="pay" value="SO"/><span class="toggle-box"></span><span class="toggle-text">Онлайн со случайного чужого счета</span>
                   </label>
                 </div>
               </div>
-              <div class="Order-footer"><a class="btn btn_success Order-next" href="#step4">Дальше</a>
+              <div class="Order-footer">
+<!--                добавить обращение к апи patch для получения расчета стоимости товара-->
+<!--                <button class="btn btn_primary" @click="addToBasket(product, count)">-->
+<!--                  <img class="btn-icon" src="/static/frontend/assets/img/icons/card/cart_white.svg" alt="cart_white.svg"/>-->
+<!--                  <span class="btn-content">Add To Cart</span>-->
+<!--                </button>-->
+                <a class="btn btn_success Order-next" href="#step4">Дальше</a>
               </div>
             </div>
             <div class="Order-block" id="step4">
@@ -203,11 +209,17 @@
 
                   <div class="Cart-total">
                     <div class="Cart-block Cart-block_total">
-                      <strong class="Cart-title">Итого:</strong>
-                      <span class="Cart-price">${ products.reduce((acc, el) => {return acc += (el.price * el.count)}, 0).toFixed(2) }$$</span>
+                      <strong class="Cart-title">
+<!--                        Итого:-->
+                      </strong>
+                      <span class="Cart-price">
+<!--                        ${totalCost}$$-->
+                      </span>
+<!--                      <strong class="Cart-title">Итого:</strong>-->
+<!--                      <span class="Cart-price">${ products.reduce((acc, el) => {return acc += (el.price * el.count)}, 0).toFixed(2) }$$</span>-->
                     </div>
                     <div class="Cart-block">
-                      <button class="btn btn_primary btn_lg" type="submit">Оплатить</button>
+                      <button class="btn btn_primary btn_lg" type="submit">Подтвердить</button>
                     </div>
                   </div>
                 </div>
