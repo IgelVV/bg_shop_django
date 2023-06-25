@@ -21,6 +21,11 @@ class Order(models.Model):
         REJECTED = "RJ", _("rejected")
         COMPLETED = "CO", _("completed")
 
+    class PaymentTypes(models.TextChoices):
+        ONLINE = "ON", _("online")
+        CASH = "CA", _("cash")
+        SOMEONE = "SO", _("someone")  # just for fake payment
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -69,6 +74,12 @@ class Order(models.Model):
         ),
     )
     paid = models.BooleanField(default=False, verbose_name=_("paid"))
+    payment_type = models.CharField(
+        max_length=2,
+        choices=PaymentTypes.choices,
+        default=PaymentTypes.ONLINE,
+        verbose_name=_("payment_type"),
+    )
 
 
 class OrderedProduct(models.Model):
