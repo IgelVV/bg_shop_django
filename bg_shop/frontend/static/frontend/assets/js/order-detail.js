@@ -12,6 +12,7 @@ var mix = {
 					this.deliveryType = data.deliveryType
 					this.city = data.city
 					this.address = data.address
+					this.comment = data.comment
 					this.paymentType = data.paymentType
 					this.status = data.status
 					this.deliveryCost = data.deliveryCost
@@ -81,6 +82,7 @@ var mix = {
 			deliveryType: null,
 			city: null,
 			address: null,
+			comment: null,
 			paymentType: null,
 			status: null,
 			deliveryCost: null,
