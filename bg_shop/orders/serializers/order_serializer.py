@@ -39,6 +39,7 @@ class OrderOutputSerializer(drf_serializers.ModelSerializer):
             "totalCost",
             "status",
             "paid",
+            "paymentType",
             "city",
             "address",
             "products",
@@ -53,6 +54,7 @@ class OrderOutputSerializer(drf_serializers.ModelSerializer):
     deliveryCost = drf_serializers.SerializerMethodField()
     totalCost = drf_serializers.SerializerMethodField()
     status = drf_serializers.CharField()
+    paymentType = drf_serializers.CharField(source="payment_type")
     products = ordered_product_serializer.OrderedProductOutputSerializer(
         source="orderedproduct_set", many=True, allow_null=True)
 
