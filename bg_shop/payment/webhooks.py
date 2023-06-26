@@ -10,7 +10,7 @@ from payment import models, enums
 
 
 @csrf_exempt
-def stripe_webhook(request):
+def payment_webhook(request):
     payload = json.loads(request.body)
     sign = payload.get('PAYMENT_SERVICE_SIGNATURE', None)
     if sign != settings.PAYMENT_SERVICE_SIGNATURE:

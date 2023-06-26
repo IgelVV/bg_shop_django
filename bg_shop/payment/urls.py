@@ -7,5 +7,5 @@ app_name = "payment"
 
 urlpatterns = [
     path('payment/<int:id>/', apis.PaymentApi.as_view(), name="payment"),  # POST
-    path('payment/webhook/', webhooks.stripe_webhook, name="payment-webhook"),  # POST
+    path('payment/webhook/', webhooks.payment_webhook, name="payment-webhook"),  # POST
 ]
