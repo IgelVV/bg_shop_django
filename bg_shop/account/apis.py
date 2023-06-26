@@ -36,7 +36,7 @@ class SignInApi(views.APIView):
         user = authenticate(
             username=data.get('username'), password=data.get('password'))
         if user is None:
-            raise drf_exceptions.APIException(
+            raise drf_exceptions.NotAuthenticated(
                 detail={'username': ['Wrong username or password']},
                 code=status.HTTP_401_UNAUTHORIZED
             )
@@ -70,10 +70,12 @@ class SignUpApi(views.APIView):
         data['first_name'] = data.pop('name')
         user = service.register_user(**data)
         if not user:
-            raise drf_exceptions.APIException(
+            ex = drf_exceptions.APIException(
                 detail={'username': ['This user already exists.']},
                 code=status.HTTP_409_CONFLICT
             )
+            ex.status_code = status.HTTP_409_CONFLICT
+            raise ex
         if user is not None:
             service.login(request, user)
         return drf_response.Response(status=status.HTTP_201_CREATED)
