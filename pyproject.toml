@@ -13,6 +13,7 @@ djangorestframework = "3.14.0"
 Pillow = "9.5.0"
 celery = "^5.3.1"
 requests = "^2.31.0" # to imitate payment service
+python-dotenv = "^1.0.0"
 
 
 [build-system]
