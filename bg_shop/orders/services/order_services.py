@@ -1,6 +1,7 @@
 from typing import Optional, TypeVar, Any
 
 from django.db import models as db_models
+from django.db import transaction
 from django.contrib.auth.models import AbstractUser
 
 from orders import models, selectors
@@ -153,3 +154,17 @@ class OrderService:
         order_attrs["comment"] = order_data.get("comment", None)
         return order_attrs
 
+    def reject(
+            self,
+            order_id: int,
+    ) -> None:
+        order = models.Order.objects.get(pk=order_id)
+
+        with transaction.atomic():
+            order.status = models.Order.Statuses.REJECTED
+            ord_prod_service = ord_prod_services.OrderedProductService()
+            ord_prod_service.return_ordered_products(
+                ord_prod_qs=order.orderedproduct_set.all()
+            )
+            order.full_clean()
+            order.save()

@@ -127,3 +127,14 @@ class OrderedProductService:
                 else:
                     product.count -= ord_prod.count
                     product.save()
+
+    def return_ordered_products(
+            self,
+            ord_prod_qs: db_models.QuerySet[models.OrderedProduct],
+    ) -> None:
+        ord_prod_qs.select_related("product").select_for_update(of=("product"))
+        with transaction.atomic():
+            for ord_prod in ord_prod_qs:
+                product: shop_models.Product = ord_prod.product
+                product.count += ord_prod.count
+                product.save()
