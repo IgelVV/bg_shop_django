@@ -5,7 +5,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 
-from orders.models import Order
+from orders import models as order_models
+from orders import services as order_services
 from payment import models, enums
 
 
@@ -21,7 +22,7 @@ def payment_webhook(request):
     errors = payload.get("errors", None)
     payment_id = payload.get("payment_id", None)
 
-    order = Order.objects.get(pk=order_id)
+    order = order_models.Order.objects.get(pk=order_id)
     if order.paid:
         return HttpResponse(status=409)
     with transaction.atomic():
@@ -36,9 +37,7 @@ def payment_webhook(request):
                 payment.full_clean()
                 payment.save()
             case enums.PaymentStatuses.FAIL.value:
-                order.status = Order.Statuses.REJECTED
-                order.full_clean()
-                order.save()
+                order_services.OrderService().reject(order_id=order_id)
             case _:
                 return HttpResponse(status=400)
     return HttpResponse(status=200)
