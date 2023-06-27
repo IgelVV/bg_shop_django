@@ -21,3 +21,14 @@ services:
         max-size: "200k"
     volumes:
       - ./bg_shop/database:/app/database
+
+#  worker:
+#    build:
+#      context: .
+#    command: celery -A bg_shop worker -l info
+#    volumes:
+#      - ./bg_shop:/bg_shop
+#    links:
+#      - rabbitmq
+#    depends_on:
+#      - rabbitmq
