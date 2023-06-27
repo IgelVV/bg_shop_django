@@ -1,0 +1,18 @@
+[flake8]
+
+max-complexity = 10
+
+# Provide a comma-separated list of glob patterns to exclude from checks.
+exclude =
+    # git folder
+    .git,
+    # python cache
+    __pycache__,
+    # pytest cache
+    .pytest_cache,
+    # mypy cache
+    .mypy_cache
+
+# Provide a comma-separate list of glob patterns to include for checks.
+filename =
+    *.py
