@@ -1,3 +1,5 @@
+"""Api Views for account app."""
+
 from typing import Any
 
 from django.contrib.auth import get_user_model, authenticate, logout
@@ -15,9 +17,11 @@ User = get_user_model()
 
 
 class SignInApi(views.APIView):
-    """Log in"""
+    """Log in."""
 
     class InputSerializer(serializers.Serializer):
+        """For using in POST."""
+
         username = serializers.CharField(max_length=150)
         password = serializers.CharField(max_length=128)
 
@@ -26,7 +30,8 @@ class SignInApi(views.APIView):
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """
-        Logs user in using request credentials
+        Log user in using request credentials.
+
         :param request: DRF request
         :return: DRF response
         """
@@ -46,9 +51,11 @@ class SignInApi(views.APIView):
 
 
 class SignUpApi(views.APIView):
-    """Creates new user and profile"""
+    """Creates new user and profile."""
 
     class InputSerializer(account_serializers.PasswordSerializer):
+        """For using in POST."""
+
         name = serializers.CharField(
             max_length=150, required=False, allow_blank=True)
         username = serializers.CharField(max_length=150)
@@ -59,6 +66,7 @@ class SignUpApi(views.APIView):
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """
         If user is successfully created performs log in.
+
         :param request: DRF request
         :return: DRF response
         :exception APIException: if user already exists
@@ -82,13 +90,15 @@ class SignUpApi(views.APIView):
 
 
 class SignOutApi(views.APIView):
-    """Log out"""
+    """Log out."""
+
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """
-        Performs logging out. If the user has not been logged in,
-        it does nothing and returns 200.
+        Perform logging out.
+
+        If the user has not been logged in, it does nothing and returns 200.
         :param request: DRF request
         :return: DRF response
         """
@@ -97,13 +107,15 @@ class SignOutApi(views.APIView):
 
 
 class ChangePasswordApi(views.APIView):
-    """Change user password, it is prohibited to set the same password"""
+    """Change user password, it is prohibited to set the same password."""
+
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = account_serializers.PasswordSerializer
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """
         Change user password, validates password before sending to service.
+
         :param request: DRF request
         :return: DRF response
         """
@@ -121,13 +133,17 @@ class ChangePasswordApi(views.APIView):
 
 
 class UpdateAvatarApi(views.APIView):
-    """Set new avatar or change it"""
+    """Set new avatar or change it."""
 
     class OutputSerializer(serializers.Serializer):
+        """For displaying data."""
+
         src = serializers.CharField()
         alt = serializers.CharField()
 
     class InputSerializer(serializers.Serializer):
+        """For POST method."""
+
         avatar = serializers.ImageField()
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -136,6 +152,7 @@ class UpdateAvatarApi(views.APIView):
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """
         First, creates new Image and relates to current user.
+
         Second, gets data about new avatar to send back.
         :param request: DRF request
         :return: DRF response
@@ -158,10 +175,19 @@ class UpdateAvatarApi(views.APIView):
 
 
 class ProfileApi(views.APIView):
-    """Provides data about User and related Profile (and Image),
-    allows change it"""
+    """
+    Provides data about User and related Profile.
+
+    Including Image. Allows changing data.
+    """
+
     class OutputSerializer(serializers.Serializer):
-        class AvatarSerializer(serializers.Serializer):  # todo import from common
+        """User and profile info for displaying."""
+
+        # todo import from common
+        class AvatarSerializer(serializers.Serializer):
+            """Image info."""
+
             src = serializers.CharField()
             alt = serializers.CharField(max_length=255)
 
@@ -171,8 +197,11 @@ class ProfileApi(views.APIView):
         avatar = AvatarSerializer(allow_null=True, required=False)
 
     class InputSerializer(serializers.Serializer):
-        # `If you need a nested serializer,use the inline_serializer util.`
+        """User and profile info for changing."""
+
         class AvatarSerializer(serializers.Serializer):
+            """Image info."""
+
             src = serializers.CharField()
             alt = serializers.CharField(max_length=255)
 
@@ -186,7 +215,8 @@ class ProfileApi(views.APIView):
 
     def get(self, request: drf_request.Request) -> drf_response.Response:
         """
-        Provides data about User and related Profile (and Image).
+        Provide data about User and related Profile (and Image).
+
         :param request: DRF request
         :return: DRF response
         """
@@ -199,8 +229,9 @@ class ProfileApi(views.APIView):
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """
-        Changes User and Profile. Splits fullName to put it in the
-        database separately.
+        Change User and Profile.
+
+        Splits fullName to put it in the database separately.
         :param request: DRF request
         :return: DRF response
         """

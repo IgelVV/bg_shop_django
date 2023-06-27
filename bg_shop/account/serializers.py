@@ -1,6 +1,7 @@
 """
-Here are only reusable serializers,
-other ones are nested into ApiViews directly.
+Here are only reusable serializers.
+
+Other ones are nested into ApiViews directly.
 """
 
 from rest_framework import serializers
@@ -9,11 +10,14 @@ from django.core import exceptions
 
 
 class PasswordSerializer(serializers.Serializer):
+    """Provides a validation for password."""
+
     password = serializers.CharField(max_length=128)
 
     def validate(self, data):
         """
-        Validates password using django
+        Validate password using django.
+
         :param data:
         :return:
         """

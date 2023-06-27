@@ -1,5 +1,11 @@
 [flake8]
 
+ignore =
+    ANN002,
+    ANN003,
+    ANN101,
+    ANN102,
+
 max-complexity = 10
 
 # Provide a comma-separated list of glob patterns to exclude from checks.

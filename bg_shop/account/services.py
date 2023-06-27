@@ -1,10 +1,12 @@
+"""Main business logic related to User and Profile models."""
+
 from typing import TypeVar, Optional, Any, Dict
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model, login
 from django.core.files.uploadedfile import UploadedFile
 from django.db import transaction
 
-from  rest_framework import request as drf_request
+from rest_framework import request as drf_request
 
 from django.db import utils
 
@@ -18,6 +20,8 @@ User: UserType = get_user_model()
 
 # todo учитывать что пользователь может быть is_active=False
 class AccountService:
+    """To change User and profile data."""
+
     @staticmethod
     @transaction.atomic
     def register_user(
@@ -27,6 +31,7 @@ class AccountService:
     ) -> Optional[UserType]:
         """
         Try to create user, if it already exists returns None.
+
         If new user created, also creates Profile.
         :param username: str
         :param password: str
@@ -49,6 +54,7 @@ class AccountService:
         # todo perform validation in
         """
         Change user password, it is prohibited to set the same password.
+
         It is possible to set any password,
         so the password should be validated.
         :param user: the user who changes password
@@ -63,8 +69,9 @@ class AccountService:
     @transaction.atomic
     def update_avatar(self, user: UserType, avatar: UploadedFile) -> None:
         """
-        Creates new Image and binds with user's profile. Deletes previous
-        avatar.
+        Create new Image and binds with user's profile.
+
+        Deletes previous avatar.
         :param user: User obj
         :param avatar: Image
         :return: None
@@ -81,7 +88,9 @@ class AccountService:
     def get_or_create_profile(
             user: UserType, commit: bool = True) -> Profile:
         """
-        Use to get profile that related to user. The preferred way to create.
+        Use to get profile that related to user.
+
+        The preferred way to create.
         If commit is False, returns unsaved model to fill and save later.
         empty profile.
         :param user: User obj to bind new Profile or get from
@@ -109,7 +118,8 @@ class AccountService:
             **kwargs,
     ) -> None:
         """
-        Changes User model and related Profile.
+        Change User model and related Profile.
+
         If avatar = None, deletes Image that is related to profile,
         otherwise does nothing with avatar field.
         :param user:
@@ -140,7 +150,9 @@ class AccountService:
             **kwargs
     ) -> None:
         """
-        Transfers cart from anonymous session to new one
+        Do log-in.
+
+        Transfer cart from anonymous session to new one
         when user is logging in.
         :param request:
         :param user:
@@ -150,6 +162,5 @@ class AccountService:
         """
         cart_service = order_services.CartService(request=request)
         anonymous_cart = cart_service.cart
-        login(request=request, user=user, *args, **kwargs,)
+        login(*args, request=request, user=user, **kwargs,)
         cart_service.merge_carts(session_cart=anonymous_cart)
-
