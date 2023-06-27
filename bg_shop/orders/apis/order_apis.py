@@ -1,3 +1,9 @@
+"""
+Api Views related to Orders.
+
+Except of Orders that used as Cart.
+"""
+
 from rest_framework import status, permissions, views
 from rest_framework import serializers as drf_serializers
 from rest_framework import response as drf_response
@@ -8,7 +14,16 @@ from account import validators as acc_validators
 
 
 class OrdersApi(views.APIView):
+    """
+    Not for specific orders.
+
+    GET: order history.
+    POST: create new order.
+    """
+
     class PostOutputSerializer(drf_serializers.Serializer):
+        """Info about created order."""
+
         orderId = drf_serializers.IntegerField(source="pk")
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -18,8 +33,14 @@ class OrdersApi(views.APIView):
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
-        """Get all (active, not CART status) orders of user as a history"""
+        """
+        Order History of user.
 
+        Get all (active, not status.CART) orders of user as a history.
+        :param request:
+        :param kwargs:
+        :return:
+        """
         selector = selectors.OrderSelector()
         orders = selector.get_order_history(user=request.user)
         serializer = serializers.OrderOutputSerializer(orders, many=True)
@@ -34,11 +55,16 @@ class OrdersApi(views.APIView):
         # todo orderedproducts must contain actual prices after this method
         #  it displayed on order-detail page
         """
-        Create new order (with ordered products information only).
-        request body - basket[ordered product].
+        Create new order.
+
+        Contains ordered products information only
+        (request body - basket[ordered product]).
         It does not really create new Order, if cart exists,
         but changes status of existing Order that is used as cart,
         and updates data about products.
+
+        It is necessary to confirm order after creating, and add order info
+        (e.g. delivery_address)
         :param request:
         :param kwargs:
         :return:
@@ -60,8 +86,20 @@ class OrdersApi(views.APIView):
 
 
 class OrderDetailApi(views.APIView):
+    """
+    Interaction with a specific order.
+
+    GET: info about order.
+    POST: confirm order.
+    """
+
     class InputSerializer(drf_serializers.Serializer):
-        """Order[OrderedProduct]"""
+        """
+        Order data with detail ordered_product data.
+
+        Order[OrderedProduct].
+        """
+
         id = drf_serializers.IntegerField()
         createdAt = drf_serializers.DateTimeField()
         fullName = drf_serializers.CharField(max_length=300)
@@ -88,7 +126,10 @@ class OrderDetailApi(views.APIView):
             **kwargs
     ) -> drf_response.Response:
         """
-        Get order. Url args: <int: id> -Order id.
+        Get order.
+
+        User can request only his orders (or 404).
+        Url args: <int: id> - Order id.
         :param request:
         :param kwargs:
         :return:
@@ -109,8 +150,12 @@ class OrderDetailApi(views.APIView):
             **kwargs
     ) -> drf_response.Response:
         """
-        Confirm order. Url args: <int: id> -Order id.
-        Request body: Order
+        Confirm order.
+
+        Order to confirm must already exist and have EDITING status.
+        Invokes task.
+        Url args: <int: id> - Order id.
+        Request body: Order[OrderedProduct]
         :param request:
         :param kwargs:
         :return:

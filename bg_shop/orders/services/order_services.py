@@ -1,3 +1,5 @@
+"""Business logic related to Order."""
+
 from typing import Optional, TypeVar, Any
 
 from django.db import models as db_models
@@ -12,7 +14,16 @@ UserType = TypeVar('UserType', bound=AbstractUser)
 
 
 class OrderService:
-    def create_order(self, *, commit: bool = True, **attrs):
+    """Business logic related to Order."""
+
+    def create_order(self, *, commit: bool = True, **attrs) -> models.Order:
+        """
+        Create new Order with passed attributes.
+
+        :param commit: if True, full_clean() and save()
+        :param attrs: fields with values to set in new Order.
+        :return: created Order.
+        """
         new_order = models.Order()
         new_order = self._set_attributes(new_order, **attrs)
         if commit:
@@ -25,8 +36,11 @@ class OrderService:
             **attrs,
     ) -> models.Order:
         """
-        Set new attributes for Order obj. passed in arguments,
-        if they are acceptable. Does not save the object.
+        Set attributes for Order obj.
+
+        Set values for Order's fields passed in arguments,
+        if they are acceptable.
+        Does not save the object.
         :param order: instance of Order to change
         :param attrs: attrs for Order to set
         :return: the same object
@@ -47,17 +61,21 @@ class OrderService:
             commit: bool = True,
     ) -> models.Order:
         """
+        Edit Order.
+
+        Changes order status to `EDITING`, and updates passed params of order.
         order_attrs_example = {
             "delivery_type": "EX",
             "city": "Moscow",
             "address": "red square 1",
             "comment": "",
         }
-        :param order:
-        :param order_attrs:
-        :param products:
-        :param commit:
-        :return:
+        :param order: Order obj.
+        :param order_attrs: {field: value,}
+        :param products: list of dictionary with information about product
+        (from serializer).
+        :param commit: If True, full_clean(), save().
+        :return: Order (with status = Editing).
         """
         order.status = models.Order.Statuses.EDITING
         if order_attrs:
@@ -74,6 +92,15 @@ class OrderService:
             order: models.Order,
             products: list[dict],
     ) -> None:
+        """
+        Update OrderedProducts related to the Order.
+
+        After this method OrderedProduct and `products` will match each other.
+        :param order: Order obj.
+        :param products: information about Products related to OrderedProducts
+            (main info is: id, count)
+        :return: None
+        """
         ordered_product_service = ord_prod_services.OrderedProductService()
         simple_products = self._simplify_products(products=products)
         ordered_products: db_models.QuerySet[models.OrderedProduct] = \
@@ -92,6 +119,12 @@ class OrderService:
                 order=order, product_id=product_id, quantity=count)
 
     def _simplify_products(self, products: list[dict]) -> dict[int, int]:
+        """
+        Parse important information.
+
+        :param products: info about product in order.
+        :return: important product info.
+        """
         # todo it should be in serializer maybe (or create parse method)
         simple_products = {}
         for product in products:
@@ -104,6 +137,16 @@ class OrderService:
             user: UserType,
             order_data: dict,
     ) -> None:
+        """
+        Confirm Order.
+
+        Updates Order data, deduct product items, update price of
+        ordered products, and sets Order.status = ACCEPTED.
+        :param order_id: Order.pk
+        :param user: User obj.
+        :param order_data: {field: value,}
+        :return: None
+        """
         # todo with transaction atomic
         selector = selectors.OrderSelector()
         ordered_product_service = ord_prod_services.OrderedProductService()
@@ -125,6 +168,12 @@ class OrderService:
         order.save()
 
     def _parse_order_data(self, order_data: dict) -> dict:
+        """
+        Parse only important info for Order.
+
+        :param order_data: All info from input serializer.
+        :return: important info {field: value}
+        """
         order_attrs: dict[str, Any | None] = dict()
 
         delivery_type = order_data["deliveryType"]
@@ -158,6 +207,15 @@ class OrderService:
             self,
             order_id: int,
     ) -> None:
+        """
+        Reject Order.
+
+        If payment operation is not successful.
+        Roll back deduction of products that were reserved
+        when order was confirmed.
+        :param order_id:
+        :return:
+        """
         order = models.Order.objects.get(pk=order_id)
 
         with transaction.atomic():

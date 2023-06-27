@@ -1,3 +1,5 @@
+"""To get data related to OrderedProduct."""
+
 from typing import Optional
 
 from django.db import models as db_models
@@ -6,6 +8,8 @@ from orders import models
 
 
 class OrderedProductSelector:
+    """To get data related to OrderedProduct."""
+
     def get_ordered_product_from_order(
             self,
             *,
@@ -14,11 +18,14 @@ class OrderedProductSelector:
             product_id: int,
     ) -> Optional[models.OrderedProduct]:
         """
+        Get OrderedProduct related to the Product and the Order.
 
-        :param order:
-        :param order_id:
-        :param product_id:
-        :return:
+        It allowed to pass or `order`, or `order_id` not both.
+        :param order: Order obj.
+        :param order_id: pk of Order obj.
+        :param product_id: pk of Product.
+        :return: OrderedProduct obj
+            or None.
         """
         if (order and order_id) or not (order or order_id):
             raise ValueError(

@@ -1,9 +1,11 @@
+"""To get data about Orders."""
+
 from decimal import Decimal
 from typing import TypeVar, Optional
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models as db_models
-from django.http import Http404
+from django import http
 
 from orders import models, services
 from orders import filters as order_filters
@@ -13,11 +15,19 @@ UserType = TypeVar('UserType', bound=AbstractUser)
 
 
 class OrderSelector:
+    """Contains methods for getting information about Orders."""
+
     def get_orders(
             self,
             *,
             filters: Optional[dict] = None,
     ) -> db_models.QuerySet[models.Order]:
+        """
+        Get Order queryset.
+
+        :param filters: dict of filter conditions (e.g. {user_id: 1,})
+        :return: queryset of Orders.
+        """
         orders = models.Order.objects.all()
         if filters:
             orders = order_filters.BaseOrderFilter(
@@ -29,6 +39,14 @@ class OrderSelector:
             user: UserType,
             prefetch_ordered_products: bool = True,
     ) -> models.Order:
+        """
+        Get or create Order related to user, with status=CART.
+
+        :param user: User object.
+        :param prefetch_ordered_products: if True prefetches
+            related ordered products.
+        :return: Order.
+        """
         order = self.get_cart_order(
             user=user, prefetch_ordered_products=prefetch_ordered_products)
         if order:
@@ -44,9 +62,12 @@ class OrderSelector:
             prefetch_ordered_products: bool = True
     ) -> Optional[models.Order]:
         """
-        :param user:
-        :param prefetch_ordered_products:
-        :return:
+        Get Order related to user, with status=CART.
+
+        :param user: User object.
+        :param prefetch_ordered_products: if True prefetches
+            related ordered products.
+        :return: Order.
         """
         qs = models.Order.objects.filter(
             user_id=user.pk,
@@ -63,7 +84,13 @@ class OrderSelector:
             user: UserType,
             exclude_cart: bool = True,
     ) -> db_models.QuerySet[models.Order]:
-        """"""
+        """
+        Get all active Orders related to user.
+
+        :param user: User object.
+        :param exclude_cart: if True, excludes Orders with CART statuses.
+        :return: queryset of Orders.
+        """
         orders = models.Order.objects \
             .filter(user=user) \
             .filter(is_active=True)
@@ -77,10 +104,13 @@ class OrderSelector:
             order_by_date: bool = True,
     ) -> db_models.QuerySet[models.Order]:
         """
+        Get all active Orders related to user for api response.
 
-        :param user:
-        :param order_by_date:
-        :return:
+        Prefetches related objects.
+        :param user: User obj.
+        :param order_by_date: if True, sorts Orders by created_at descending.
+        :return: queryset of Orders (prefetched: orderedproduct_set',
+            'product', 'sale_set', 'images', 'review_set', 'user', 'profile'.).
         """
         orders = self.get_orders_of_user(user=user)
         if order_by_date:
@@ -99,14 +129,18 @@ class OrderSelector:
             with_user_profile: bool = False,
     ) -> db_models.QuerySet[models.Order]:
         """
+        Prefetch related data.
+
         Does prefetch_related for 'orderedproduct_set'
-        and 'product' related with them.
+        and 'product' related with them, also 'sale_set' of each product.
         Optionally, also prefetches 'images', 'review_set' related with product
         and 'user' and 'profile' related with Order.
-        :param orders_qs:
-        :param with_images_and_reviews:
-        :param with_user_profile:
-        :return:
+        :param orders_qs: queryset of Orders
+        :param with_images_and_reviews: if True, prefetches 'product__images'
+            and 'product__review_set'.
+        :param with_user_profile: if True, deos select_related 'user__profile'.
+        :return: queryset of Orders (prefetched: orderedproduct_set',
+            'product', 'sale_set', 'images', 'review_set', 'user', 'profile'.).
         """
         ordered_products_prefetch_qs = models.OrderedProduct.objects \
             .select_related('product') \
@@ -118,11 +152,11 @@ class OrderSelector:
 
         orders_qs = orders_qs \
             .prefetch_related(
-            db_models.Prefetch(
-                'orderedproduct_set',
-                queryset=ordered_products_prefetch_qs
+                db_models.Prefetch(
+                    'orderedproduct_set',
+                    queryset=ordered_products_prefetch_qs
+                )
             )
-        )
         if with_user_profile:
             orders_qs = orders_qs.select_related("user__profile")
         return orders_qs
@@ -133,10 +167,14 @@ class OrderSelector:
             user: UserType,
     ) -> Optional[models.Order]:
         """
-        return ony if this order related with the user
-        :param order_id:
-        :param user:
-        :return:
+        Get Order by id only if this order related with the user.
+
+        Prefetches related objects.
+        :param order_id: pk.
+        :param user: User obj.
+        :return: Order (prefetched: orderedproduct_set',
+            'product', 'sale_set', 'images', 'review_set', 'user', 'profile'.)
+            or None (if not found).
         """
         orders = self.get_orders_of_user(user=user)
         orders = self._prefetch_data(
@@ -156,6 +194,16 @@ class OrderSelector:
             user: UserType,
             or_404: bool = True,
     ) -> Optional[models.Order]:
+        """
+        Get Order with status EDITING and related to user.
+
+        :param order_id: pk.
+        :param user: User obj.
+        :param or_404: if True, raise Http404 when the Order not found.
+        :return: Order (prefetched: orderedproduct_set',
+            'product', 'sale_set'.)
+            or None (if not found).
+        """
         orders = self.get_orders_of_user(user=user)
         orders = orders.filter(status=models.Order.Statuses.EDITING)
         orders = self._prefetch_data(orders_qs=orders)
@@ -163,7 +211,7 @@ class OrderSelector:
             order = orders.get(pk=order_id)
         except models.Order.DoesNotExist:
             if or_404:
-                raise Http404(
+                raise http.Http404(
                     f"Order (id={order_id}) related with {user} doesn't "
                     f"have status EDITING or doesn't exist."
                 )
@@ -172,6 +220,15 @@ class OrderSelector:
         return order
 
     def get_total_cost(self, order: models.Order) -> Decimal:
+        """
+        Calculate total cost of Order.
+
+        Main total cost - cost of all ordered products (
+            taking into account discounts),
+        Delivery cost - depends on DynamicConfig.
+        :param order: Order.
+        :return: price of entire order.
+        """
         main_cost = self.get_order_main_cost(order=order)
         is_express = order.delivery_type == models.Order.DeliveryTypes.EXPRESS
         delivery_cost = self.get_delivery_cost(
@@ -182,7 +239,13 @@ class OrderSelector:
         return total_cost
 
     def get_order_main_cost(self, order: models.Order) -> Decimal:
-        """Cost of ordered products"""
+        """
+        Calculate cost of ordered products.
+
+        Taking into account discounts.
+        :param order: Order.
+        :return: sum of all prices of ordered items.
+        """
         cost = Decimal()
         for ordered_prod in order.orderedproduct_set.all():
             cost += ordered_prod.price * ordered_prod.count
@@ -194,10 +257,26 @@ class OrderSelector:
             is_express: Optional[bool] = None,
             order: Optional[models.Order] = None,
     ) -> Decimal:
-        """If `order` arg is passed, finds other args value from order obj."""
+        """
+        Calculate delivery cost.
+
+        `main_cost` and `is_express` should be passed or `order` instead.
+        :param main_cost: should be passed with `is_express`,
+            if `order` is None.
+        :param is_express: should be passed with `main_cost`,
+            if `order` is None.
+        :param order: Order obj.
+            If `order` arg is passed, finds other args values from passed obj.
+        :return: cost of delivery.
+        """
         if order and ((is_express is not None) or (main_cost is not None)):
             raise AttributeError("It's prohibited to pass `order` "
                                  "with alter args")
+        elif (is_express is None) or (main_cost is not None):
+            raise AttributeError(
+                "If 'order' arg is not passed, "
+                "both 'is_express' and 'main_cost' args are required."
+            )
         if order:
             is_express = (
                 order.delivery_type == models.Order.DeliveryTypes.EXPRESS
@@ -210,4 +289,3 @@ class OrderSelector:
         if is_express:
             delivery_cost += conf_selector.express_delivery_extra_charge
         return delivery_cost
-

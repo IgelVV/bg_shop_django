@@ -1,3 +1,5 @@
+"""Api View related to cart operations."""
+
 from rest_framework import status, permissions, views
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
@@ -8,13 +10,18 @@ from orders import services, selectors, serializers
 
 class CartApi(views.APIView):
     """
-    If user is anonymous saves cart in sessions.
+    Logic related to Cart.
 
+    If user is anonymous saves cart in sessions.
     If user is authenticated, saves cart in Order related with the user
     and that has an editing status, and adds session cart data in the order.
+    When user logs-in, Account app will save session cart as Order with
+    status = CART.
     """
 
     class InputSerializer(drf_serializers.Serializer):
+        """Products info to add to cart."""
+
         id = drf_serializers.IntegerField()
         count = drf_serializers.IntegerField()
 
@@ -25,7 +32,13 @@ class CartApi(views.APIView):
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
-        """Get items in basket"""
+        """
+        Get items in basket.
+
+        :param request:
+        :param kwargs:
+        :return:
+        """
         selector = selectors.CartSelector(request=request)
         cart = selector.get_cart()
         output_serializer = serializers.CartSerializer(cart, many=True)
@@ -39,7 +52,8 @@ class CartApi(views.APIView):
             **kwargs
     ) -> drf_response.Response:
         """
-        Add item to basket
+        Add item to basket.
+
         :param request:
         :param kwargs:
         :return:
@@ -66,7 +80,8 @@ class CartApi(views.APIView):
             **kwargs
     ) -> drf_response.Response:
         """
-        Remove item from basket
+        Remove item from basket.
+
         :param request:
         :param kwargs:
         :return:

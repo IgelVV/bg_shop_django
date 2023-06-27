@@ -1,19 +1,18 @@
-from decimal import Decimal
-from typing import Optional, Union
+"""Reusable serializers representing Order."""
 
-from django.db import models as db_models
+from decimal import Decimal
 
 from rest_framework import serializers as drf_serializers
 
-from orders import models, services, selectors
+from orders import models, selectors
 import orders.serializers.ordered_product_serializer \
     as ordered_product_serializer
-
-from common import serializers as common_serializers
 
 
 class OrderOutputSerializer(drf_serializers.ModelSerializer):
     """
+    For representing Order model with related objects.
+
     Following fields should be prefetched
         - orderedproduct_set
             - product (select_related)
@@ -26,6 +25,7 @@ class OrderOutputSerializer(drf_serializers.ModelSerializer):
         Prefetch('orderedproduct_set', queryset=OrderedProduct.objects
         .select_related('product').prefetch_related("images"))
     """
+
     class Meta:
         model = models.Order
         fields = (
@@ -60,6 +60,20 @@ class OrderOutputSerializer(drf_serializers.ModelSerializer):
         source="orderedproduct_set", many=True, allow_null=True)
 
     def get_totalCost(self, obj: models.Order) -> Decimal:
+        """
+        Get total cost of Order.
+
+        Main cost + delivery cost.
+        :param obj: Order.
+        :return: total cost.
+        """
         return selectors.OrderSelector().get_total_cost(order=obj)
+
     def get_deliveryCost(self, obj: models.Order) -> Decimal:
+        """
+        Get delivery cost.
+
+        :param obj: Order.
+        :return: delivery cost.
+        """
         return selectors.OrderSelector().get_delivery_cost(order=obj)
