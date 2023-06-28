@@ -9,6 +9,16 @@ class OrderedProductInline(admin.TabularInline):
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     inlines = (OrderedProductInline,)
+    list_display = (
+        "pk",
+        "created_at",
+        "user",
+        "status",
+        "paid",
+        "delivery_type",
+        "is_active",
+    )
+    list_display_links = ('pk', 'created_at',)
 
 
 @admin.register(models.OrderedProduct)
