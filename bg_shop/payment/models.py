@@ -1,8 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 
-from payment import validators
-
 
 class Payment(models.Model):
     class Meta:

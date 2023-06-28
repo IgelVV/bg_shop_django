@@ -1,7 +1,9 @@
+"""Payment system webhooks."""
+
 import json
 
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 
@@ -11,7 +13,15 @@ from payment import models, enums
 
 
 @csrf_exempt
-def payment_webhook(request):
+def payment_webhook(request: HttpRequest) -> HttpResponse:
+    """
+    Handle request from payment system.
+
+    If success, creates Payment for Order and set Order.paid to True,
+    otherwise rejects order.
+    :param request: call from payment system after handling payment.
+    :return: response for payment system.
+    """
     payload = json.loads(request.body)
     sign = payload.get('PAYMENT_SERVICE_SIGNATURE', None)
     if sign != settings.PAYMENT_SERVICE_SIGNATURE:
@@ -19,7 +29,7 @@ def payment_webhook(request):
 
     status = payload.get("status", None)
     order_id = payload.get("order_id", None)
-    errors = payload.get("errors", None)
+    # errors = payload.get("errors", None)
     payment_id = payload.get("payment_id", None)
 
     order = order_models.Order.objects.get(pk=order_id)

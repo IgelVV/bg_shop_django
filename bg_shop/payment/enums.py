@@ -1,3 +1,5 @@
+"""Enums related to Payment."""
+
 from enum import Enum
 
 
