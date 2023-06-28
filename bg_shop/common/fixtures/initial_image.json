@@ -1,0 +1,170 @@
+[
+  {
+    "model": "common.image",
+    "pk": 1,
+    "fields": {
+      "description": "inis",
+      "img": "../static/shop/assets/img/inis.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 2,
+    "fields": {
+      "description": "party games",
+      "img": "../static/shop/assets/img/party_games.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 3,
+    "fields": {
+      "description": "mythology",
+      "img": "../static/shop/assets/img/mythology.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 4,
+    "fields": {
+      "description": "word games",
+      "img": "../static/shop/assets/img/word_games.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 5,
+    "fields": {
+      "description": "avalon",
+      "img": "../static/shop/assets/img/avalon.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 6,
+    "fields": {
+      "description": "everdell",
+      "img": "../static/shop/assets/img/everdell.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 7,
+    "fields": {
+      "description": "wingspan",
+      "img": "../static/shop/assets/img/wingspan.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 8,
+    "fields": {
+      "description": "7 wonders duel",
+      "img": "../static/shop/assets/img/7_wanders_duel.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 9,
+    "fields": {
+      "description": "the castles of burgundy",
+      "img": "../static/shop/assets/img/the_castles_of_burgundy.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 10,
+    "fields": {
+      "description": "dice",
+      "img": "../static/shop/assets/img/pngwing.com_3.png"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 11,
+    "fields": {
+      "description": "spirit island",
+      "img": "../static/shop/assets/img/spirit_island.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 12,
+    "fields": {
+      "description": "war of the ring",
+      "img": "../static/shop/assets/img/war_of_the_ring.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 13,
+    "fields": {
+      "description": "terraforming mars",
+      "img": "../static/shop/assets/img/terraforming_mars.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 14,
+    "fields": {
+      "description": "twiglight imperium",
+      "img": "../static/shop/assets/img/twilight_Imperium.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 15,
+    "fields": {
+      "description": "ark nova",
+      "img": "../static/shop/assets/img/ark_nova.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 16,
+    "fields": {
+      "description": "gloomhaven",
+      "img": "../static/shop/assets/img/gloomhaven.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 17,
+    "fields": {
+      "description": "Pandemic Legacy",
+      "img": "../static/shop/assets/img/pandemic-legacy.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 18,
+    "fields": {
+      "description": "brass",
+      "img": "../static/shop/assets/img/brass.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 19,
+    "fields": {
+      "description": "alias",
+      "img": "../static/shop/assets/img/alias.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 20,
+    "fields": {
+      "description": "codenames",
+      "img": "../static/shop/assets/img/codenames.webp"
+    }
+  },
+  {
+    "model": "common.image",
+    "pk": 21,
+    "fields": {
+      "description": "cat_meme",
+      "img": "../static/shop/assets/img/pngwing.com.png"
+    }
+  }
+]
