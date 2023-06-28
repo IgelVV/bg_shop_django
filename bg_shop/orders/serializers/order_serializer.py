@@ -2,6 +2,7 @@
 
 from decimal import Decimal
 
+from django.db import utils
 from rest_framework import serializers as drf_serializers
 
 from orders import models, selectors
@@ -56,8 +57,16 @@ class OrderOutputSerializer(drf_serializers.ModelSerializer):
     totalCost = drf_serializers.SerializerMethodField()
     status = drf_serializers.CharField()
     paymentType = drf_serializers.CharField(source="payment_type")
-    products = ordered_product_serializer.OrderedProductOutputSerializer(
-        source="orderedproduct_set", many=True, allow_null=True)
+    # products = ordered_product_serializer.OrderedProductOutputSerializer(
+    #     source="orderedproduct_set", many=True, allow_null=True)
+
+    # To avoid exceptions during init migration. Attribute initialisation
+    # causes accessing the database before creating tables
+    try:
+        products = ordered_product_serializer.OrderedProductOutputSerializer(
+            source="orderedproduct_set", many=True, allow_null=True)
+    except utils.OperationalError:
+        products = None
 
     def get_totalCost(self, obj: models.Order) -> Decimal:
         """
