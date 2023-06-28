@@ -272,7 +272,8 @@ class OrderSelector:
         if order and ((is_express is not None) or (main_cost is not None)):
             raise AttributeError("It's prohibited to pass `order` "
                                  "with alter args")
-        elif (is_express is None) or (main_cost is not None):
+        elif (order is None) and (
+                (is_express is None) or (main_cost is None)):
             raise AttributeError(
                 "If 'order' arg is not passed, "
                 "both 'is_express' and 'main_cost' args are required."
