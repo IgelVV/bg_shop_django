@@ -11,4 +11,4 @@ RUN poetry install
 
 COPY bg_shop .
 
-CMD ["python", "manage.py", "runserver",]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
