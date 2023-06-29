@@ -2,6 +2,9 @@ FROM python:3.11
 
 ENV PYTHONUNBUFFERED=1
 
+RUN apt-get update
+RUN apt-get install nano
+
 WORKDIR /app
 
 RUN pip install --upgrade pip "poetry==1.5.1"
