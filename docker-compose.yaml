@@ -3,7 +3,8 @@ version: "3.9"
 services:
   app:
     build:
-      dockerfile: ./Dockerfile
+      context: .
+#      dockerfile: ./Dockerfile
     container_name: app
     command:
       - "python"
@@ -13,10 +14,10 @@ services:
     ports:
       - "8000:8000"
     restart: unless-stopped
-    environment:
-      - "DJANGO_DEBUG=1"  # temporally
-#    env_file:
-#      - .env
+#    environment:
+#      - "DJANGO_DEBUG=1"  # temporally
+    env_file:
+      - .env
     logging:
       driver: "json-file"
       options:
@@ -25,15 +26,22 @@ services:
 #    volumes:
 #      - ./bg_shop/database:/app/database
 #    depends_on:
-#      - app-rabbitmq
+#      - rabbitmq
+#      - worker
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: app-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
-#  worker:
-#    build:
-#      context: .
-#    command: celery -A bg_shop worker -l info
-#    volumes:
-#      - ./bg_shop:/bg_shop
-#    links:
-#      - rabbitmq
-#    depends_on:
-#      - rabbitmq
+  worker:
+    build:
+      context: .
+    container_name: app-worker
+    command: celery -A bg_shop worker -l info
+    volumes:
+      - ./bg_shop:/app
+    network_mode: host
+    depends_on:
+      - rabbitmq
