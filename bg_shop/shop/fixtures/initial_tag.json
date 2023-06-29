@@ -1,0 +1,72 @@
+[
+  {
+    "model": "shop.tag",
+    "pk": 1,
+    "fields": {
+      "name": "hard"
+    }
+  },
+  {
+    "model": "shop.tag",
+    "pk": 2,
+    "fields": {
+      "name": "pretty"
+    }
+  },
+  {
+    "model": "shop.tag",
+    "pk": 3,
+    "fields": {
+      "name": "werwolf"
+    }
+  },
+  {
+    "model": "shop.tag",
+    "pk": 4,
+    "fields": {
+      "name": "familie"
+    }
+  },
+  {
+    "model": "shop.tag",
+    "pk": 5,
+    "fields": {
+      "name": "duel"
+    }
+  },
+  {
+    "model": "shop.tag",
+    "pk": 6,
+    "fields": {
+      "name": "euro"
+    }
+  },
+  {
+    "model": "shop.tag",
+    "pk": 7,
+    "fields": {
+      "name": "4x"
+    }
+  },
+  {
+    "model": "shop.tag",
+    "pk": 8,
+    "fields": {
+      "name": "Dungeon crawler"
+    }
+  },
+  {
+    "model": "shop.tag",
+    "pk": 9,
+    "fields": {
+      "name": "legacy"
+    }
+  },
+  {
+    "model": "shop.tag",
+    "pk": 10,
+    "fields": {
+      "name": "easy"
+    }
+  }
+]
