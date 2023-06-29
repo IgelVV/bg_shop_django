@@ -1,7 +1,11 @@
 # bg_shop_django
 
 ## Installation
-- install poetry
+- install docker
+- install git
+- git clone
+- docker compose up
+- docker exec bash script to load init db data from fixtures `scripts/init_load_data.sh`
 
 ## Dev run
 - starting Docker 
@@ -24,6 +28,45 @@ celery -A bg_shop worker -l info
 ```shell
 py manage.py runserver
 ```
+
+---
+### run Dockerfile (cheat sheet)
+
+- build and run
+```shell
+docker build . -t bg_shop
+```
+```shell
+docker run --rm --name bg -v ./bg_shop/database:/app/database -p 8000:8000 -d -e "DJANGO_DEBUG=1" bg_shop
+```
+or use docker compose
+```shell
+docker compose up --build -d
+```
+
+- open bash interactively
+```shell
+docker exec -it bg bash
+```
+or
+```shell
+docker compose exec -it app bash
+```
+
+- inside container (first run)
+```shell
+bash scripts/init_load_data.sh
+```
+
+- logs 
+```shell
+docker logs bg
+```
+or
+```shell
+docker compose logs -f
+```
+
 
 ## Dev Notes
 - get select related cache
