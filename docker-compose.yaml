@@ -4,6 +4,7 @@ services:
   app:
     build:
       dockerfile: ./Dockerfile
+    container_name: app
     command:
       - "python"
       - "manage.py"
@@ -11,16 +12,20 @@ services:
       - "0.0.0.0:8000"
     ports:
       - "8000:8000"
-    restart: always
-    env_file:
-      - .env
+    restart: unless-stopped
+    environment:
+      - "DJANGO_DEBUG=1"  # temporally
+#    env_file:
+#      - .env
     logging:
       driver: "json-file"
       options:
         max-file: "10"
         max-size: "200k"
-    volumes:
-      - ./bg_shop/database:/app/database
+#    volumes:
+#      - ./bg_shop/database:/app/database
+#    depends_on:
+#      - app-rabbitmq
 
 #  worker:
 #    build:
