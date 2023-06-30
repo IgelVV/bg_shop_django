@@ -197,6 +197,10 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+# Celery
+
+CELERY_BROKER_URL = getenv("CELERY_BROKER", "amqp://guest:guest@rabbitmq:5672//")
+
 # Payment
 
 # Test payment

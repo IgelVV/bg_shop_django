@@ -6,11 +6,9 @@ services:
       context: .
 #      dockerfile: ./Dockerfile
     container_name: app
-    command:
-      - "python"
-      - "manage.py"
-      - "runserver"
-      - "0.0.0.0:8000"
+    command: >
+      bash -c "python manage.py migrate
+      && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     restart: unless-stopped
@@ -25,9 +23,11 @@ services:
         max-size: "200k"
 #    volumes:
 #      - ./bg_shop/database:/app/database
-#    depends_on:
-#      - rabbitmq
-#      - worker
+#      - ./bg_shop/media:/app/media
+    depends_on:
+      - rabbitmq
+      - worker
+
   rabbitmq:
     image: rabbitmq:management
     container_name: app-rabbitmq
@@ -42,6 +42,6 @@ services:
     command: celery -A bg_shop worker -l info
     volumes:
       - ./bg_shop:/app
-    network_mode: host
+#    network_mode: host
     depends_on:
       - rabbitmq
