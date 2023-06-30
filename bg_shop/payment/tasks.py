@@ -41,5 +41,6 @@ def third_party_payment_service(
         body["status"] = enums.PaymentStatuses.FAIL.value
         body["errors"].append("wrong number")
 
+    url = "http://app:8000/api/payment/webhook/"  # temp for testing
     response = requests.post(url, json=body, headers=headers)
     print(response)  # todo add to log

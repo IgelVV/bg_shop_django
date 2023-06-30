@@ -49,5 +49,6 @@ def payment_webhook(request: HttpRequest) -> HttpResponse:
             case enums.PaymentStatuses.FAIL.value:
                 order_services.OrderService().reject(order_id=order_id)
             case _:
+                print(status)  # todo log
                 return HttpResponse(status=400)
     return HttpResponse(status=200)
