@@ -4,7 +4,6 @@ services:
   app:
     build:
       context: .
-#      dockerfile: ./Dockerfile
     container_name: app
     command: >
       bash -c "python manage.py migrate
@@ -12,8 +11,6 @@ services:
     ports:
       - "8000:8000"
     restart: unless-stopped
-#    environment:
-#      - "DJANGO_DEBUG=1"  # temporally
     env_file:
       - .env
     logging:
@@ -21,7 +18,8 @@ services:
       options:
         max-file: "10"
         max-size: "200k"
-#    volumes:
+    volumes:
+      - ./bg_shop:/app/
 #      - ./bg_shop/database:/app/database
 #      - ./bg_shop/media:/app/media
     depends_on:
@@ -34,6 +32,11 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "10"
+        max-size: "200k"
 
   worker:
     build:
@@ -42,6 +45,10 @@ services:
     command: celery -A bg_shop worker -l info
     volumes:
       - ./bg_shop:/app
-#    network_mode: host
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "10"
+        max-size: "200k"
     depends_on:
       - rabbitmq
