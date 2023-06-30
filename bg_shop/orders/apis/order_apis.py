@@ -113,7 +113,7 @@ class OrderDetailApi(views.APIView):
         status = drf_serializers.CharField()
         city = drf_serializers.CharField()
         address = drf_serializers.CharField()
-        comment = drf_serializers.CharField()
+        comment = drf_serializers.CharField(allow_null=True, allow_blank=True)
         products = serializers.OrderedProductInputSerializer(
             many=True, required=False)
 
