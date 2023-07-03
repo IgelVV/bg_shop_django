@@ -1,46 +1,48 @@
-from rest_framework import serializers, status, permissions, views
+"""Api View related to cart operations."""
+
+from rest_framework import status, permissions, views
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
+from rest_framework import serializers as drf_serializers
 
-from django.core.validators import MinValueValidator
-from django.shortcuts import get_object_or_404
-
-from orders import models, services
-from common import serializers as common_serializers
+from orders import services, selectors, serializers
 
 
 class CartApi(views.APIView):
+    """
+    Logic related to Cart.
+
+    If user is anonymous saves cart in sessions.
+    If user is authenticated, saves cart in Order related with the user
+    and that has an editing status, and adds session cart data in the order.
+    When user logs-in, Account app will save session cart as Order with
+    status = CART.
+    """
+
+    class InputSerializer(drf_serializers.Serializer):
+        """Products info to add to cart."""
+
+        id = drf_serializers.IntegerField()
+        count = drf_serializers.IntegerField()
+
+    permission_classes = (permissions.AllowAny,)
+
     def get(
             self,
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
-        response_data = [
-            {
-                "id": 123,
-                "category": 55,
-                "price": 500.67,
-                "count": 11,
-                "date": "Thu Feb 09 2023 21:39:52 GMT+0100 (Central European Standard Time)",
-                "title": "video card",
-                "description": "description of the product",
-                "freeDelivery": True,
-                "images": [
-                    {
-                        "src": "/3.png",
-                        "alt": "Image alt string"
-                    }
-                ],
-                "tags": [
-                    {
-                        "id": 12,
-                        "name": "Gaming"
-                    }
-                ],
-                "reviews": 5,
-                "rating": 4.6
-            }
-        ]
+        """
+        Get items in basket.
+
+        :param request:
+        :param kwargs:
+        :return:
+        """
+        selector = selectors.CartSelector(request=request)
+        cart = selector.get_cart()
+        output_serializer = serializers.CartSerializer(cart, many=True)
+        response_data = output_serializer.data
         return drf_response.Response(
             data=response_data, status=status.HTTP_200_OK)
 
@@ -49,32 +51,26 @@ class CartApi(views.APIView):
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
-        response_data = [
-            {
-                "id": 123,
-                "category": 55,
-                "price": 500.67,
-                "count": 12,
-                "date": "Thu Feb 09 2023 21:39:52 GMT+0100 (Central European Standard Time)",
-                "title": "video card",
-                "description": "description of the product",
-                "freeDelivery": True,
-                "images": [
-                    {
-                        "src": "/3.png",
-                        "alt": "Image alt string"
-                    }
-                ],
-                "tags": [
-                    {
-                        "id": 12,
-                        "name": "Gaming"
-                    }
-                ],
-                "reviews": 5,
-                "rating": 4.6
-            }
-        ]
+        """
+        Add item to basket.
+
+        :param request:
+        :param kwargs:
+        :return:
+        """
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        validated_data = input_serializer.validated_data
+        service = services.CartService(request=request)
+        service.add(
+            product_id=validated_data.get("id"),
+            quantity=validated_data.get("count"),
+        )
+
+        selector = selectors.CartSelector(request=request)
+        cart = selector.get_cart()
+        output_serializer = serializers.CartSerializer(cart, many=True)
+        response_data = output_serializer.data
         return drf_response.Response(
             data=response_data, status=status.HTTP_200_OK)
 
@@ -83,31 +79,25 @@ class CartApi(views.APIView):
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
-        response_data = [
-            {
-                "id": 123,
-                "category": 55,
-                "price": 500.67,
-                "count": 10,
-                "date": "Thu Feb 09 2023 21:39:52 GMT+0100 (Central European Standard Time)",
-                "title": "video card",
-                "description": "description of the product",
-                "freeDelivery": True,
-                "images": [
-                    {
-                        "src": "/3.png",
-                        "alt": "Image alt string"
-                    }
-                ],
-                "tags": [
-                    {
-                        "id": 12,
-                        "name": "Gaming"
-                    }
-                ],
-                "reviews": 5,
-                "rating": 4.6
-            }
-        ]
+        """
+        Remove item from basket.
+
+        :param request:
+        :param kwargs:
+        :return:
+        """
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        validated_data = input_serializer.validated_data
+        service = services.CartService(request=request)
+        service.remove(
+            product_id=validated_data.get("id"),
+            quantity=validated_data.get("count"),
+        )
+
+        selector = selectors.CartSelector(request=request)
+        cart = selector.get_cart()
+        output_serializer = serializers.CartSerializer(cart, many=True)
+        response_data = output_serializer.data
         return drf_response.Response(
             data=response_data, status=status.HTTP_200_OK)

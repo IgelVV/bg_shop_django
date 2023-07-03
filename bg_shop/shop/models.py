@@ -149,7 +149,7 @@ class Review(models.Model):
         validators=[MinValueValidator(0)],
         verbose_name=_("rate"),
     )
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(default=timezone.now)
 
 
 class Sale(models.Model):
@@ -183,6 +183,10 @@ class Sale(models.Model):
     def has_finished(self) -> bool:
         now = timezone.now()
         return self.date_to <= now.date()
+
+    def is_running(self) -> bool:
+        today = timezone.now().date()
+        return self.date_from <= today <= self.date_to
 
     # def is_within(self, x_date: date) -> bool:
     #     return self.date_from <= x_date <= self.date_to

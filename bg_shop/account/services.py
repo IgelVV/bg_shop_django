@@ -1,13 +1,18 @@
+"""Main business logic related to User and Profile models."""
+
 from typing import TypeVar, Optional, Any, Dict
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.core.files.uploadedfile import UploadedFile
 from django.db import transaction
+
+from rest_framework import request as drf_request
 
 from django.db import utils
 
 from account.models import Profile
 from common.models import Image
+from orders import services as order_services
 
 UserType = TypeVar('UserType', bound=AbstractUser)
 User: UserType = get_user_model()
@@ -15,6 +20,8 @@ User: UserType = get_user_model()
 
 # todo учитывать что пользователь может быть is_active=False
 class AccountService:
+    """To change User and profile data."""
+
     @staticmethod
     @transaction.atomic
     def register_user(
@@ -24,6 +31,7 @@ class AccountService:
     ) -> Optional[UserType]:
         """
         Try to create user, if it already exists returns None.
+
         If new user created, also creates Profile.
         :param username: str
         :param password: str
@@ -31,7 +39,11 @@ class AccountService:
         :return: created User obj or None if already exist
         """
         try:
-            user = User.objects.create_user(username, password, **extra_fields)
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                **extra_fields
+            )
         except utils.IntegrityError:
             return None
         Profile(user=user)
@@ -42,6 +54,7 @@ class AccountService:
         # todo perform validation in
         """
         Change user password, it is prohibited to set the same password.
+
         It is possible to set any password,
         so the password should be validated.
         :param user: the user who changes password
@@ -56,8 +69,9 @@ class AccountService:
     @transaction.atomic
     def update_avatar(self, user: UserType, avatar: UploadedFile) -> None:
         """
-        Creates new Image and binds with user's profile. Deletes previous
-        avatar.
+        Create new Image and binds with user's profile.
+
+        Deletes previous avatar.
         :param user: User obj
         :param avatar: Image
         :return: None
@@ -74,7 +88,9 @@ class AccountService:
     def get_or_create_profile(
             user: UserType, commit: bool = True) -> Profile:
         """
-        Use to get profile that related to user. The preferred way to create.
+        Use to get profile that related to user.
+
+        The preferred way to create.
         If commit is False, returns unsaved model to fill and save later.
         empty profile.
         :param user: User obj to bind new Profile or get from
@@ -102,7 +118,8 @@ class AccountService:
             **kwargs,
     ) -> None:
         """
-        Changes User model and related Profile.
+        Change User model and related Profile.
+
         If avatar = None, deletes Image that is related to profile,
         otherwise does nothing with avatar field.
         :param user:
@@ -124,3 +141,26 @@ class AccountService:
         profile.phone_number = phone
         profile.full_clean()
         profile.save()
+
+    def login(
+            self,
+            request: drf_request.Request,
+            user: UserType,
+            *args,
+            **kwargs
+    ) -> None:
+        """
+        Do log-in.
+
+        Transfer cart from anonymous session to new one
+        when user is logging in.
+        :param request:
+        :param user:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        cart_service = order_services.CartService(request=request)
+        anonymous_cart = cart_service.cart
+        login(*args, request=request, user=user, **kwargs,)
+        cart_service.merge_carts(session_cart=anonymous_cart)

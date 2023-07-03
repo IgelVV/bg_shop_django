@@ -35,11 +35,25 @@ var mix = {
                 this.fullName = data.fullName
                 this.avatar = data.avatar
                 this.orders = data.orders
+                this.email = data.email
+                this.phone = data.phone
             })
         },
-    },
+		getLastOrder() {
+			this.getData("/api/orders/")
+				.then(data => {
+				    if (data){
+				        this.order = data[0]
+				    }
+				}).catch(() => {
+				this.order = {}
+				console.warn('Ошибка при получении последнего заказа')
+			})
+		},
+	},
     mounted() {
         this.getUserAccount();
+		this.getLastOrder();
     },
     data() {
         return {
@@ -47,7 +61,7 @@ var mix = {
             secondname: "",
             surname: "",
             avatar: {},
-            orders: [],
+            order: {},
         }
     },
     computed: {

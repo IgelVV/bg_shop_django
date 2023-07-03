@@ -1,28 +1,47 @@
 var mix = {
 	methods: {
 		submitPayment() {
-			console.log('qweqwewqeqweqw')
-			const orderId = location.pathname.startsWith('/payment/')
-				? Number(location.pathname.replace('/payment/', '').replace('/', ''))
-				: null
+			console.log('submitPayment is called')
+//			const orderId = location.pathname.startsWith('/payment/')
+//				? Number(location.pathname.replace('/payment/', '').replace('/', ''))
+//				: null
+			if (location.pathname.startsWith('/payment/')) {
+				var orderId = Number(
+					location.pathname
+						.replace('/payment/', '')
+						.replace('/', '')
+				)
+			}
+			else if (location.pathname.startsWith('/payment-someone/')) {
+				var orderId = Number(
+					location.pathname
+						.replace('/payment-someone/', '')
+						.replace('/', '')
+				)
+			}
+			else {
+				var orderId = null
+			}
+			const numero1 = document.getElementById('numero1').value.replace(' ', '');
 			this.postData(`/api/payment/${orderId}/`, {
 				name: this.name,
-				number: this.number,
+				number: numero1,
 				year: this.year,
 				month: this.month,
 				code: this.code
 			})
 				.then(() => {
-					alert('Успешная оплата')
+					alert('Ждём подтверждения оплаты от платёжной системы')
 					this.number = ''
 					this.name = ''
 					this.year = ''
 					this.month = ''
 					this.code = ''
-					location.assign('/')
+					location.assign(`/order-detail/${orderId}/`)
 				})
 				.catch(() => {
 					console.warn('Ошибка при оплате')
+					alert('Ошибка при оплате')
 				})
 		}
 	},

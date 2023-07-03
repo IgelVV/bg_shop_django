@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "bg-shop-django"
+version = "0.1.0"
+description = ""
+authors = ["Vadim Veshkin <vadim.veshkin@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Django = "4.2"
+django-filter = "23.2"
+djangorestframework = "3.14.0"
+Pillow = "9.5.0"
+celery = "^5.3.1"
+requests = "^2.31.0" # to imitate payment service
+python-dotenv = "^1.0.0"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+flake8-docstrings = "^1.7.0"
+flake8-bugbear = "^23.6.5"
+flake8-annotations = "^3.0.1"
+flake8-import-order = "^0.18.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

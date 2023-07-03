@@ -19,6 +19,8 @@
     </div>
     <div class="Section">
       <div class="wrap">
+<!--        delete-->
+        <h2>Имитация системы оплаты</h2>
         <form class="form Payment" @submit.prevent="submitPayment">
           <div class="Payment-card">
             <div class="form-group">
@@ -27,8 +29,8 @@
                        id="numero1"
                        name="numero1"
                        type="text"
-                       placeholder="9999 9999 9999 9999"
-                       data-mask="9999 9999 9999 9999"
+                       placeholder="9999 9999"
+                       data-mask="9999 9999"
                        v-model="number"
                        data-validate="require pay"/>
               </label>
@@ -40,7 +42,6 @@
                        id="month"
                        name="month"
                        type="text"
-                       data-mask="99"
                        data-validate="require"
                        placeholder="12"
                        v-model="month"
@@ -54,7 +55,6 @@
                        id="year"
                        name="year"
                        type="text"
-                       data-mask="99"
                        data-validate="require"
                        placeholder="23"
                        v-model="year"
@@ -68,7 +68,6 @@
                        id="code"
                        name="code"
                        type="text"
-                       data-mask="999"
                        data-validate="require"
                        placeholder="000"
                        v-model="code"

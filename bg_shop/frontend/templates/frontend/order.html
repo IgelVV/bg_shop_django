@@ -42,7 +42,7 @@
           {% endif %}
         </div>
         <div class="Section-content">
-          {% if user.is_authenticated %}
+<!--          {% if user.is_authenticated %}-->
           <form class="form" action="#" method="post" @submit.prevent="confirmOrder">
             <div class="Order-block Order-block_OPEN" id="step1">
               <header class="Section-header Section-header_sm">
@@ -61,7 +61,7 @@
                   </div>
                   <div class="form-group">
                     <label class="form-label" for="mail">E-mail</label>
-                    <input class="form-input" v-model="email" id="mail" name="mail" type="text" value="" data-validate="require"/>
+                    <input class="form-input" v-model="email" id="mail" name="mail" type="text" value=""/>
                   </div>
                 </div>
               </div>
@@ -76,24 +76,28 @@
               <div class="form-group">
                 <div>
                   <label class="toggle">
-                    <input type="radio" v-model="deliveryType" name="delivery" value="ordinary" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Обычная доставка</span>
+                    <input type="radio" v-model="deliveryType" name="delivery" value="OR"/><span class="toggle-box"></span><span class="toggle-text">Обычная доставка</span>
                   </label>
                 </div>
                 <div>
                   <label class="toggle">
-                    <input type="radio" v-model="deliveryType" name="delivery" value="express"/><span class="toggle-box"></span><span class="toggle-text">Экспресс доставка</span>
+                    <input type="radio" v-model="deliveryType" name="delivery" value="EX" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Экспресс доставка</span>
                   </label>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label" for="city">Город
                 </label>
-                <input class="form-input" v-model="city" id="city" name="city" type="text"/>
+                <input class="form-input" v-model="city" id="city" name="city" type="text" data-validate="require"/>
               </div>
               <div class="form-group">
                 <label class="form-label" for="address">Адрес
                 </label>
-                <textarea class="form-textarea" v-model="address" name="address" id="address"></textarea>
+                <textarea class="form-textarea" v-model="address" name="address" id="address" data-validate="require"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="address">Комментарий</label>
+                <textarea class="form-textarea" v-model="comment" name="comment" id="comment"></textarea>
               </div>
               <div class="Order-footer"><a class="btn btn_success Order-next" href="#step3">Дальше</a>
               </div>
@@ -106,16 +110,22 @@
               <div class="form-group">
                 <div>
                   <label class="toggle">
-                    <input type="radio" v-model="paymentType" name="pay" value="online" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Онлайн картой</span>
+                    <input type="radio" v-model="paymentType" name="pay" value="ON" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Онлайн картой</span>
                   </label>
                 </div>
                 <div>
                   <label class="toggle">
-                    <input type="radio" v-model="paymentType" name="pay" value="someone"/><span class="toggle-box"></span><span class="toggle-text">Онлайн со случайного чужого счета</span>
+                    <input type="radio" v-model="paymentType" name="pay" value="SO"/><span class="toggle-box"></span><span class="toggle-text">Онлайн со случайного чужого счета</span>
                   </label>
                 </div>
               </div>
-              <div class="Order-footer"><a class="btn btn_success Order-next" href="#step4">Дальше</a>
+              <div class="Order-footer">
+<!--                добавить обращение к апи patch для получения расчета стоимости товара-->
+<!--                <button class="btn btn_primary" @click="addToBasket(product, count)">-->
+<!--                  <img class="btn-icon" src="/static/frontend/assets/img/icons/card/cart_white.svg" alt="cart_white.svg"/>-->
+<!--                  <span class="btn-content">Add To Cart</span>-->
+<!--                </button>-->
+                <a class="btn btn_success Order-next" href="#step4">Дальше</a>
               </div>
             </div>
             <div class="Order-block" id="step4">
@@ -151,7 +161,7 @@
                       <div class="Order-info Order-info_delivery">
                         <div class="Order-infoType">Тип доставки:
                         </div>
-                        <div class="Order-infoContent">${ deliveryType }$
+                        <div class="Order-infoContent">${ deliveryTypes[deliveryType] }$
                         </div>
                       </div>
                       <div class="Order-info">
@@ -166,10 +176,14 @@
                         <div class="Order-infoContent">${ address }$
                         </div>
                       </div>
+                      <div class="Order-info">
+                        <div class="Order-infoType">Комментарий:</div>
+                        <div class="Order-infoContent">${comment}$</div>
+                      </div>
                       <div class="Order-info Order-info_pay">
                         <div class="Order-infoType">Оплата:
                         </div>
-                        <div class="Order-infoContent">${ paymentType }$
+                        <div class="Order-infoContent">${ paymentTypes[paymentType] }$
                         </div>
                       </div>
                     </div>
@@ -203,36 +217,43 @@
 
                   <div class="Cart-total">
                     <div class="Cart-block Cart-block_total">
-                      <strong class="Cart-title">Итого:</strong>
-                      <span class="Cart-price">${ products.reduce((acc, el) => {return acc += (el.price * el.count)}, 0) }$$</span>
+                      <strong class="Cart-title">
+<!--                        Итого:-->
+                      </strong>
+                      <span class="Cart-price">
+<!--                        ${totalCost}$$-->
+                      </span>
+<!--                      <strong class="Cart-title">Итого:</strong>-->
+<!--                      <span class="Cart-price">${ products.reduce((acc, el) => {return acc += (el.price * el.count)}, 0).toFixed(2) }$$</span>-->
                     </div>
                     <div class="Cart-block">
-                      <button class="btn btn_primary btn_lg" type="submit">Оплатить</button>
+                      <button class="btn btn_primary btn_lg" type="submit">Подтвердить</button>
                     </div>
                   </div>
                 </div>
               </div>
           </form>
-         {% else %}
-        <div class="row-block">
-          <form method="post" @submit.prevent="auth">
-            {% csrf_token %}
-            <div class="form-group">
-              <label class="form-label" for="username">Логин</label>
-              <input class="form-input" id="username" name="username" type="text" placeholder="Login"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="password">Пароль</label>
-              <input class="form-input" id="password" name="password" type="password" placeholder="Password"/>
-            </div>
-            <div class="form-group">
-              <button class="btn btn_muted Order-btnReg" type="submit">Авторизация</button>
-            </div>
-            <div class="form-group"><a class="btn btn_muted Order-btnReg" href="/sign-up/">Регистрация</a>
-          </div>
-          </form>
-        </div>
-        {% endif %}
+<!--          this logic is removed to cart.html -->
+<!--         {% else %}-->
+<!--        <div class="row-block">-->
+<!--          <form method="post" @submit.prevent="auth">-->
+<!--            {% csrf_token %}-->
+<!--            <div class="form-group">-->
+<!--              <label class="form-label" for="username">Логин</label>-->
+<!--              <input class="form-input" id="username" name="username" type="text" placeholder="Login"/>-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--              <label class="form-label" for="password">Пароль</label>-->
+<!--              <input class="form-input" id="password" name="password" type="password" placeholder="Password"/>-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--              <button class="btn btn_muted Order-btnReg" type="submit">Авторизация</button>-->
+<!--            </div>-->
+<!--            <div class="form-group"><a class="btn btn_muted Order-btnReg" href="/sign-up/">Регистрация</a>-->
+<!--          </div>-->
+<!--          </form>-->
+<!--        </div>-->
+<!--        {% endif %}-->
         </div>
       </div>
     </div>

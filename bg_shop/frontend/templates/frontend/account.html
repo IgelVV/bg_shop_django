@@ -44,33 +44,36 @@
             <div class="Account-group">
               <div class="Account-column">
                 <div class="Account-avatar">
-                  <img :src="avatar.src" :alt="avatar.alt"/>
+                  <img v-if="!! avatar" :src="avatar.src" :alt="avatar.alt"/>
                 </div>
               </div>
               <div class="Account-column">
                 <div class="Account-name">${ fullName }$</div>
+                <div class="Account-email">Email: ${ email }$</div>
+                <div class="Account-phone">Phone: ${ phone }$</div>
                 <a class="Account-editLink" href="/profile">Редактировать профиль</a>
               </div>
             </div>
+            <h2>Последний заказ</h2>
             <div class="Account-group">
               <div class="Account-column Account-column_full">
                 <div class="Order Order_anons">
                   <div class="Order-personal">
-                    <div v-for="order in orders" class="row">
+                    <div class="row">
                       <div class="row-block">
-                        <a class="Order-title" href="oneorder.html">Заказ&#32;<span class="Order-numberOrder">№${order.id}$</span>&#32;от&#32;<span class="Order-dateOrder">${order.createdAt}$</span></a>
-                        <div class="Account-editLink">
-                          <a href="historyorder.html">История заказов</a>
-                        </div>
+                        <a class="Order-title" :href="`/order-detail/${order.id}/`">
+                          Заказ&#32;<span class="Order-numberOrder">№${order.id}$</span>
+                          &#32;от&#32;<span class="Order-dateOrder">${ new Date(order.createdAt).toLocaleString('ru-RU') }$</span>
+                        </a>
                       </div>
                       <div class="row-block">
                         <div class="Order-info Order-info_delivery">
                           <div class="Order-infoType">Тип доставки:</div>
-                          <div class="Order-infoContent">${order.deliveryType}$</div>
+                          <div class="Order-infoContent">${deliveryTypes[order.deliveryType]}$</div>
                         </div>
                         <div class="Order-info Order-info_pay">
                           <div class="Order-infoType">Оплата:</div>
-                          <div class="Order-infoContent">${order.paymentType}$</div>
+                          <div class="Order-infoContent">${paymentTypes[order.paymentType]}$</div>
                         </div>
                         <div class="Order-info">
                           <div class="Order-infoType">Общая стоимость:</div>
@@ -78,14 +81,14 @@
                         </div>
                         <div class="Order-info Order-info_status">
                           <div class="Order-infoType">Статус:</div>
-                          <div class="Order-infoContent">Не оплачен</div>
+                          <div class="Order-infoContent">${orderStatuses[order.status]}$</div>
+                        </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
               </div>
             </div>
           </div>

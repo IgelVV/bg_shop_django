@@ -7,7 +7,13 @@ var mix = {
                 }).catch(() => {
                     console.warn('Ошибка при создании заказа')
                 })
-        }
+        },
+        goLogin () {
+            location.assign(`/sign-in/`)
+        },
+        isBasketEmpty () {
+            return JSON.stringify(this.basket) === '{}'
+        },
     },
     mounted() {},
     data() {

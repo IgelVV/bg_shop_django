@@ -1,3 +1,5 @@
+"""Methods for getting info from db."""
+
 from typing import TypeVar, Any, Optional
 
 from django.contrib.auth import get_user_model
@@ -11,9 +13,12 @@ User = get_user_model()
 
 
 class AccountSelector:
+    """For getting User and Profile info."""
+
     def get_account_data(self, user: UserType) -> dict[str, Any]:
         """
-        Provides data from User model, and related Profile model.
+        Provide data from User model, and related Profile model.
+
         If there is no related Profile, creates one.
         It is expected that the data will be validated in Api view
         by serializer, so the data can contain extra or optional fields.
@@ -33,7 +38,8 @@ class AccountSelector:
     @staticmethod
     def get_avatar_data(profile: models.Profile) -> Optional[dict[str, Any]]:
         """
-        Provides json-like data for api.
+        Provide json-like data for api.
+
         :param profile: Profile obj
         :return: dict with renamed fields of Image
         """

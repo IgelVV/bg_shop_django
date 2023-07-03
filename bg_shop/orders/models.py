@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from django.db import models
 
 
@@ -10,14 +11,20 @@ class Order(models.Model):
         verbose_name_plural = _("orders")
 
     class DeliveryTypes(models.TextChoices):
-        REGULAR = "RE", _("regular")
+        ORDINARY = "OR", _("ordinary")
         EXPRESS = "EX", _("express")
 
     class Statuses(models.TextChoices):
+        CART = "CT", _("cart")
         EDITING = "ED", _("editing")
         ACCEPTED = "AC", _("accepted")
         REJECTED = "RJ", _("rejected")
         COMPLETED = "CO", _("completed")
+
+    class PaymentTypes(models.TextChoices):
+        ONLINE = "ON", _("online")
+        CASH = "CA", _("cash")
+        SOMEONE = "SO", _("someone")  # just for fake payment
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -25,12 +32,13 @@ class Order(models.Model):
         verbose_name=_("user"),
     )
     created_at = models.DateTimeField(
-        auto_now=True,
+        default=timezone.now,
         verbose_name=_("created at"),
     )
     delivery_type = models.CharField(
         max_length=2,
         choices=DeliveryTypes.choices,
+        default=DeliveryTypes.ORDINARY,
         verbose_name=_("delivery type")
     )
     status = models.CharField(
@@ -39,9 +47,24 @@ class Order(models.Model):
         default=Statuses.EDITING,
         verbose_name=_("status"),
     )
-    city = models.CharField(max_length=255, verbose_name=_("city"))
-    address = models.TextField(max_length=1024, verbose_name=_("address"))
-    comment = models.TextField(max_length=1024, verbose_name=_("comment"))
+    city = models.CharField(
+        max_length=255,
+        verbose_name=_("city"),
+        null=True,
+        blank=True,
+    )
+    address = models.TextField(
+        max_length=1024,
+        verbose_name=_("address"),
+        null=True,
+        blank=True,
+    )
+    comment = models.TextField(
+        max_length=1024,
+        verbose_name=_("comment"),
+        null=True,
+        blank=True,
+    )
     is_active = models.BooleanField(
         _("active"),
         default=True,
@@ -50,12 +73,20 @@ class Order(models.Model):
             "Unselect this instead of deleting orders."
         ),
     )
+    paid = models.BooleanField(default=False, verbose_name=_("paid"))
+    payment_type = models.CharField(
+        max_length=2,
+        choices=PaymentTypes.choices,
+        default=PaymentTypes.ONLINE,
+        verbose_name=_("payment_type"),
+    )
 
 
 class OrderedProduct(models.Model):
     class Meta:
         verbose_name = _("ordered product")
         verbose_name_plural = _("ordered products")
+        unique_together = ("product", "order",)
 
     product = models.ForeignKey(
         "shop.Product",
@@ -67,7 +98,7 @@ class OrderedProduct(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("order"),
     )
-    # In moment
+    # In a moment of confirmation order
     price = models.DecimalField(
         default=0,
         max_digits=8,
