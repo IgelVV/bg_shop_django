@@ -184,7 +184,6 @@ class ProfileApi(views.APIView):
     class OutputSerializer(serializers.Serializer):
         """User and profile info for displaying."""
 
-        # todo import from common
         class AvatarSerializer(serializers.Serializer):
             """Image info."""
 
