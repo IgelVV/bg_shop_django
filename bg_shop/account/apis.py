@@ -2,7 +2,12 @@
 
 from typing import Any
 
-from django.contrib.auth import get_user_model, authenticate, logout
+from django.contrib.auth import (
+    get_user_model,
+    authenticate,
+    logout,
+    validators,
+)
 from django.core import exceptions as django_exceptions
 
 from rest_framework import serializers, status, permissions, views
@@ -32,6 +37,7 @@ class SignInApi(views.APIView):
         """
         Log user in using request credentials.
 
+        If User is inactive, authenticate() returns -> None.
         :param request: DRF request
         :return: DRF response
         """
@@ -59,6 +65,16 @@ class SignUpApi(views.APIView):
         name = serializers.CharField(
             max_length=150, required=False, allow_blank=True)
         username = serializers.CharField(max_length=150)
+
+        def validate_username(self, value):
+            """
+            Validate username.
+
+            Only ACSII simbols are allowed.
+            :param value:
+            :return:
+            """
+            validators.ASCIIUsernameValidator().__call__(value)
 
     permission_classes = (permissions.AllowAny,)
     serializer_class = InputSerializer
