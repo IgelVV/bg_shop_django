@@ -18,23 +18,22 @@ UserType = TypeVar('UserType', bound=AbstractUser)
 User: UserType = get_user_model()
 
 
-# todo учитывать что пользователь может быть is_active=False
 class AccountService:
     """To change User and profile data."""
 
     @staticmethod
     @transaction.atomic
     def register_user(
-            username: str,  # todo validation of username (it is possible to set any symbols)
-            password: str,  # todo validate password (sets any password)
+            username: str,
+            password: str,
             **extra_fields
     ) -> Optional[UserType]:
         """
         Try to create user, if it already exists returns None.
 
         If new user created, also creates Profile.
-        :param username: str
-        :param password: str
+        :param username: str.
+        :param password: str.
         :param extra_fields: declared in the User model
         :return: created User obj or None if already exist
         """
@@ -51,7 +50,6 @@ class AccountService:
 
     @staticmethod
     def change_password(user: UserType, password: str) -> None:
-        # todo perform validation in
         """
         Change user password, it is prohibited to set the same password.
 
@@ -78,6 +76,7 @@ class AccountService:
         """
         description = f"{user.get_username()} avatar"
         image = Image(img=avatar, description=description)
+        image.full_clean()
         image.save()
         profile = self.get_or_create_profile(user=user)
         # todo delete previous avatar (from storage too) due image service
@@ -114,7 +113,7 @@ class AccountService:
             last_name: str,
             email: str,
             phone: str,
-            avatar: Optional[Dict[str, Any]],  # todo handle `avatar`: None (when avatar is deleted and isn't replased)
+            avatar: Optional[Dict[str, Any]],
             **kwargs,
     ) -> None:
         """
@@ -137,10 +136,14 @@ class AccountService:
         user.email = email
         user.full_clean()
         user.save()
+
         profile = self.get_or_create_profile(user=user)
         profile.phone_number = phone
         profile.full_clean()
         profile.save()
+
+        if avatar is None:
+            profile.avatar.delete()
 
     def login(
             self,

@@ -6,6 +6,7 @@ from django.conf import settings
 from common import validators
 
 
+# todo delete image from media when delete()
 class Image(models.Model):
     """All images used in other models."""
 
