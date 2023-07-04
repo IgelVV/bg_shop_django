@@ -177,7 +177,10 @@ class UpdateAvatarApi(views.APIView):
         input_serializer = self.InputSerializer(data=request.data)
         input_serializer.is_valid(raise_exception=True)
         data = input_serializer.validated_data
-        service.update_avatar(user=request.user, avatar=data['avatar'])
+        try:
+            service.update_avatar(user=request.user, avatar=data['avatar'])
+        except django_exceptions.ValidationError as e:
+            raise drf_exceptions.ValidationError(e.message_dict)
 
         selector = selectors.AccountSelector()
         profile = service.get_or_create_profile(request.user)
