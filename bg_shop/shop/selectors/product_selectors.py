@@ -47,7 +47,7 @@ class ProductSelector:
         :param product: item to check
         :return: bool
         """
-        boundary = conf_selectors.AdminConfigSelector()\
+        boundary = conf_selectors.DynamicConfigSelector()\
             .boundary_of_free_delivery
         if boundary:
             return product.price >= boundary

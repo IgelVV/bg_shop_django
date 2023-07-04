@@ -7,6 +7,7 @@ from common import validators
 
 
 # todo delete image from media when delete()
+#  https://techincent.com/how-to-delete-file-when-models-instance-is-delete-or-update-in-django/
 class Image(models.Model):
     """All images used in other models."""
 

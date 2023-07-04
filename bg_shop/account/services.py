@@ -79,7 +79,6 @@ class AccountService:
         image.full_clean()
         image.save()
         profile = self.get_or_create_profile(user=user)
-        # todo delete previous avatar (from storage too) due image service
         profile.avatar = image
         profile.save()
 

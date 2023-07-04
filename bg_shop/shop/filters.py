@@ -41,7 +41,7 @@ class BaseProductFilter(django_filters.FilterSet):
         :return: filtered qs
         """
         if value:
-            boundary = conf_selectors.AdminConfigSelector() \
+            boundary = conf_selectors.DynamicConfigSelector() \
                 .boundary_of_free_delivery
             if boundary:
                 queryset = queryset.annotate(

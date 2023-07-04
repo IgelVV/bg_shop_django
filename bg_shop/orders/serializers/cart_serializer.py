@@ -55,7 +55,7 @@ class CartSerializer(serializers.ModelSerializer):
         """Get and save `boundary_of_free_delivery` and actual `date`."""
         super().__init__(*args, **kwargs)
         self.boundary_of_free_delivery = conf_selectors \
-            .AdminConfigSelector().boundary_of_free_delivery
+            .DynamicConfigSelector().boundary_of_free_delivery
         self.today = timezone.now().date()
 
     def get_price(self, obj: shop_models.Product) -> Decimal:

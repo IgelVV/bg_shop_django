@@ -4,7 +4,7 @@ from rest_framework import serializers
 from common import models, services
 
 
-class ImageSerializer(serializers.ModelSerializer):  # todo delete
+class ImageSerializer(serializers.ModelSerializer):
     """To reuse in other ModelSerializers"""
     src = serializers.SerializerMethodField()
     alt = serializers.CharField(source="description", max_length=255)

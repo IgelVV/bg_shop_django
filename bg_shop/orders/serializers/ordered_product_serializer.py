@@ -66,7 +66,7 @@ class OrderedProductOutputSerializer(drf_serializers.ModelSerializer):
         """Get and save `boundary_of_free_delivery`."""
         super().__init__(*args, **kwargs)
         self.boundary_of_free_delivery = conf_selectors \
-            .AdminConfigSelector().boundary_of_free_delivery
+            .DynamicConfigSelector().boundary_of_free_delivery
 
     def get_freeDelivery(self, obj: models.OrderedProduct) -> bool:
         """

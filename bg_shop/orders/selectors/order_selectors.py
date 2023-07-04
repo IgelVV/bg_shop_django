@@ -283,7 +283,7 @@ class OrderSelector:
                 order.delivery_type == models.Order.DeliveryTypes.EXPRESS
             )
             main_cost = self.get_order_main_cost(order=order)
-        conf_selector = dynamic_selectors.AdminConfigSelector()
+        conf_selector = dynamic_selectors.DynamicConfigSelector()
         delivery_cost = Decimal(0)
         if main_cost < conf_selector.boundary_of_free_delivery:
             delivery_cost += conf_selector.ordinary_delivery_cost
