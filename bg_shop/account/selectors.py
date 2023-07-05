@@ -44,7 +44,7 @@ class AccountSelector:
         :return: dict with renamed fields of Image
         """
         avatar: Image = profile.avatar
-        if avatar is not None:
+        if (avatar is not None) and (avatar.pk is not None):
             return {
                 'src': avatar.img.url,
                 'alt': avatar.description

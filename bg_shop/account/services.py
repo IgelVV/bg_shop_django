@@ -11,7 +11,8 @@ from rest_framework import request as drf_request
 from django.db import utils
 
 from account.models import Profile
-from common.models import Image
+from common import models as common_models
+from common import services as common_services
 from orders import services as order_services
 
 UserType = TypeVar('UserType', bound=AbstractUser)
@@ -75,10 +76,13 @@ class AccountService:
         :return: None
         """
         description = f"{user.get_username()} avatar"
-        image = Image(img=avatar, description=description)
+        image = common_models.Image(img=avatar, description=description)
         image.full_clean()
         image.save()
         profile = self.get_or_create_profile(user=user)
+        if profile.avatar is not None:
+            common_services.ImageService()\
+                .delete_instance(instance=profile.avatar)
         profile.avatar = image
         profile.save()
 
@@ -142,7 +146,8 @@ class AccountService:
         profile.save()
 
         if avatar is None:
-            profile.avatar.delete()
+            if profile.avatar is not None:
+                common_services.ImageService().delete_instance(profile.avatar)
 
     def login(
             self,
