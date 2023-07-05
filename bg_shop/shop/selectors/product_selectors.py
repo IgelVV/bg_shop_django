@@ -3,6 +3,7 @@ from decimal import Decimal
 from typing import Optional
 
 from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.db.models import (
     Avg,
     Count,
@@ -20,9 +21,6 @@ from orders import models as order_models
 from dynamic_config import selectors as conf_selectors
 
 User = get_user_model()
-
-POPULAR_PRODUCTS_LIMIT = 8  # todo remove to settings (or conf)
-LIMITED_PRODUCTS_LIMIT = 6
 
 
 class ProductSelector:
@@ -151,7 +149,7 @@ class ProductSelector:
         :return: annotated qs
         """
         qs = self.get_catalog(sort_field='popularity')
-        qs = qs[:POPULAR_PRODUCTS_LIMIT]
+        qs = qs[:settings.POPULAR_PRODUCTS_LIMIT]
         return qs
 
     def get_limited_products(self) -> QuerySet[models.Product]:
@@ -163,7 +161,7 @@ class ProductSelector:
         qs = self.get_active_products()
         qs = qs.filter(limited_edition=True)
         qs = self._prefetch_for_product_short_serializer(query_set=qs)
-        qs = qs[:LIMITED_PRODUCTS_LIMIT]
+        qs = qs[:settings.LIMITED_PRODUCTS_LIMIT]
         return qs
 
     def get_discounted_price(

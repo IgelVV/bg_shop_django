@@ -259,7 +259,11 @@ LOGGING = {
     },
 }
 
+# Site config
 MAX_IMAGE_SIZE = 2 * 1024 * 1024
+
+POPULAR_PRODUCTS_LIMIT = 8
+LIMITED_PRODUCTS_LIMIT = 1
 
 # Default Dynamic config
 
