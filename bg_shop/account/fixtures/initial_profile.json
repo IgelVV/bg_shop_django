@@ -1,0 +1,11 @@
+[
+  {
+    "model": "account.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "0123456789",
+      "avatar": 21
+    }
+  }
+]
