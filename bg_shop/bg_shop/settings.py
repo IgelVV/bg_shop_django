@@ -51,8 +51,9 @@ if DEBUG:
 THIRD_PARTY_APPS = [
     "rest_framework",
     "django_filters",
-    "debug_toolbar",
 ]
+if DEBUG:
+    THIRD_PARTY_APPS.append("debug_toolbar")
 
 LOCAL_APPS = [
     'frontend.apps.FrontendConfig',
@@ -84,8 +85,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+if DEBUG:
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ROOT_URLCONF = 'bg_shop.urls'
 
