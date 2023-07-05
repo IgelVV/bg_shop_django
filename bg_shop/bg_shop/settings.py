@@ -258,3 +258,14 @@ LOGGING = {
 }
 
 MAX_IMAGE_SIZE = 2 * 1024 * 1024
+
+# Default Dynamic config
+
+ORDINARY_DELIVERY_COST = int(getenv("ORDINARY_DELIVERY_COST", "5"))
+EXPRESS_DELIVERY_EXTRA_CHARGE = int(
+    getenv("EXPRESS_DELIVERY_EXTRA_CHARGE", "10"))
+BOUNDARY_OF_FREE_DELIVERY = int(getenv("BOUNDARY_OF_FREE_DELIVERY", "20"))
+COMPANY_INFO = getenv("COMPANY_INFO", "lorem")
+LEGAL_ADDRESS = getenv("LEGAL_ADDRESS", "baker st. 221b")
+MAIN_PHONE = getenv("MAIN_PHONE", "+7(800)555-35-35")
+MAIN_EMAIL = getenv("MAIN_EMAIL", "bg_shop@dot.com")
