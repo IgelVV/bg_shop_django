@@ -125,7 +125,6 @@ class OrderService:
         :param products: info about product in order.
         :return: important product info.
         """
-        # todo it should be in serializer maybe (or create parse method)
         simple_products = {}
         for product in products:
             simple_products[product['id']] = product['count']

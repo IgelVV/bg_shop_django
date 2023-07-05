@@ -8,11 +8,11 @@ from shop import models, selectors, services
 
 
 class ReviewApi(views.APIView):
-    """For adding reviews for products"""
+    """For adding reviews for products."""
 
     class InputSerializer(serializers.Serializer):
-        # todo rebuild
-        """Hire is a lot of fields that are unnecessary"""
+        # todo rebuild. Hire is a lot of fields that are unnecessary
+        """"""
         author = serializers.CharField(
             max_length=300, required=False, allow_null=True)  # useless (from current user)
         email = serializers.EmailField(required=False, allow_null=True)  #useless (from current user)
