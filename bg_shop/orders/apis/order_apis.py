@@ -9,7 +9,7 @@ from rest_framework import serializers as drf_serializers
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
-from orders import services, serializers, selectors, tasks
+from orders import services, serializers, selectors, tasks, models
 from account import validators as acc_validators
 
 
@@ -52,8 +52,6 @@ class OrdersApi(views.APIView):
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
-        # todo orderedproducts must contain actual prices after this method
-        #  it displayed on order-detail page
         """
         Create new order.
 
@@ -106,11 +104,14 @@ class OrderDetailApi(views.APIView):
         email = drf_serializers.EmailField()
         phone = drf_serializers.CharField(
             validators=[acc_validators.PhoneRegexValidator()])
-        deliveryType = drf_serializers.CharField()
-        paymentType = drf_serializers.CharField()  # todo choice
+        deliveryType = drf_serializers.ChoiceField(
+            choices=models.Order.DeliveryTypes.choices)
+        paymentType = drf_serializers.ChoiceField(
+            choices=models.Order.PaymentTypes.choices)
         totalCost = drf_serializers.DecimalField(
             max_digits=8, decimal_places=2,)
-        status = drf_serializers.CharField()
+        status = drf_serializers.ChoiceField(
+            choices=models.Order.Statuses.choices)
         city = drf_serializers.CharField()
         address = drf_serializers.CharField()
         comment = drf_serializers.CharField(allow_null=True, allow_blank=True)

@@ -176,28 +176,8 @@ class OrderService:
         """
         order_attrs: dict[str, Any | None] = dict()
 
-        delivery_type = order_data["deliveryType"]
-        if delivery_type == "express" or delivery_type == "EX":
-            order_attrs["delivery_type"] = models.Order.DeliveryTypes.EXPRESS
-        elif delivery_type == "ordinary" or delivery_type == "OR":
-            order_attrs["delivery_type"] = models.Order.DeliveryTypes.ORDINARY
-        else:
-            raise ValueError(
-                "Order.delivery_type must be: "
-                "'express'('EX') or 'ordinary'('OR')")
-
-        payment_type = order_data["paymentType"]
-        if payment_type == "ON":
-            order_attrs["payment_type"] = models.Order.PaymentTypes.ONLINE
-        elif payment_type == "SO":
-            order_attrs["payment_type"] = models.Order.PaymentTypes.SOMEONE
-        elif payment_type == "CA":
-            order_attrs["payment_type"] = models.Order.PaymentTypes.CASH
-        else:
-            raise ValueError(
-                "Order.payment_type must be: "
-                "'ON'(online), or 'SO'(someone), or 'CA'(cash)")
-
+        order_attrs["delivery_type"] = order_data.get("deliveryType")
+        order_attrs["payment_type"] = order_data.get("paymentType")
         order_attrs["city"] = order_data.get("city", None)
         order_attrs["address"] = order_data["address"]
         order_attrs["comment"] = order_data.get("comment", None)
