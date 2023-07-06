@@ -47,9 +47,8 @@ class SignInApi(views.APIView):
         user = authenticate(
             username=data.get('username'), password=data.get('password'))
         if user is None:
-            raise drf_exceptions.NotAuthenticated(
+            raise drf_exceptions.PermissionDenied(
                 detail={'username': ['Wrong username or password']},
-                code=status.HTTP_401_UNAUTHORIZED
             )
         else:
             services.AccountService().login(request, user)
