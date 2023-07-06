@@ -22,3 +22,4 @@ class PasswordSerializer(serializers.Serializer):
         """
         password_validation.validate_password(
             password=value)
+        return value
