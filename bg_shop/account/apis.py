@@ -75,6 +75,7 @@ class SignUpApi(views.APIView):
             :return:
             """
             validators.ASCIIUsernameValidator().__call__(value)
+            return value
 
     permission_classes = (permissions.AllowAny,)
     serializer_class = InputSerializer
