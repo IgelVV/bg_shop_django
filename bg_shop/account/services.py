@@ -64,6 +64,7 @@ class AccountService:
         if is_old:
             raise ValueError("The new password matches the old one")
         user.set_password(password)
+        user.save()
 
     @transaction.atomic
     def update_avatar(self, user: UserType, avatar: UploadedFile) -> None:
