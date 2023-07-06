@@ -62,7 +62,11 @@ class SignUpApi(views.APIView):
         """For using in POST."""
 
         name = serializers.CharField(
-            max_length=150, required=False, allow_blank=True)
+            max_length=150,
+            source="first_name",
+            required=False,
+            allow_blank=True
+        )
         username = serializers.CharField(max_length=150)
 
         def validate_username(self, value):
@@ -91,7 +95,6 @@ class SignUpApi(views.APIView):
         serializer.is_valid(raise_exception=True)
         service = services.AccountService()
         data = serializer.validated_data
-        data['first_name'] = data.pop('name')
         user = service.register_user(**data)
         if not user:
             ex = drf_exceptions.APIException(
