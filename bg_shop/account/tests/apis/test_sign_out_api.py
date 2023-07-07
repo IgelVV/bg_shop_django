@@ -3,7 +3,11 @@ from random import choices, randint
 
 from django.test import TestCase
 from django.urls import reverse
+<<<<<<< HEAD
 from django.contrib.auth import get_user_model, get_user
+=======
+from django.contrib.auth import get_user_model, get_user, login
+>>>>>>> origin/5_stage
 
 UserModel = get_user_model()
 
