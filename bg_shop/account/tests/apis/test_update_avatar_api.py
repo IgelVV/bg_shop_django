@@ -27,10 +27,12 @@ class PostUpdateAvatarApiTestCase(TestCase):
             password=cls.password,
             email=cls.email,
         )
+        super().setUpClass()
 
     @classmethod
     def tearDownClass(cls):
         cls.user.delete()
+        super().tearDownClass()
 
     def setUp(self) -> None:
         self.client.login(username=self.username, password=self.password)
