@@ -33,8 +33,10 @@ class PostSignUpApiViewTestCase(TestCase):
             data=data
         )
         self.assertEqual(response.status_code, 201, "Wrong status code.")
-        created_user = UserModel.objects.filter(username=self.username).first()
-        self.assertIsNotNone(created_user, "New user has not been created.")
+        self.assertTrue(
+            UserModel.objects.filter(username=self.username).exists(),
+            "New user has not been created.",
+        )
         self.assertTrue(
             get_user(self.client).is_authenticated,
             "User is Not authenticated.",
@@ -50,8 +52,10 @@ class PostSignUpApiViewTestCase(TestCase):
             data=data
         )
         self.assertEqual(response.status_code, 201, "Wrong status code.")
-        created_user = UserModel.objects.filter(username=self.username).first()
-        self.assertIsNotNone(created_user, "New user has not been created.")
+        self.assertTrue(
+            UserModel.objects.filter(username=self.username).exists(),
+            "New user has not been created.",
+        )
         self.assertTrue(
             get_user(self.client).is_authenticated,
             "User is Not authenticated.",
@@ -68,8 +72,10 @@ class PostSignUpApiViewTestCase(TestCase):
             data=data
         )
         self.assertEqual(response.status_code, 400, "Wrong status code.")
-        created_user = UserModel.objects.filter(username=self.username).first()
-        self.assertIsNone(created_user, "New user has been created.")
+        self.assertFalse(
+            UserModel.objects.filter(username=self.username).exists(),
+            "New user has been created.",
+        )
 
     def test_sign_up_with_not_ascii_username(self):
         data = {
@@ -82,8 +88,10 @@ class PostSignUpApiViewTestCase(TestCase):
             data=data
         )
         self.assertEqual(response.status_code, 400, "Wrong status code.")
-        created_user = UserModel.objects.filter(username=self.username).first()
-        self.assertIsNone(created_user, "New user has been created.")
+        self.assertFalse(
+            UserModel.objects.filter(username=self.username).exists(),
+            "New user has been created.",
+        )
 
     def test_user_already_exists(self):
         self.user = UserModel.objects.create_user(
