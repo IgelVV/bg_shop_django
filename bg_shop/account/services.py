@@ -73,7 +73,7 @@ class AccountService:
 
         Deletes previous avatar.
         :param user: User obj
-        :param avatar: Image
+        :param avatar: image file.
         :return: None
         """
         description = f"{user.get_username()} avatar"

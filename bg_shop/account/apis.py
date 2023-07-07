@@ -170,8 +170,9 @@ class UpdateAvatarApi(views.APIView):
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """
-        First, creates new Image and relates to current user.
+        Set or update Image related to Profile.
 
+        First, creates new Image and relates to current user.
         Second, gets data about new avatar to send back.
         :param request: DRF request
         :return: DRF response

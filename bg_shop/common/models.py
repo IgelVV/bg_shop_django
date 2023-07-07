@@ -20,7 +20,7 @@ class Image(models.Model):
         verbose_name=_("description"),
     )
     img = models.ImageField(
-        upload_to='images',
+        upload_to=settings.IMAGE_SUBDIR,
         validators=[
             validators.FileMaxSizeValidator(
                 message=_(
