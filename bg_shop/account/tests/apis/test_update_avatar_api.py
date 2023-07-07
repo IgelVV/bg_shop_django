@@ -18,6 +18,7 @@ class PostUpdateAvatarApiTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.username = "".join(
             choices(ascii_letters+digits, k=randint(1, 10)))
         cls.password = "password"
@@ -27,7 +28,6 @@ class PostUpdateAvatarApiTestCase(TestCase):
             password=cls.password,
             email=cls.email,
         )
-        super().setUpClass()
 
     @classmethod
     def tearDownClass(cls):
