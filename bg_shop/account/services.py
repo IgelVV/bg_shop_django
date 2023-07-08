@@ -3,7 +3,7 @@
 from typing import TypeVar, Optional, Any, Dict
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model, login
-from django.core.files.uploadedfile import UploadedFile
+from django.core.files import File
 from django.db import transaction
 
 from rest_framework import request as drf_request
@@ -67,7 +67,7 @@ class AccountService:
         user.save()
 
     @transaction.atomic
-    def update_avatar(self, user: UserType, avatar: UploadedFile) -> None:
+    def update_avatar(self, user: UserType, avatar: File) -> None:
         """
         Create new Image and binds with user's profile.
 
