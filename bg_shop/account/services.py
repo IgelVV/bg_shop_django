@@ -171,4 +171,5 @@ class AccountService:
         cart_service = order_services.CartService(request=request)
         anonymous_cart = cart_service.cart
         login(*args, request=request, user=user, **kwargs,)
-        cart_service.merge_carts(session_cart=anonymous_cart)
+        if anonymous_cart:
+            cart_service.merge_carts(session_cart=anonymous_cart)
