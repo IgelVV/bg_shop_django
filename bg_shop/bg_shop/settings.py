@@ -242,7 +242,7 @@ LOGGING = {
         "": {
             "level": LOGLEVEL,
             "handlers": [
-                "console",
+                # "console",
             ],
         },
     },
