@@ -63,6 +63,7 @@ class GetProfileApiTestCase(TestCase):
 class PostProfileApiTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.new_first_name = "newFirstname"
         cls.new_last_name = "newLastname"
         cls.new_full_name = f"{cls.new_first_name} {cls.new_last_name}"
@@ -72,7 +73,6 @@ class PostProfileApiTestCase(TestCase):
             "src": "new/path/to/image",
             "alt": "new description",
         }
-        super().setUpClass()
 
     def setUp(self) -> None:
         self.user = UserModel.objects.create_user(

@@ -41,9 +41,13 @@ class PostUpdateAvatarApiTestCase(TestCase):
             choices(ascii_letters+digits, k=randint(9, 10)))
         self.image_name = self.base_image_name + ".png"
         self.image_path = self.generate_image_path(image_name=self.image_name)
+        self.new_image_name = "new_" + self.image_name
+        self.new_image_path = self.generate_image_path(
+            image_name=self.new_image_name)
 
     def tearDown(self) -> None:
         self.remove_file_from_filesystem(self.image_path)
+        self.remove_file_from_filesystem(self.new_image_path)
 
     @staticmethod
     def generate_image_path(image_name):
@@ -114,8 +118,7 @@ class PostUpdateAvatarApiTestCase(TestCase):
             data=data
         )
 
-        new_image_name = "new_" + self.image_name
-        second_photo_file = self.generate_photo_file(new_image_name)
+        second_photo_file = self.generate_photo_file(self.new_image_name)
         data = {
             'avatar': second_photo_file
         }
@@ -124,10 +127,6 @@ class PostUpdateAvatarApiTestCase(TestCase):
             data=data
         )
         self.assertEqual(response.status_code, 201, "Wrong status code.", )
-
-        # to delete both new photo
-        self.tearDown()
-        self.image_path = self.generate_image_path(new_image_name)
 
     def test_update_with_null(self):
         first_photo_file = self.generate_photo_file(self.image_name)
