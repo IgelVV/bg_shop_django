@@ -123,7 +123,7 @@ class UpdateAvatarTestCase(TestCase):
 
     def setUp(self) -> None:
         self.base_image_name = "".join(
-            choices(ascii_letters+digits, k=randint(9, 10)))
+            choices(ascii_letters + digits, k=randint(9, 10)))
         self.image_name = self.base_image_name + ".png"
         self.image_path = self.generate_image_path(image_name=self.image_name)
         self.new_image_name = "new_" + self.image_name
@@ -329,7 +329,6 @@ class UpdateAccountTestCase(TestCase):
                 exceptions.ValidationError,
                 msg="Invalid email is accepted.",
         ) as context:
-
             self.service.update_account(
                 user=self.user,
                 first_name=self.new_first_name,
@@ -420,4 +419,4 @@ class LoginTestCase(TestCase):
         )
         order_cart = self.user.order_set.first()
         self.assertIsNotNone(
-            order_cart, "Cart hasn't been created from session.",)
+            order_cart, "Cart hasn't been created from session.", )

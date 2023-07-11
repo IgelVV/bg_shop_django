@@ -30,16 +30,15 @@ class ImageService:
 
     def delete_instance(self, instance: models.Image) -> None:
         """
-        Delete Image obj.
+        Delete Image obj and image file from filesystem.
 
         To use instead of model.delete() + signals.
         It triggers cleaning up related files.
         :param instance: Image obj.
         :return: None
         """
-        with transaction.atomic():
-            self.delete_img(instance)
-            instance.delete()
+        self.delete_img(instance)
+        instance.delete()
 
     def update_img(self, instance: models.Image, new_img: File) -> None:
         """
