@@ -28,7 +28,7 @@ def parse_query_params_square_brackets(request: drf_request.Request) -> dict:
     :return: dict with nested dicts and lists if they are passed in query
     """
     data = {}
-    for key, value in request.query_params.items():
+    for key, value in request.GET.items():
         if '[' in key and ']' in key:
             # nested
             index_left_bracket = key.index('[')
@@ -41,7 +41,7 @@ def parse_query_params_square_brackets(request: drf_request.Request) -> dict:
                 data[main_key][nested_key] = value
             else:
                 if main_key not in data:
-                    data[main_key] = request.query_params.getlist(key)
+                    data[main_key] = request.GET.getlist(key)
         else:
             data[key] = value
     return data
