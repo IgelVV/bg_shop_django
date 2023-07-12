@@ -74,10 +74,11 @@ class DynamicConfig(models.Model):
         """
         self.pk = 1
         super().save(*args, **kwargs)
+        # todo self.set_to_cache()
 
-    def delete(self, *args, **kwargs):
-        """To prevent deletion by the django admin."""
-        pass
+    # def delete(self, *args, **kwargs):
+    #     """To prevent deletion by the django admin."""
+    #     pass
 
     # @classmethod
     # def load(cls):
