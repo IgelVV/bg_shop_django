@@ -14,8 +14,6 @@ class DynamicConfig(models.Model):
         verbose_name = _("dynamic config")
         verbose_name_plural = _("dynamic configs")
 
-    id = models.IntegerField(primary_key=True, default=1)
-
     ordinary_delivery_cost = models.DecimalField(
         default=0,
         max_digits=8,
