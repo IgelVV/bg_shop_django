@@ -1,0 +1,12 @@
+[
+  {
+    "model": "orders.orderedproduct",
+    "pk": 1,
+    "fields": {
+      "product": 1,
+      "order": 1,
+      "price": "0.00",
+      "count": 3
+    }
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "model": "shop.product",
+    "pk": 1,
+    "fields": {
+      "title": "Test item",
+      "description": "test description",
+      "category": null,
+      "price": "50.00",
+      "count": 21,
+      "release_date": "2022-12-06",
+      "sort_index": 10,
+      "limited_edition": true,
+      "manufacturer": "test manufacturer",
+      "is_active": true,
+      "images": [],
+      "tags": [],
+      "specifications": []
+    }
+  }
+]
