@@ -126,24 +126,28 @@ class OrderedProductInputSerializer(drf_serializers.Serializer):
         name = drf_serializers.CharField()
 
     id = drf_serializers.IntegerField()
-    category = drf_serializers.IntegerField()
+    category = drf_serializers.IntegerField(required=False, allow_null=True,)
     price = drf_serializers.DecimalField(
         default=0,
         max_digits=8,
         decimal_places=2,
+        required=False,
     )
     count = drf_serializers.IntegerField()
     date = drf_serializers.DateTimeField()
-    title = drf_serializers.CharField()
-    description = drf_serializers.CharField()
-    freeDelivery = drf_serializers.BooleanField(required=False, )
+    title = drf_serializers.CharField(
+        required=False, allow_null=True, allow_blank=True)
+    description = drf_serializers.CharField(
+        required=False, allow_null=True, allow_blank=True)
+    freeDelivery = drf_serializers.BooleanField(
+        required=False, allow_null=True)
     images = common_serializers.ImageSerializer(
         many=True,
         required=False,
         allow_null=True,
     )
-    tags = TagSerializer(many=True, required=False, )
-    reviews = drf_serializers.IntegerField()
+    tags = TagSerializer(many=True, required=False, allow_null=True)
+    reviews = drf_serializers.IntegerField(required=False, allow_null=True)
     rating = drf_serializers.DecimalField(
         max_digits=8,
         decimal_places=2,

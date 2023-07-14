@@ -105,7 +105,7 @@ class OrderService:
         simple_products = self._simplify_products(products=products)
         ordered_products: db_models.QuerySet[models.OrderedProduct] = \
             order.orderedproduct_set.all().select_related("product") \
-            .prefetch_related("product__sale_set")
+                .prefetch_related("product__sale_set")
         for ord_prod in ordered_products:
             if ord_prod.product_id not in simple_products:
                 ord_prod.delete()
