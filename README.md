@@ -78,6 +78,13 @@ obj._state.fields_cache
 obj._prefetched_objects_cache
 ```
 
+### Testing
+
+- To carry out testing without starting Celery.
+```shell
+py manage.py test --exclude-tag=celery
+```
+
 ## Name
 
 ## Description
