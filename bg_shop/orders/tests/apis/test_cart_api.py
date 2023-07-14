@@ -13,15 +13,19 @@ from orders import models, apis
 UserModel = get_user_model()
 
 
-def add_product_to_session_cart(request: drf_request, product_id: str) -> None:
+def add_product_to_session_cart(
+        request: drf_request,
+        product_id: str,
+        quantity: int = 1,
+) -> None:
     if request.session.get(settings.CART_SESSION_ID, False):
         cart = request.session[settings.CART_SESSION_ID]
     else:
         cart = request.session[settings.CART_SESSION_ID] = {}
     if cart.get(product_id, False):
-        cart[product_id] += 1
+        cart[product_id] += quantity
     else:
-        cart[product_id] = 1
+        cart[product_id] = quantity
     request.session.modified = True
 
 
@@ -191,10 +195,50 @@ class DeleteCartApiTestCase(TestCase):
         self.order_cart = models.Order.objects.get(pk=1)
 
     def test_delete_if_anonymous(self):
-        ...
+        data = {
+            "id": 1,
+            "count": 1,
+        }
+        session = self.client.session
+        session[settings.CART_SESSION_ID] = {"1": 2}
+        session.save()
+        response = self.client.delete(
+            path=self.url,
+            data=data,
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200, "Wrong status code.")
+        self.assertEqual(response.data[0].get("id"), 1, "Wrong product id.")
+        self.assertEqual(
+            response.data[0].get("count"), 1, "Wrong product count.")
 
     def test_delete_if_authenticated(self):
-        ...
+        data = {
+            "id": 1,
+            "count": 1,
+        }
+        self.client.force_login(self.user)
+        response = self.client.delete(
+            path=self.url,
+            data=data,
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200, "Wrong status code.")
+        self.assertEqual(response.data[0].get("id"), 1, "Wrong product id.")
+        self.assertEqual(
+            response.data[0].get("count"), 2, "Wrong product count.")
 
     def test_delete_from_empty_cart(self):
-        ...
+        data = {
+            "id": 1,
+            "count": 1,
+        }
+        response = self.client.delete(
+            path=self.url,
+            data=data,
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200, "Wrong status code.")
+        self.assertEqual(response.data, [], "Unexpected response data.")
+
