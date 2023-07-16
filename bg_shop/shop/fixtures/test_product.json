@@ -3,7 +3,7 @@
     "model": "shop.product",
     "pk": 1,
     "fields": {
-      "title": "Test item",
+      "title": "Test item 1",
       "description": "test description",
       "category": null,
       "price": "50.00",
@@ -13,6 +13,63 @@
       "limited_edition": true,
       "manufacturer": "test manufacturer",
       "is_active": true,
+      "images": [],
+      "tags": [],
+      "specifications": []
+    }
+  },
+    {
+    "model": "shop.product",
+    "pk": 2,
+    "fields": {
+      "title": "Test item 2",
+      "description": "test description 2",
+      "category": null,
+      "price": "40.00",
+      "count": 121,
+      "release_date": "2022-12-08",
+      "sort_index": 10,
+      "limited_edition": false,
+      "manufacturer": "test manufacturer 2",
+      "is_active": true,
+      "images": [],
+      "tags": [],
+      "specifications": []
+    }
+  },
+    {
+    "model": "shop.product",
+    "pk": 3,
+    "fields": {
+      "title": "Test item 3",
+      "description": "test description 3",
+      "category": null,
+      "price": "150.00",
+      "count": 1,
+      "release_date": "2022-12-08",
+      "sort_index": 10,
+      "limited_edition": true,
+      "manufacturer": "test manufacturer",
+      "is_active": true,
+      "images": [],
+      "tags": [],
+      "specifications": []
+    }
+  },
+    {
+    "model": "shop.product",
+    "pk": 4,
+    "fields": {
+      "title": "Test item 4",
+      "description": "test description 4",
+      "category": null,
+      "price": "10.00",
+      "count": 151,
+      "release_date": "2022-11-06",
+      "sort_index": 2,
+      "limited_edition": false,
+      "manufacturer": "test manufacturer 3",
+      "is_active": false,
       "images": [],
       "tags": [],
       "specifications": []
