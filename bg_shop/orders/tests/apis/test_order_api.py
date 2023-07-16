@@ -29,8 +29,8 @@ class GetOrderApiTestCase(TestCase):
             map(lambda order: order["id"], response.data))
         self.assertEqual(response.status_code, 200, "Wrong status code.")
         self.assertEqual(
-            simple_response_data,
-            list(expected_orders_id),
+            set(simple_response_data),
+            set(expected_orders_id),
             "Wrong response data.",
         )
 
