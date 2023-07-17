@@ -40,7 +40,7 @@ class OrderSelector:
             prefetch_ordered_products: bool = True,
     ) -> models.Order:
         """
-        Get or create Order related to user, with status=CART.
+        Get or create Order related to user, with status=CART, is_active=True.
 
         :param user: User object.
         :param prefetch_ordered_products: if True prefetches
@@ -62,7 +62,7 @@ class OrderSelector:
             prefetch_ordered_products: bool = True
     ) -> Optional[models.Order]:
         """
-        Get Order related to user, with status=CART.
+        Get Order related to user, with status=CART, is_active=True.
 
         :param user: User object.
         :param prefetch_ordered_products: if True prefetches
