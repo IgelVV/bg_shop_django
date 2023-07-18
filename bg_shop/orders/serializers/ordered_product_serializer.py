@@ -141,7 +141,7 @@ class OrderedProductInputSerializer(drf_serializers.Serializer):
         required=False, allow_null=True, allow_blank=True)
     freeDelivery = drf_serializers.BooleanField(
         required=False, allow_null=True)
-    images = common_serializers.ImageSerializer(
+    images = ImageSerializer(
         many=True,
         required=False,
         allow_null=True,
