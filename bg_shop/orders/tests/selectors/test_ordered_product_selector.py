@@ -1,4 +1,4 @@
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.contrib.auth import get_user_model
 
 from orders import models, selectors
@@ -7,7 +7,6 @@ from shop import models as shop_models
 UserModel = get_user_model()
 
 
-@override_settings(DEBUG=True)
 class GetOrderedProductFromOrderTestCase(TestCase):
     fixtures = [
         "test_user",
