@@ -9,7 +9,7 @@ from rest_framework import serializers as drf_serializers
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
-from orders import services, serializers, selectors, tasks, models
+from orders import services, serializers, selectors, models
 from account import validators as acc_validators
 
 
@@ -169,7 +169,4 @@ class OrderDetailApi(views.APIView):
         service = services.OrderService()
         service.confirm(
             order_id=order_id, user=request.user, order_data=validated_data)
-
-        tasks.order_confirmed.delay(order_id)
-
         return drf_response.Response(status=status.HTTP_200_OK)

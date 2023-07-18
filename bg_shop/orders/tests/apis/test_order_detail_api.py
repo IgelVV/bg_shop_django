@@ -1,6 +1,6 @@
 import json
 
-from django.test import TestCase, tag
+from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from orders import models
@@ -103,7 +103,6 @@ class PostOrderDetailApiTestCase(TestCase):
             "products": [],
         }
 
-    @tag("celery")
     def test_confirm_order(self):
         data = {
             "id": 2,
