@@ -179,7 +179,7 @@ class ProductSelector:
         ) \
             .order_by("-discount") \
             .first()
-        original_price = product.price
+        original_price = Decimal(product.price)
         if sale:
             discounted_price = Decimal(1 - sale.discount * 0.01) * original_price
             discounted_price = round(discounted_price, 2)
