@@ -32,4 +32,7 @@ class Image(models.Model):
     )
 
     def __str__(self):
-        return f"Image({self.pk}): {self.description[:10]}"
+        if self.description:
+            return f"Image({self.pk}): {self.description[:10]}"
+        else:
+            return f"Image({self.pk}): "
