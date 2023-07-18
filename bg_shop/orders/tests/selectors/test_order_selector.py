@@ -1,21 +1,12 @@
-from datetime import timedelta
+from decimal import Decimal
 
 from django.http import Http404
-from django.test import TestCase
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth import login
-from django.contrib.sessions.middleware import SessionMiddleware
+from django.test import TestCase, override_settings
 from django.conf import settings
-from django.utils import timezone
-
-from rest_framework import request as drf_request
-from rest_framework.test import APIRequestFactory
-
 from django.contrib.auth import get_user_model
 
 from orders import models, selectors
-from shop import models as shop_models
-from account import models as account_models
+from dynamic_config import services as d_conf_services
 
 UserModel = get_user_model()
 
@@ -481,7 +472,88 @@ class GetEditingOrderTestCase(TestCase):
                 order_id=9999, user=self.user, or_404=True)
 
 
+@override_settings(
+    BOUNDARY_OF_FREE_DELIVERY=100,
+    EXPRESS_DELIVERY_EXTRA_CHARGE=10,
+    ORDINARY_DELIVERY_COST=5,
+)
 class GetTotalCostTestCase(TestCase):
+    fixtures = [
+        "test_user",
+        "test_product"
+    ]
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        d_conf_services.DynamicConfigService().set_default_config()
+        cls.selector = selectors.OrderSelector()
+        cls.boundary_free = settings.BOUNDARY_OF_FREE_DELIVERY
+        cls.express_extra_charge = settings.EXPRESS_DELIVERY_EXTRA_CHARGE
+        cls.ordinary_delivery_cost = settings.ORDINARY_DELIVERY_COST
+
+    def setUp(self):
+        self.user = UserModel.objects.get(pk=1)
+        self.order = models.Order.objects.create(
+            user=self.user,
+            delivery_type=models.Order.DeliveryTypes.EXPRESS
+        )
+        self.price_1 = 50
+        self.price_2 = 100
+        self.ordered_product1 = models.OrderedProduct.objects.create(
+            order=self.order,
+            product_id=1,
+            count=2,
+            price=self.price_1,
+        )
+        self.ordered_product2 = models.OrderedProduct.objects.create(
+            order=self.order,
+            product_id=2,
+            count=1,
+            price=self.price_2,
+        )
+
+    def test_get_total_cost_with_express_delivery(self):
+        result = self.selector.get_total_cost(order=self.order)
+
+        # Expected total cost =
+        # = (50*2 + 100*1){main} + 0{ordinary} + 10{express} = 210
+        main_cost = (self.price_1 * 2) + self.price_2
+        delivery_cost = self.express_extra_charge
+        if main_cost < self.boundary_free:
+            delivery_cost += self.ordinary_delivery_cost
+        expected_total_cost = main_cost + delivery_cost
+
+        self.assertEqual(
+            result,
+            expected_total_cost,
+            "The result doesn't match the expected total cost."
+        )
+
+    def test_get_total_cost_with_ordinary_delivery(self):
+        order_ordinary_delivery = models.Order.objects.create(
+            user=self.user,
+            delivery_type=models.Order.DeliveryTypes.ORDINARY,
+        )
+        models.OrderedProduct.objects.create(
+            order=order_ordinary_delivery,
+            product_id=1,
+            count=1,
+            price=self.price_1,
+        )
+        result = self.selector.get_total_cost(order=order_ordinary_delivery)
+
+        # Expected total cost = 50{main} + 5{ordinary} = 55
+        expected_total_cost = self.price_1 + self.ordinary_delivery_cost
+
+        self.assertEqual(
+            result,
+            expected_total_cost,
+            "The result doesn't match the expected total cost.",
+        )
+
+
+class GetOrderMainCostTestCase(TestCase):
     fixtures = [
         "test_user",
         "test_product"
@@ -495,48 +567,110 @@ class GetTotalCostTestCase(TestCase):
     def setUp(self):
         self.user = UserModel.objects.get(pk=1)
         self.order = models.Order.objects.create(
-            user=self.user,
-            delivery_type=models.Order.DeliveryTypes.EXPRESS
+            user=self.user
         )
-        self.price1 = 50
-        self.price2 = 100
+        self.price_1 = 50
+        self.price_2 = 100
         self.ordered_product1 = models.OrderedProduct.objects.create(
             order=self.order,
             product_id=1,
             count=2,
-            price=self.price1,
+            price=self.price_1,
         )
         self.ordered_product2 = models.OrderedProduct.objects.create(
             order=self.order,
             product_id=2,
             count=1,
-            price=self.price2,
+            price=self.price_2,
         )
 
-    def test_get_total_cost_with_express_delivery(self):
-        result = self.selector.get_total_cost(order=self.order)
-        main_cost = (self.price1 * 2) + self.price2
-        delivery_cost = settings.EXPRESS_DELIVERY_EXTRA_CHARGE
-        if main_cost < settings.BOUNDARY_OF_FREE_DELIVERY:
-            delivery_cost += settings.ORDINARY_DELIVERY_COST
-        expected_price = main_cost + delivery_cost
-        # # Calculate expected total cost
-        # # (main cost: 2 * 50 + 1 * 100 = 200, delivery cost for EXPRESS: 20)
-        # expected_total_cost = Decimal('130') + Decimal('20')
+    def test_get_order_main_cost(self):
+        result = self.selector.get_order_main_cost(order=self.order)
 
-    #     # Assert that the result matches the expected total cost
-    #     self.assertEqual(result, expected_total_cost)
-    #
-    # def test_get_total_cost_with_standard_delivery(self):
-    #     # Create a new order with STANDARD delivery
-    #     order_standard_delivery = Order.objects.create(delivery_type=Order.DeliveryTypes.STANDARD)
-    #     OrderedProduct.objects.create(order=order_standard_delivery, product=self.product1, quantity=1)
-    #
-    #     # Test getting total cost with STANDARD delivery
-    #     result = YourModelClassNameHere().get_total_cost(order=order_standard_delivery)
-    #
-    #     # Calculate expected total cost (main cost: 1 * (50 - 10) = 40, delivery cost for STANDARD: 10)
-    #     expected_total_cost = Decimal('40') + Decimal('10')
-    #
-    #     # Assert that the result matches the expected total cost
-    #     self.assertEqual(result, expected_total_cost)
+        # Expected main cost = 2 * 50 + 1 * 100 = 200
+        expected_main_cost = 2 * self.price_1 + self.price_2
+
+        self.assertEqual(
+            result,
+            expected_main_cost,
+            "The result doesn't match the expected total cost.",
+        )
+
+
+@override_settings(
+    BOUNDARY_OF_FREE_DELIVERY=100,
+    EXPRESS_DELIVERY_EXTRA_CHARGE=10,
+    ORDINARY_DELIVERY_COST=5,
+)
+class GetDeliveryCostTestCase(TestCase):
+    fixtures = [
+        "test_user",
+        "test_product"
+    ]
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        d_conf_services.DynamicConfigService().set_default_config()
+        cls.selector = selectors.OrderSelector()
+        cls.boundary_free = settings.BOUNDARY_OF_FREE_DELIVERY
+        cls.express_extra_charge = settings.EXPRESS_DELIVERY_EXTRA_CHARGE
+        cls.ordinary_delivery_cost = settings.ORDINARY_DELIVERY_COST
+
+    def setUp(self):
+        self.user = UserModel.objects.get(pk=1)
+        self.order = models.Order.objects.create(
+            user=self.user,
+            delivery_type=models.Order.DeliveryTypes.EXPRESS
+        )
+        self.price_1 = 50
+        self.price_2 = 100
+        self.ordered_product1 = models.OrderedProduct.objects.create(
+            order=self.order,
+            product_id=1,
+            count=2,
+            price=self.price_1,
+        )
+        self.ordered_product2 = models.OrderedProduct.objects.create(
+            order=self.order,
+            product_id=2,
+            count=1,
+            price=self.price_2,
+        )
+
+    def test_get_delivery_cost_with_order(self):
+        result = self.selector.get_delivery_cost(order=self.order)
+        # Expected delivery cost = 10{express} + 0{ordinary over boundary}
+        expected_delivery_cost = 10
+
+        self.assertEqual(
+            result,
+            expected_delivery_cost,
+            "The result doesn't match the expected total cost.",
+        )
+
+    def test_get_delivery_cost_with_main_cost_and_express_flag(self):
+        # Test getting delivery cost using main cost and express flag
+        result = self.selector.get_delivery_cost(
+            main_cost=Decimal(99),
+            is_express=True,
+        )
+
+        # Expected delivery cost = 10{express} + 5{ordinary}
+        expected_delivery_cost = 5 + 10
+
+        self.assertEqual(
+            result,
+            expected_delivery_cost,
+            "The result doesn't match the expected total cost.",
+        )
+
+    def test_get_delivery_cost_with_invalid_args(self):
+        with self.assertRaises(AttributeError):
+            self.selector.get_delivery_cost(
+                order=self.order, main_cost=Decimal(100), is_express=True)
+
+    def test_get_delivery_cost_with_missing_args(self):
+        with self.assertRaises(AttributeError):
+            self.selector.get_delivery_cost(
+                order=None, main_cost=None, is_express=None)
