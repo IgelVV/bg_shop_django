@@ -68,7 +68,7 @@ docker compose logs -f
 ```
 
 
-## Dev Notes
+## Dev Notes (Cheat sheet)
 - get select related cache
 ```python
 obj._state.fields_cache
@@ -76,6 +76,15 @@ obj._state.fields_cache
 - get prefetch related cache
 ```python
 obj._prefetched_objects_cache
+```
+- "How to see the raw SQL queries Django is running?"
+```python
+from django.db import reset_queries
+from django.db import connection
+
+reset_queries()
+# Run your query here
+print(connection.queries)
 ```
 
 ### Testing
