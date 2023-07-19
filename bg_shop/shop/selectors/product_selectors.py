@@ -27,14 +27,40 @@ class ProductSelector:
     def get_active_products(self) -> QuerySet:
         return models.Product.objects.filter(is_active=True)
 
+    def is_available(
+            self,
+            product: Optional[models.Product] = None,
+            product_id: Optional[int] = None,
+    ) -> bool:
+        """
+        Check if product is active and count > 0.
+
+        It possible to pass or product or prodict_id, not both.
+        If product is passed, doesn't hit db.
+        :param product: Product obj.
+        :param product_id: Product.pk.
+        :return: bool.
+        """
+        if (product is not None) and (product_id is not None):
+            raise AttributeError("It's prohibited to pass both `product` "
+                                 "and `product_id` arguments.")
+        if product:
+            return product.count > 0 and product.is_active
+        elif product_id is not None:
+            product = models.Product.objects.get(pk=product_id)
+            return product.count > 0 and product.is_active
+        else:
+            raise AttributeError("None of arguments was passed. "
+                                 "It required to pass one of them.")
+
     def get_rating(self, product_id: int) -> float:
         """
         Returns average rete of all Reviews for this Product.
         :param product_id: id of product
         :return: average rating
         """
-        reviews = models.Review.objects\
-            .filter(product_id=product_id)\
+        reviews = models.Review.objects \
+            .filter(product_id=product_id) \
             .aggregate(Avg("rate"))
         return reviews["rate__avg"]
 
@@ -45,7 +71,7 @@ class ProductSelector:
         :param product: item to check
         :return: bool
         """
-        boundary = conf_selectors.DynamicConfigSelector()\
+        boundary = conf_selectors.DynamicConfigSelector() \
             .boundary_of_free_delivery
         if boundary:
             return product.price >= boundary
@@ -85,9 +111,9 @@ class ProductSelector:
         :param query_set:
         :return:
         """
-        query_set = query_set.prefetch_related("review_set")\
-            .prefetch_related("images")\
-            .prefetch_related("tags")\
+        query_set = query_set.prefetch_related("review_set") \
+            .prefetch_related("images") \
+            .prefetch_related("tags") \
             .prefetch_related("sale_set")
         return query_set
 
@@ -181,7 +207,8 @@ class ProductSelector:
             .first()
         original_price = Decimal(product.price)
         if sale:
-            discounted_price = Decimal(1 - sale.discount * 0.01) * original_price
+            discounted_price = Decimal(
+                1 - sale.discount * 0.01) * original_price
             discounted_price = round(discounted_price, 2)
             return discounted_price
         else:

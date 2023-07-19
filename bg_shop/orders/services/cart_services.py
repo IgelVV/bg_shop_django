@@ -6,6 +6,7 @@ from django.conf import settings
 from rest_framework import request as drf_request
 
 from orders import models, services, selectors
+from shop import selectors as shop_selectors
 
 User = get_user_model()
 
@@ -41,6 +42,10 @@ class CartService:
         :param override_quantity: If True, replace previous quantity by new one
         :return:
         """
+        is_available = shop_selectors.ProductSelector() \
+            .is_available(product_id=product_id)
+        if not is_available:
+            raise ValueError("Product is unavailable.")
         if self.request.user.is_anonymous:
             self._add_to_session(product_id, quantity, override_quantity)
         else:
