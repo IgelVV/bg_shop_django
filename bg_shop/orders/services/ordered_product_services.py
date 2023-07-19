@@ -119,7 +119,8 @@ class OrderedProductService:
                 else:
                     ordered_product.delete()
         else:
-            raise ValueError(f"{order} has no Product with id {product_id}")
+            raise models.OrderedProduct.DoesNotExist(
+                f"{order} has no Product with id {product_id}")
 
     def update_price(
             self,

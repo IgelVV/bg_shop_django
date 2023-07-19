@@ -145,11 +145,14 @@ class CartService:
         cart_order = selectors.OrderSelector() \
             .get_or_create_cart_order(user=self.request.user)
         ord_prod_service = services.OrderedProductService()
-        ord_prod_service.reduce_or_delete(
-            order=cart_order,
-            product_id=product_id,
-            quantity=quantity,
-        )
+        try:
+            ord_prod_service.reduce_or_delete(
+                order=cart_order,
+                product_id=product_id,
+                quantity=quantity,
+            )
+        except models.OrderedProduct.DoesNotExist:
+            return None
 
     def merge_carts(self, session_cart: dict[str, int]) -> None:
         """
