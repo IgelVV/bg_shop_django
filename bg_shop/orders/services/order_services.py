@@ -146,25 +146,27 @@ class OrderService:
         :param order_data: {field: value,}
         :return: None
         """
-        # todo with transaction atomic
         selector = selectors.OrderSelector()
         ordered_product_service = ord_prod_services.OrderedProductService()
 
         order = selector.get_editing_order_of_user(
             order_id=order_id, user=user, or_404=True)
         order_attrs = self._parse_order_data(order_data=order_data)
-        order = self.edit(order=order, order_attrs=order_attrs, commit=False)
 
-        ordered_products = order.orderedproduct_set.all()
-        ordered_product_service.deduct_amount_from_product(
-            ord_prod_qs=ordered_products)
-        for ord_prod in ordered_products:
-            ordered_product_service.update_price(
-                ordered_product=ord_prod, commit=True)
+        with transaction.atomic():
+            order = self.edit(
+                order=order, order_attrs=order_attrs, commit=False)
 
-        order.status = order.Statuses.ACCEPTED
-        order.full_clean()
-        order.save()
+            ordered_products = order.orderedproduct_set.all()
+            ordered_product_service.deduct_amount_from_product(
+                ord_prod_qs=ordered_products)
+            for ord_prod in ordered_products:
+                ordered_product_service.update_price(
+                    ordered_product=ord_prod, commit=True)
+
+            order.status = order.Statuses.ACCEPTED
+            order.full_clean()
+            order.save()
 
     def _parse_order_data(self, order_data: dict) -> dict:
         """
