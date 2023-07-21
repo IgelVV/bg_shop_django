@@ -238,10 +238,10 @@ class OrderServiceUpdateOrderedProductsTestCase(TestCase):
 
     @patch.object(services.OrderService, '_simplify_products')
     @patch.object(services.OrderedProductService, 'create_ordered_product')
-    @patch.object(services.OrderedProductService, 'update_price')
+    @patch.object(services.OrderedProductService, 'refresh_price_from_product')
     def test_update_ordered_products(
             self,
-            mock_update_price,
+            mock_refresh_price,
             mock_create_ordered_product,
             mock_simplify_products,
     ):
@@ -268,7 +268,7 @@ class OrderServiceUpdateOrderedProductsTestCase(TestCase):
             call(ordered_product_1, commit=False),
             call(ordered_product_2, commit=False),
         ]
-        mock_update_price.assert_has_calls(
+        mock_refresh_price.assert_has_calls(
             expected_update_calls, any_order=True)
         mock_create_ordered_product.assert_called_once_with(
             order=self.order, product_id=3, quantity=2,)
@@ -344,7 +344,7 @@ class OrderServiceConfirmTestCase(TestCase):
             "comment": "This is a test order",
         }
 
-    @patch.object(services.OrderedProductService, "update_price")
+    @patch.object(services.OrderedProductService, "refresh_price_from_product")
     @patch.object(services.OrderedProductService, "deduct_amount_from_product")
     @patch.object(services.OrderService, "edit", )
     @patch.object(services.OrderService, "_parse_order_data")
@@ -355,7 +355,7 @@ class OrderServiceConfirmTestCase(TestCase):
             mock_parse_order_data,
             mock_edit,
             mock_deduct,
-            mock_update_price
+            mock_refresh_price
     ):
 
         order = models.Order.objects.get(pk=self.order_id)
@@ -370,7 +370,7 @@ class OrderServiceConfirmTestCase(TestCase):
         mock_deduct.assert_called_once_with(
             ord_prod_qs=ComparableOrderedProductQuerySet(order))
         self.assertEqual(
-            mock_update_price.call_count, len(order.orderedproduct_set.all()))
+            mock_refresh_price.call_count, len(order.orderedproduct_set.all()))
 
         order.refresh_from_db()
         self.assertEqual(order.status, models.Order.Statuses.ACCEPTED)
