@@ -110,7 +110,7 @@ class OrderService:
             if ord_prod.product_id not in simple_products:
                 ord_prod.delete()
             else:
-                ordered_product_service.update_price(ord_prod, commit=False)
+                ordered_product_service.refresh_price_from_product(ord_prod, commit=False)
                 ord_prod.count = simple_products.pop(ord_prod.product_id)
                 ord_prod.full_clean()
                 ord_prod.save()
@@ -161,7 +161,7 @@ class OrderService:
             ordered_product_service.deduct_amount_from_product(
                 ord_prod_qs=ordered_products)
             for ord_prod in ordered_products:
-                ordered_product_service.update_price(
+                ordered_product_service.refresh_price_from_product(
                     ordered_product=ord_prod, commit=True)
 
             order.status = order.Statuses.ACCEPTED
