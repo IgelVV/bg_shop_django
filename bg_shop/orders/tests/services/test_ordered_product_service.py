@@ -1,7 +1,7 @@
 from decimal import Decimal
 from unittest.mock import patch
 
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.core.exceptions import ValidationError
 
 from orders import services, models, selectors
