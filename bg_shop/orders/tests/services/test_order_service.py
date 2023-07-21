@@ -1,12 +1,24 @@
-from unittest.mock import patch, ANY, MagicMock, call, PropertyMock
+from unittest.mock import patch, ANY, call
 
-from django.test import TestCase, TransactionTestCase
+from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.http import Http404
 
 from orders import models, services, selectors
 
 UserModel = get_user_model()
+
+
+class ComparableOrderedProductQuerySet:
+    def __init__(self, order):
+        self.qs = order.orderedproduct_set.all()
+
+    def __eq__(self, other):
+        return list(other.values()) == list(self.qs.values())
+
+    def __ne__(self, other):
+        return list(other.values()) != list(self.qs.values())
 
 
 class OrderServiceCreateOrderTestCase(TestCase):
@@ -317,16 +329,6 @@ class OrderServiceConfirmTestCase(TestCase):
         "test_ordered_product",
     ]
 
-    class DummyOrderedProductQuerySet:
-        def __init__(self, order):
-            self.qs = order.orderedproduct_set.all()
-
-        def __eq__(self, other):
-            return list(other.values()) == list(self.qs.values())
-
-        def __ne__(self, other):
-            return list(other.values()) != list(self.qs.values())
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -366,16 +368,127 @@ class OrderServiceConfirmTestCase(TestCase):
             order_id=self.order_id, user=self.user, order_data=self.order_data)
 
         mock_deduct.assert_called_once_with(
-            ord_prod_qs=self.DummyOrderedProductQuerySet(order))
+            ord_prod_qs=ComparableOrderedProductQuerySet(order))
         self.assertEqual(
             mock_update_price.call_count, len(order.orderedproduct_set.all()))
 
         order.refresh_from_db()
         self.assertEqual(order.status, models.Order.Statuses.ACCEPTED)
 
-    # def test_confirm_order_not_found(self):
-    #     # Mock the OrderSelector's get_editing_order_of_user method to return None
-    #     with patch.object(selectors.OrderSelector, "get_editing_order_of_user", return_value=None):
-    #         with self.assertRaises(models.Order.DoesNotExist):
-    #             # Call the confirm function with a non-existing order
-    #             self.order_service.confirm(order_id=self.order_id, user=self.user, order_data=self.order_data)
+    def test_confirm_nonexisting_order(self):
+        with self.assertRaises(Http404):
+            self.order_service.confirm(
+                order_id=9999, user=self.user, order_data=self.order_data)
+
+
+class OrderServiceParseOrderDataTestCase(TestCase):
+    def setUp(self) -> None:
+        self.order_service = services.OrderService()
+
+    def test_parse_order_data_with_all_fields(self):
+        order_data = {
+            "id": 1,
+            "createdAt": timezone.now(),
+            "fullName": "Test User",
+            "email": "test@mail.com",
+            "phone": "0123456789",
+            "deliveryType": "EX",
+            "paymentType": "ON",
+            "totalCost": 10,
+            "status": "ED",
+            "city": "New York",
+            "address": "123 Main St",
+            "comment": "This is a test order",
+            "products": [],
+        }
+
+        parsed_data = self.order_service._parse_order_data(order_data)
+
+        expected_data = {
+            "delivery_type": "EX",
+            "payment_type": "ON",
+            "city": "New York",
+            "address": "123 Main St",
+            "comment": "This is a test order",
+        }
+
+        self.assertEqual(parsed_data, expected_data)
+
+    def test_parse_order_data_with_required_fields_only(self):
+        order_data = {
+            "deliveryType": "EX",
+            "paymentType": "ON",
+            "address": "123 Main St",
+        }
+
+        parsed_data = self.order_service._parse_order_data(order_data)
+
+        expected_data = {
+            "delivery_type": "EX",
+            "payment_type": "ON",
+            "city": None,
+            "address": "123 Main St",
+            "comment": None,
+        }
+
+        self.assertEqual(parsed_data, expected_data)
+
+    def test_parse_order_data_with_empty_fields(self):
+        order_data = {
+            "deliveryType": "",
+            "paymentType": "",
+            "address": "",
+        }
+
+        parsed_data = self.order_service._parse_order_data(order_data)
+
+        expected_data = {
+            "delivery_type": "",
+            "payment_type": "",
+            "city": None,
+            "address": "",
+            "comment": None,
+        }
+
+        self.assertEqual(parsed_data, expected_data)
+
+    def test_parse_order_data_with_missing_required_fields(self):
+        order_data = {
+            "deliveryType": "EX",
+            "address": "123 Main St",
+        }
+        with self.assertRaises(KeyError):
+            self.order_service._parse_order_data(order_data)
+
+
+class OrderServiceRejectTestCase(TestCase):
+    fixtures = [
+        "test_user",
+        "test_order",
+        "test_product",
+        "test_ordered_product",
+    ]
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.order_service = services.OrderService()
+
+    def setUp(self) -> None:
+        self.order = models.Order.objects.get(pk=1)
+
+    @patch("orders.services.OrderedProductService.return_ordered_products")
+    def test_reject_order(self, mock_return_ord_prod):
+        order_id = self.order.id
+        self.order_service.reject(order_id)
+
+        rejected_order = models.Order.objects.get(pk=order_id)
+        self.assertEqual(rejected_order.status, models.Order.Statuses.REJECTED)
+
+        mock_return_ord_prod.assert_called_once_with(
+            ord_prod_qs=ComparableOrderedProductQuerySet(order=self.order)
+        )
+
+    def test_reject_nonexisting_order(self):
+        with self.assertRaises(models.Order.DoesNotExist):
+            self.order_service.reject(9999)
