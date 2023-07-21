@@ -78,7 +78,7 @@ obj._state.fields_cache
 obj._prefetched_objects_cache
 ```
 - "How to see the raw SQL queries Django is running?" 
-(debug-toolbar must be off, DEBUG=True)
+(only if DEBUG=True)
 ```python
 from django.db import reset_queries
 from django.db import connection
