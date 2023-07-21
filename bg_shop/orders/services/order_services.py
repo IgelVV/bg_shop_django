@@ -177,8 +177,8 @@ class OrderService:
         """
         order_attrs: dict[str, Any | None] = dict()
 
-        order_attrs["delivery_type"] = order_data.get("deliveryType")
-        order_attrs["payment_type"] = order_data.get("paymentType")
+        order_attrs["delivery_type"] = order_data["deliveryType"]
+        order_attrs["payment_type"] = order_data["paymentType"]
         order_attrs["city"] = order_data.get("city", None)
         order_attrs["address"] = order_data["address"]
         order_attrs["comment"] = order_data.get("comment", None)
