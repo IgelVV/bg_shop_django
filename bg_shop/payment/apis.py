@@ -7,6 +7,7 @@ from rest_framework import request as drf_request
 from django.urls import reverse
 
 from payment import tasks
+from orders import selectors as order_selectors
 
 
 class PaymentApi(views.APIView):
@@ -24,6 +25,13 @@ class PaymentApi(views.APIView):
     ) -> drf_response.Response:
         """Start payment with passed `card number`."""
         order_id = int(kwargs['id'])
+        check = order_selectors.OrderSelector().check_if_order_belongs_to_user(
+            user=request.user,
+            order_id=order_id
+        )
+        if not check:
+            return drf_response.Response(status=status.HTTP_404_NOT_FOUND)
+
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
