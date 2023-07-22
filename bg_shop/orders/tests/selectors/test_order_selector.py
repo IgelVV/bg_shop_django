@@ -427,6 +427,44 @@ class GetOneOrderTestCase(TestCase):
         self.assertIsNone(result)
 
 
+class CheckIfOrderBelongsToUserTestCase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.selector = selectors.OrderSelector()
+
+    def setUp(self):
+        self.user = UserModel.objects.create_user(
+            username="testuser", password="testpassword"
+        )
+        self.order = models.Order.objects.create(user=self.user)
+
+    def test_order_belongs_to_user(self):
+        self.assertTrue(
+            self.selector.check_if_order_belongs_to_user(
+                order_id=self.order.pk, user=self.user
+            )
+        )
+
+    def test_nonexistent_order(self):
+        non_existent_order_id = 99999
+        self.assertFalse(
+            self.selector.check_if_order_belongs_to_user(
+                order_id=non_existent_order_id, user=self.user
+            )
+        )
+
+    def test_order_of_other_user(self):
+        other_user = UserModel.objects.create_user(
+            username="otheruser", password="otherpassword"
+        )
+        self.assertFalse(
+            self.selector.check_if_order_belongs_to_user(
+                order_id=self.order.pk, user=other_user
+            )
+        )
+
+
 class GetEditingOrderTestCase(TestCase):
     fixtures = [
         "test_user",
