@@ -188,6 +188,22 @@ class OrderSelector:
             order = None
         return order
 
+    def check_if_order_belongs_to_user(
+            self,
+            order_id: int,
+            user: UserType,
+    ) -> bool:
+        """Check if order is related to user."""
+        try:
+            models.Order.objects.get(
+                user=user,
+                pk=order_id,
+            )
+        except models.Order.DoesNotExist:
+            return False
+        else:
+            return True
+
     def get_editing_order_of_user(
             self,
             order_id: int,
