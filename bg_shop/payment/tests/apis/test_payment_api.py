@@ -4,7 +4,9 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 from rest_framework import status
-from rest_framework.test import APITestCase, override_settings, APIRequestFactory
+from rest_framework.test import APITestCase
+
+from orders import models as order_models
 
 UserModel = get_user_model()
 
@@ -20,7 +22,6 @@ class ComparableUrl:
         return not other.endswith(self.url)
 
 
-# @override_settings(DEBUG=True)
 class PaymentApiTestCase(APITestCase):
     url = reverse("api:payment:payment", kwargs={'id': 1})
     fixtures = [
@@ -45,18 +46,31 @@ class PaymentApiTestCase(APITestCase):
             payment=1,
         )
 
-    # def test_start_payment_with_invalid_data(self):
-    #     order_id = 123  # Replace with a valid order ID
-    #     data = {"number": "invalid_card_number"}  # Provide an invalid card number
-    #     response = self.client.post(self.url, data=data, kwargs={"id": order_id})
-    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    #
-    #     # Additional assertions based on the expected behavior for invalid input data.
-    #
-    # def test_start_payment_with_invalid_order_id(self):
-    #     invalid_order_id = 999999  # Replace with a non-existing order ID
-    #     data = {"number": "12345678"}  # Replace with a valid card number
-    #     response = self.client.post(self.url, data=data, kwargs={"id": invalid_order_id})
-    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    #
-    #     # Additional assertions based on the expected behavior for invalid order ID.
+    def test_start_payment_with_invalid_data(self):
+        data = {"number": "invalid_card_number"}
+        response = self.client.post(self.url, data=data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch("payment.tasks.third_party_payment_service")
+    def test_start_payment_with_invalid_order_id(self, mock_payment):
+        url = reverse("api:payment:payment", kwargs={'id': 9999})
+        data = {"number": "12345678"}
+        response = self.client.post(url, data=data,)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        mock_payment.delay.assert_not_called()
+
+    @patch("payment.tasks.third_party_payment_service")
+    def test_order_of_other_user(self, mock_payment):
+        other_user = UserModel.objects.create_user(
+            username="other_test_user",
+            password="",
+        )
+        other_order = order_models.Order.objects.create(
+            user=other_user
+        )
+        url = reverse("api:payment:payment", kwargs={'id': other_order.pk})
+        data = {"number": "12345678"}
+        response = self.client.post(url, data=data,)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        mock_payment.delay.assert_not_called()
