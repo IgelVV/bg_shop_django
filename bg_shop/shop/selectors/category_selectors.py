@@ -10,7 +10,7 @@ class CategorySelector:
     def get_root_categories_queryset(
             only_active: bool = True) -> db_models.QuerySet:
         """
-        Returns categories witch has no parent.
+        Returns categories witch have no parent.
         :param only_active: if True, ignores categories with field active=False
         :return: queryset with categories without parent
         """

@@ -16,7 +16,7 @@ class CategoryApi(views.APIView):
         image = common_serializers.ImageSerializer(allow_null=True)
 
         def get_subcategories(self, obj):
-            if subcategories := obj.category_set:
+            if subcategories := obj.category_set.all():
                 return CategoryApi.OutputSerializer(
                     subcategories, many=True,).data
             else:
