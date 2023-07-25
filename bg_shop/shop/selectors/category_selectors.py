@@ -42,7 +42,7 @@ class CategorySelector:
             self,
             category_id: int,
             only_active: bool = True,
-    ) -> list[Optional[models.Category]]:
+    ) -> list[models.Category]:
         """
         Returns all subcategories recursively.
         :param category_id: start of chain
@@ -99,7 +99,4 @@ class CategorySelector:
     #                 )
     #                 category['subcategories'].extend(subcategory_info)
     #     return values
-    #
-    #
-    # def format_category(self):
-    #     ...
+
