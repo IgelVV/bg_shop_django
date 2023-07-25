@@ -39,7 +39,7 @@ class CategoryApiGetTestCase(TestCase):
                             "id": 2,
                             "title": "test AreaMajority",
                             "image": None,
-                            "subcategories": None,
+                            "subcategories": [],
                         }
                     ],
                 },
@@ -47,7 +47,7 @@ class CategoryApiGetTestCase(TestCase):
                     "id": 3,
                     "title": "Party",
                     "image": None,
-                    "subcategories": None,
+                    "subcategories": [],
                 },
             ],
         )
@@ -78,13 +78,13 @@ class CategoryApiOutputSerializerTestCase(TestCase):
                     "id": 2,
                     "title": "Subcategory 1",
                     "image": None,
-                    "subcategories": None,
+                    "subcategories": [],
                 },
                 {
                     "id": 3,
                     "title": "Subcategory 2",
                     "image": None,
-                    "subcategories": None,
+                    "subcategories": [],
                 },
             ],
         }
@@ -105,13 +105,13 @@ class CategoryApiOutputSerializerTestCase(TestCase):
                     "id": 2,
                     "title": "Subcategory 1",
                     "image": None,
-                    "subcategories": None,
+                    "subcategories": [],
                 },
                 {
                     "id": 3,
                     "title": "Subcategory 2",
                     "image": None,
-                    "subcategories": None,
+                    "subcategories": [],
                 },
             ],
         )

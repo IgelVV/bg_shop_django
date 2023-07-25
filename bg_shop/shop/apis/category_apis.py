@@ -20,7 +20,7 @@ class CategoryApi(views.APIView):
                 return CategoryApi.OutputSerializer(
                     subcategories, many=True,).data
             else:
-                return None
+                return []
 
         class Meta:
             model = models.Category
