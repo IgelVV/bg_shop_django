@@ -136,18 +136,21 @@ class ProductSelector:
         :param order: `dec` or `inc` (decrease, increase)
         :return: sorted qs
         """
-        if sort_field == "popularity":
-            # sales - number of products sold. Subquery
-            sales = order_models.OrderedProduct.objects \
-                .filter(product=OuterRef("pk")) \
-                .filter(order__status=order_models.Order.Statuses.COMPLETED) \
-                .values("product") \
-                .annotate(sales=Sum("count")).values("sales")
-            query_set = query_set.annotate(popularity=Subquery(sales))
-        else:
-            query_set = query_set.annotate(rating=Avg('review__rate')) \
-                .annotate(reviews=Count('review')) \
-                .annotate(date=F("release_date"))
+        match sort_field:
+            case "popularity":
+                # sales - number of products sold. Subquery
+                sales = order_models.OrderedProduct.objects \
+                    .filter(product=OuterRef("pk")) \
+                    .filter(order__status=order_models.Order.Statuses.COMPLETED) \
+                    .values("product") \
+                    .annotate(sales=Sum("count")).values("sales")
+                query_set = query_set.annotate(popularity=Subquery(sales))
+            case 'rating':
+                query_set = query_set.annotate(rating=Avg('review__rate'))
+            case 'reviews':
+                query_set = query_set.annotate(reviews=Count('review'))
+            case 'date':
+                query_set = query_set.annotate(date=F("release_date"))
 
         if (order is None) or (order == 'dec'):
             sort_field = "-" + sort_field
@@ -156,6 +159,7 @@ class ProductSelector:
         else:
             raise ValueError(f"Argument `order` should be str('inc'), "
                              f"str('dec') or None type, but '{order}' instead")
+
         query_set = query_set.order_by(sort_field)
         return query_set
 
