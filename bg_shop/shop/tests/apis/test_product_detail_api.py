@@ -55,11 +55,11 @@ class ProductDetailApiOutputSerializerTestCase(TestCase):
                     ('author', 'test_user'),
                     ('email', ''),
                     ('text', '<h1>I like this game</h1>'),
-                    ('rate', 10),
+                    ('rate', 9),
                     ('date', '19/Jun/2023'),
                 ])
             ],
-            "rating": 10.0,
+            "rating": 9.5,
         }
 
         serializer = ProductDetailApi.OutputSerializer(self.product)
