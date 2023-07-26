@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Avg, QuerySet
+from django.db.models import QuerySet
 
 from shop import models
 
