@@ -1793,7 +1793,7 @@ a.Cart-title {
   margin-bottom: -1px;
   letter-spacing: 1.4px;
   position: relative;
-  background-color: #1f2126;
+  background-color: #221E1F;
 }
 @media screen and (max-width: 480px) {
   .CategoriesButton {
@@ -2237,7 +2237,7 @@ a.Cart-title {
   padding-top: 7px;
   padding-bottom: 16px;
   padding-left: 13px;
-  margin-bottom: 19px;
+  margin-bottom: 10px;
 }
 @media screen and (max-width: 990px) {
   .ControlPanel {
@@ -2729,13 +2729,14 @@ a.Cart-title {
   }
 }
 .Header-menu {
-  margin-right: 13px;
+  margin-right: 0;
+  margin-bottom: 5px;
 }
 @media screen and (max-width: 1300px) {
   .Header-menu {
     order: 10;
     width: 100% !important;
-    margin-top: 25px;
+    margin-top: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2854,10 +2855,10 @@ a.Cart-title {
   }
 }
 .Header-searchWrap {
-  background: #0063d1;
+  background: #D8C3A2;
   padding-top: 1px;
   padding-bottom: 1px;
-  margin-top: 20px;
+  margin-top: 0px;
 }
 .Header-searchWrap .wrap {
   display: flex;
