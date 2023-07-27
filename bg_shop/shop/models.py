@@ -90,6 +90,7 @@ class Category(models.Model):
     image = models.ForeignKey(
         "common.Image",
         null=True,
+        blank=True,
         on_delete=models.SET_NULL,
         verbose_name=_("image")
     )
