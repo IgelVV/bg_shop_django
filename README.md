@@ -94,6 +94,14 @@ print(connection.queries)
 ```shell
 py manage.py test --exclude-tag=celery
 ```
+### Front
+Colors:
+- #221E1F
+- #D8C3A2
+- #EECD5E
+- #B0A38D
+- #DCBE66
+
 
 ## Name
 
