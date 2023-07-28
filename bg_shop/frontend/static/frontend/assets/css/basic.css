@@ -1272,7 +1272,7 @@ label.toggle {
     overflow: hidden;
   }
   .menuModal .menu {
-    padding-top: 30px;
+    padding-top: 5px;
   }
 }
 .menuModal_OPEN {

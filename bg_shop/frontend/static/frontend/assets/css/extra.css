@@ -795,7 +795,6 @@
   margin-left: 10px;
 }
 .Card-date_to:after {
-  content: '';
   display: block;
   height: 3px;
   width: 18px;
@@ -2729,7 +2728,7 @@ a.Cart-title {
 }
 .Header-menu {
   margin-right: 0;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
   order: 10;
   width: 100% !important;
   margin-top: 0;
