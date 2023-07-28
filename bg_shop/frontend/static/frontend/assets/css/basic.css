@@ -369,7 +369,7 @@ textarea {
   line-height: 20px;
   z-index: 0;
   position: absolute;
-  color: #0063d1;
+  color: #4a827d;
   font-weight: 900;
   text-align: center;
   left: -24px;
@@ -540,9 +540,9 @@ textarea {
   border-radius: 0;
 }
 .btn_success {
-  border-color: #3cb878;
+  border-color: #4a827d;
   color: #fff;
-  background: #3cb878;
+  background: #4a827d;
   transition: all 200ms;
 }
 .btn_success.btn_outline {
@@ -553,8 +553,8 @@ textarea {
   .btn_success:hover {
     transition: all 200ms;
     cursor: pointer;
-    background-color: #54d593;
-    border-color: #54d593;
+    background-color: #5ba099;
+    border-color: #5ba099;
     text-decoration: none;
   }
   .btn_success.btn_outline:hover {
@@ -562,9 +562,9 @@ textarea {
   }
 }
 .btn_primary {
-  border-color: #0063d1;
+  border-color: #4a827d;
   color: #fff;
-  background: #0063d1;
+  background: #4a827d;
   transition: all 200ms;
 }
 .btn_primary.btn_outline {
@@ -575,8 +575,8 @@ textarea {
   .btn_primary:hover {
     transition: all 200ms;
     cursor: pointer;
-    background-color: #1f7eff;
-    border-color: #1f7eff;
+    background-color: #5ba099;
+    border-color: #5ba099;
     text-decoration: none;
   }
   .btn_primary.btn_outline:hover {
@@ -654,21 +654,21 @@ textarea {
   padding-right: 23px;
 }
 .btn_warning {
-  border-color: #f98561;
+  border-color: #D8C3A2;
   color: #fff;
-  background: #f98561;
+  background: #D8C3A2;
   transition: all 200ms;
 }
 .btn_warning.btn_outline {
   background: transparent;
-  color: #f98561;
+  color: #d8a2d1;
 }
 @media screen and (min-width: 990px) {
   .btn_warning:hover {
     transition: all 200ms;
     cursor: pointer;
-    background-color: #ff9775;
-    border-color: #ff9775;
+    background-color: #d8a2d1;
+    border-color: #d8a2d1;
     text-decoration: none;
   }
   .btn_warning.btn_outline:hover {
@@ -1031,11 +1031,11 @@ label.toggle {
 }
 .toggle [type="radio"]:checked + .toggle-box,
 .toggle [type="checkbox"]:checked + .toggle-box {
-  border-color: #1e7cc4;
+  border-color: #5ba099;
 }
 .toggle [type="radio"]:checked + .toggle-box:after,
 .toggle [type="checkbox"]:checked + .toggle-box:after {
-  background: #1e7cc4;
+  background: #5ba099;
 }
 .toggle [type="radio"] {
   visibility: visible;
@@ -1149,6 +1149,9 @@ label.toggle {
 }
 .logo-image {
   visibility: visible;
+}
+.logo-title {
+  width: 400px;
 }
 
 /*-----------  media  -----------*/
@@ -1298,7 +1301,7 @@ label.toggle {
   height: 3px;
   width: 20px;
   border-radius: 100px;
-  background: #0063d1;
+  background: #342923;
   transition: all 0.3s;
   opacity: 1;
 }
@@ -1341,7 +1344,7 @@ label.toggle {
 }
 .menu_vt .menu-item_ACTIVE a,
 .menu_vt .menu-item_trigger a {
-  color: #0063d1;
+  color: #4a827d;
   cursor: default;
 }
 @media screen and (min-width: 990px) {
@@ -1372,7 +1375,7 @@ label.toggle {
   left: 50%;
   bottom: 0;
   right: 50%;
-  background: #0063d1;
+  background: #5ba099;
   z-index: -1;
   position: absolute;
   transition: left 400ms cubic-bezier(0.215, 0.61, 0.355, 1), right 400ms cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -1554,14 +1557,14 @@ label.toggle {
   border-left: 5px solid #f26d7d;
 }
 .menu_main .menu-label_success {
-  background-color: #3cb878;
+  background-color: #d8a2d1;
 }
 .menu_main .menu-label_success:after {
   width: 0;
   height: 0;
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
-  border-left: 5px solid #3cb878;
+  border-left: 5px solid #d8a2d1;
 }
 .menu_main .menu-item {
   display: flex;
@@ -1888,7 +1891,7 @@ label.toggle {
   top: 0;
   bottom: 0;
   display: block;
-  background-color: #0063d1;
+  background-color: #5ba099;
 }
 .range .irs-bar--single {
   border-radius: 4px 0 0 4px;
@@ -1922,7 +1925,7 @@ label.toggle {
   margin-top: -5px;
   width: 9px;
   height: 10px;
-  background-color: #0063d1;
+  background-color: #4a827d;
 }
 .range .irs-handle > i:first-child:after {
   content: '';
@@ -1936,7 +1939,7 @@ label.toggle {
 }
 .range .irs-handle.state_hover > i:first-child,
 .range .irs-handle:hover > i:first-child {
-  background-color: #0063d1;
+  background-color: #5ba099;
 }
 .range .irs-handle.from {
   margin-left: -7px;
@@ -2324,7 +2327,7 @@ body {
 только для стилизации стандартных элементов через скрипты */
 a {
   text-decoration: none;
-  color: #0063d1;
+  color: #4a827d;
   border-bottom: 1px solid #84beff;
   border-bottom: 1px solid rgba(0,99,209,0);
   padding-bottom: 0;
@@ -2333,7 +2336,7 @@ a {
 @media screen and (min-width: 990px) {
   a:hover {
     position: relative;
-    border-bottom: 1px solid #0063d1;
+    border-bottom: 1px solid #71978e;
     transition: border 0.4s;
   }
 }

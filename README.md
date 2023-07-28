@@ -104,6 +104,7 @@ Colors:
 - ![#D8C3A2](https://placehold.co/10x10/D8C3A2/D8C3A2.png)`#D8C3A2`+
 - ![#DCBE66](https://placehold.co/10x10/DCBE66/DCBE66.png)`#DCBE66`+
 - ![#EECD5E](https://placehold.co/10x10/EECD5E/EECD5E.png)`#EECD5E`+
+- ![#f7f3ed](https://placehold.co/10x10/f7f3ed/f7f3ed.png)`#f7f3ed`+
 
 Additional
 - ![#D8C3A2](https://placehold.co/10x10/D8C3A2/D8C3A2.png)`#D8C3A2`
