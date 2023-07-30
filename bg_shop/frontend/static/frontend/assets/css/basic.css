@@ -628,9 +628,9 @@ textarea {
   }
 }
 .btn_dark {
-  border-color: #a5abba;
+  border-color: #4a827d;
   color: #fff;
-  background: #a5abba;
+  background: #4a827d;
   transition: all 200ms;
 }
 .btn_dark.btn_outline {
@@ -641,8 +641,8 @@ textarea {
   .btn_dark:hover {
     transition: all 200ms;
     cursor: pointer;
-    background-color: #b5bbc9;
-    border-color: #b5bbc9;
+    background-color: #5ba099;
+    border-color: #5ba099;
     text-decoration: none;
   }
   .btn_dark.btn_outline:hover {
@@ -1838,7 +1838,7 @@ label.toggle {
 }
 .range-price {
   visibility: visible;
-  background-color: #eceef3;
+  background-color: #dfeceb;
   margin-top: 10px;
   color: #7c8088;
   width: 100%;

@@ -199,7 +199,6 @@
 .Product .Tabs-block h3:first-child,
 .Article h4:first-child,
 .Product .Tabs-block h4:first-child {
-  margin-top: 0;
 }
 .Article h1,
 .Product .Tabs-block h1 {
@@ -757,7 +756,6 @@
 .Card-picture img {
   width: auto;
   max-width: 100%;
-  max-height: 225;
   margin: 0;
 }
 .Card-date-block {
@@ -2977,10 +2975,10 @@ a.Cart-title {
   }
 }
 .Middle-top {
-  background-color: #f3f4f9;
-  margin-bottom: 91px;
-  padding-top: 50px;
-  padding-bottom: 50px;
+  background-color: #f7f3ed;
+  margin-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 .Middle-title {
   color: #878a91;
