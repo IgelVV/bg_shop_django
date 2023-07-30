@@ -15,8 +15,8 @@ celery = "^5.3.1"
 requests = "^2.31.0" # to imitate payment service
 python-dotenv = "^1.0.0"
 
-[tool.poetry.group.dev]
-optional = true
+#[tool.poetry.group.dev]
+#optional = true
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^6.0.0"
