@@ -1,158 +1,158 @@
 [
-  {
-    "model": "shop.category",
-    "pk": 1,
-    "fields": {
-      "title": "Strategy",
-      "image": 3,
-      "parent": null,
-      "depth": 0,
-      "sort_index": 0,
-      "is_active": true
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 2,
-    "fields": {
-      "title": "AreaMajority",
-      "image": 1,
-      "parent": 1,
-      "depth": 1,
-      "sort_index": 0,
-      "is_active": true
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 3,
-    "fields": {
-      "title": "Party",
-      "image": 2,
-      "parent": null,
-      "depth": 0,
-      "sort_index": 0,
-      "is_active": true
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 4,
-    "fields": {
-      "title": "Words",
-      "image": 4,
-      "parent": null,
-      "depth": 0,
-      "sort_index": 0,
-      "is_active": true
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 5,
-    "fields": {
-      "title": "Abstract",
-      "image": 3,
-      "parent": null,
-      "depth": 0,
-      "sort_index": 0,
-      "is_active": true
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 6,
-    "fields": {
-      "title": "Adventure",
-      "image": 3,
-      "parent": null,
-      "depth": 0,
-      "sort_index": 0,
-      "is_active": true
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 7,
-    "fields": {
-      "title": "Economic strategy",
-      "image": 3,
-      "parent": 1,
-      "depth": 1,
-      "sort_index": 0,
-      "is_active": true
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 8,
-    "fields": {
-      "title": "Other",
-      "image": 3,
-      "parent": null,
-      "depth": 0,
-      "sort_index": 0,
-      "is_active": false
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 9,
-    "fields": {
-      "title": "Familie",
-      "image": 3,
-      "parent": null,
-      "depth": 0,
-      "sort_index": 0,
-      "is_active": true
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 10,
-    "fields": {
-      "title": "Duel",
-      "image": 3,
-      "parent": null,
-      "depth": 0,
-      "sort_index": 0,
-      "is_active": true
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 11,
-    "fields": {
-      "title": "Coop",
-      "image": 10,
-      "parent": null,
-      "depth": 0,
-      "sort_index": 0,
-      "is_active": true
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 12,
-    "fields": {
-      "title": "Filler",
-      "image": 10,
-      "parent": null,
-      "depth": 0,
-      "sort_index": 0,
-      "is_active": true
-    }
-  },
-  {
-    "model": "shop.category",
-    "pk": 13,
-    "fields": {
-      "title": "RealTime",
-      "image": 10,
-      "parent": 3,
-      "depth": 1,
-      "sort_index": 0,
-      "is_active": true
-    }
+{
+  "model": "shop.category",
+  "pk": 1,
+  "fields": {
+    "title": "Strategy",
+    "image": 23,
+    "parent": null,
+    "depth": 0,
+    "sort_index": 0,
+    "is_active": true
   }
+},
+{
+  "model": "shop.category",
+  "pk": 2,
+  "fields": {
+    "title": "Area Majority",
+    "image": 30,
+    "parent": 1,
+    "depth": 1,
+    "sort_index": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 3,
+  "fields": {
+    "title": "Party",
+    "image": 2,
+    "parent": null,
+    "depth": 0,
+    "sort_index": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 4,
+  "fields": {
+    "title": "Words",
+    "image": 4,
+    "parent": null,
+    "depth": 0,
+    "sort_index": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 5,
+  "fields": {
+    "title": "Abstract",
+    "image": 24,
+    "parent": null,
+    "depth": 0,
+    "sort_index": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 6,
+  "fields": {
+    "title": "Adventure",
+    "image": 25,
+    "parent": null,
+    "depth": 0,
+    "sort_index": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 7,
+  "fields": {
+    "title": "Economic strategy",
+    "image": 31,
+    "parent": 1,
+    "depth": 1,
+    "sort_index": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 8,
+  "fields": {
+    "title": "Other",
+    "image": 10,
+    "parent": null,
+    "depth": 0,
+    "sort_index": 0,
+    "is_active": false
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 9,
+  "fields": {
+    "title": "Family",
+    "image": 26,
+    "parent": null,
+    "depth": 0,
+    "sort_index": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 10,
+  "fields": {
+    "title": "Duel",
+    "image": 27,
+    "parent": null,
+    "depth": 0,
+    "sort_index": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 11,
+  "fields": {
+    "title": "Coop",
+    "image": 22,
+    "parent": null,
+    "depth": 0,
+    "sort_index": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 12,
+  "fields": {
+    "title": "Filler",
+    "image": 28,
+    "parent": null,
+    "depth": 0,
+    "sort_index": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 13,
+  "fields": {
+    "title": "Real-time",
+    "image": 29,
+    "parent": 3,
+    "depth": 1,
+    "sort_index": 0,
+    "is_active": true
+  }
+}
 ]

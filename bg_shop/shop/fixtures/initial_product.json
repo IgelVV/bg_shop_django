@@ -1,590 +1,589 @@
 [
-  {
-    "model": "shop.product",
-    "pk": 1,
-    "fields": {
-      "title": "Inis",
-      "description": "The best",
-      "category": 2,
-      "price": "50.00",
-      "count": 21,
-      "release_date": "2022-12-06",
-      "sort_index": 10,
-      "limited_edition": true,
-      "manufacturer": "Mathagot",
-      "is_active": true,
-      "images": [
-        1
-      ],
-      "tags": [
-        1,
-        2
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 2,
-    "fields": {
-      "title": "Avalon",
-      "description": "Resistance",
-      "category": 3,
-      "price": "10.00",
-      "count": 47,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        5
-      ],
-      "tags": [
-        3
-      ],
-      "specifications": [
-        2
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 3,
-    "fields": {
-      "title": "Everdell",
-      "description": "tree",
-      "category": 9,
-      "price": "40.00",
-      "count": 92,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        6
-      ],
-      "tags": [
-        4
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 4,
-    "fields": {
-      "title": "Wingspan",
-      "description": "birds",
-      "category": 9,
-      "price": "35.00",
-      "count": 47,
-      "release_date": "2023-06-10",
-      "sort_index": 1,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        7
-      ],
-      "tags": [
-        2,
-        4
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 5,
-    "fields": {
-      "title": "7 Wonders: Duel",
-      "description": "duel",
-      "category": 10,
-      "price": "20.00",
-      "count": 23,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        8
-      ],
-      "tags": [
-        5
-      ],
-      "specifications": [
-        3
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 6,
-    "fields": {
-      "title": "The Castle of Burgundy",
-      "description": "euro game",
-      "category": 7,
-      "price": "30.00",
-      "count": 19,
-      "release_date": "2023-06-10",
-      "sort_index": 2,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        9
-      ],
-      "tags": [
-        6
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 7,
-    "fields": {
-      "title": "Spirit Island",
-      "description": "coop",
-      "category": 11,
-      "price": "50.00",
-      "count": 489,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        10,
-        11
-      ],
-      "tags": [
-        1
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 8,
-    "fields": {
-      "title": "War of the Ring",
-      "description": "LotR",
-      "category": 1,
-      "price": "50.00",
-      "count": 20,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        12
-      ],
-      "tags": [
-        1,
-        5
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 9,
-    "fields": {
-      "title": "Terraforming Mars",
-      "description": "Euro",
-      "category": 7,
-      "price": "50.00",
-      "count": 30,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        13
-      ],
-      "tags": [
-        1,
-        6
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 10,
-    "fields": {
-      "title": "Twiglight Imperium",
-      "description": "4x",
-      "category": 1,
-      "price": "100.00",
-      "count": 15,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": true,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        14
-      ],
-      "tags": [
-        1,
-        7
-      ],
-      "specifications": [
-        1,
-        4
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 11,
-    "fields": {
-      "title": "Ark Nova",
-      "description": "zoo",
-      "category": 7,
-      "price": "60.00",
-      "count": 40,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        15
-      ],
-      "tags": [
-        2,
-        6
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 12,
-    "fields": {
-      "title": "Gloomhaven",
-      "description": "dungeon",
-      "category": 6,
-      "price": "100.00",
-      "count": 19,
-      "release_date": "2023-06-05",
-      "sort_index": 1,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        16
-      ],
-      "tags": [
-        8
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 13,
-    "fields": {
-      "title": "Pandemic Legacy",
-      "description": "Legacy",
-      "category": 9,
-      "price": "60.00",
-      "count": 10,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": true,
-      "images": [
-        17
-      ],
-      "tags": [
-        4,
-        9
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 14,
-    "fields": {
-      "title": "Brass",
-      "description": "birmengem",
-      "category": 7,
-      "price": "50.00",
-      "count": 30,
-      "release_date": "2023-06-10",
-      "sort_index": 1,
-      "limited_edition": false,
-      "manufacturer": "qwe",
-      "is_active": true,
-      "images": [
-        18
-      ],
-      "tags": [
-        1,
-        6
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 15,
-    "fields": {
-      "title": "Alias",
-      "description": "words",
-      "category": 4,
-      "price": "10.00",
-      "count": 1000,
-      "release_date": "2022-12-20",
-      "sort_index": -1,
-      "limited_edition": false,
-      "manufacturer": "qwe",
-      "is_active": true,
-      "images": [
-        19
-      ],
-      "tags": [
-        10
-      ],
-      "specifications": [
-        5
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 16,
-    "fields": {
-      "title": "Codenames",
-      "description": "words",
-      "category": 4,
-      "price": "20.00",
-      "count": 200,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": false,
-      "manufacturer": "qwe",
-      "is_active": true,
-      "images": [
-        20
-      ],
-      "tags": [
-        4,
-        10
-      ],
-      "specifications": [
-        4
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 17,
-    "fields": {
-      "title": "Fable Fruit",
-      "description": "FF",
-      "category": 9,
-      "price": "15.00",
-      "count": 4,
-      "release_date": "2023-06-10",
-      "sort_index": 9,
-      "limited_edition": true,
-      "manufacturer": "FF",
-      "is_active": true,
-      "images": [
-        10
-      ],
-      "tags": [
-        4,
-        10
-      ],
-      "specifications": [
-        6
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 18,
-    "fields": {
-      "title": "Monopoly",
-      "description": "bad old game",
-      "category": 9,
-      "price": "20.00",
-      "count": 10,
-      "release_date": "2023-06-10",
-      "sort_index": -2,
-      "limited_edition": false,
-      "manufacturer": "asd",
-      "is_active": false,
-      "images": [
-        10
-      ],
-      "tags": [
-        10
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 19,
-    "fields": {
-      "title": "War Chest",
-      "description": "chess",
-      "category": 1,
-      "price": "30.00",
-      "count": 30,
-      "release_date": "2023-06-10",
-      "sort_index": 5,
-      "limited_edition": false,
-      "manufacturer": "asf",
-      "is_active": true,
-      "images": [
-        10
-      ],
-      "tags": [
-        1,
-        5
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 20,
-    "fields": {
-      "title": "Hanabi",
-      "description": "coop",
-      "category": 11,
-      "price": "10.00",
-      "count": 10,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": false,
-      "manufacturer": "qwe",
-      "is_active": true,
-      "images": [
-        10
-      ],
-      "tags": [
-        4
-      ],
-      "specifications": [
-        6
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 21,
-    "fields": {
-      "title": "Love Letter",
-      "description": "Japanise",
-      "category": 12,
-      "price": "5.00",
-      "count": 7,
-      "release_date": "2023-06-10",
-      "sort_index": 6,
-      "limited_edition": true,
-      "manufacturer": "s",
-      "is_active": true,
-      "images": [
-        10
-      ],
-      "tags": [
-        10
-      ],
-      "specifications": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 22,
-    "fields": {
-      "title": "Bullet",
-      "description": "anime",
-      "category": 13,
-      "price": "40.00",
-      "count": 30,
-      "release_date": "2023-06-10",
-      "sort_index": 2,
-      "limited_edition": false,
-      "manufacturer": "a",
-      "is_active": true,
-      "images": [
-        10
-      ],
-      "tags": [
-        10
-      ],
-      "specifications": [
-        4
-      ]
-    }
-  },
-  {
-    "model": "shop.product",
-    "pk": 23,
-    "fields": {
-      "title": "7 Wonders",
-      "description": "wonders",
-      "category": 9,
-      "price": "20.00",
-      "count": 200,
-      "release_date": "2023-06-10",
-      "sort_index": 0,
-      "limited_edition": false,
-      "manufacturer": "qwerty",
-      "is_active": true,
-      "images": [
-        3
-      ],
-      "tags": [
-        4
-      ],
-      "specifications": [
-        7
-      ]
-    }
+{
+  "model": "shop.product",
+  "pk": 1,
+  "fields": {
+    "title": "Inis",
+    "description": "The best",
+    "category": 2,
+    "price": "50.00",
+    "count": 20,
+    "release_date": "2022-12-06",
+    "sort_index": 10,
+    "limited_edition": true,
+    "manufacturer": "Mathagot",
+    "is_active": true,
+    "images": [
+      1
+    ],
+    "tags": [
+      1,
+      2
+    ],
+    "specifications": [
+      1
+    ]
   }
+},
+{
+  "model": "shop.product",
+  "pk": 2,
+  "fields": {
+    "title": "Avalon",
+    "description": "Resistance",
+    "category": 3,
+    "price": "10.00",
+    "count": 46,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      5
+    ],
+    "tags": [
+      3
+    ],
+    "specifications": [
+      2
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 3,
+  "fields": {
+    "title": "Everdell",
+    "description": "tree",
+    "category": 9,
+    "price": "40.00",
+    "count": 90,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      6
+    ],
+    "tags": [
+      4
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 4,
+  "fields": {
+    "title": "Wingspan",
+    "description": "birds",
+    "category": 9,
+    "price": "35.00",
+    "count": 47,
+    "release_date": "2023-06-10",
+    "sort_index": 1,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      7
+    ],
+    "tags": [
+      2,
+      4
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 5,
+  "fields": {
+    "title": "7 Wonders: Duel",
+    "description": "duel",
+    "category": 10,
+    "price": "20.00",
+    "count": 23,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      8
+    ],
+    "tags": [
+      5
+    ],
+    "specifications": [
+      3
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 6,
+  "fields": {
+    "title": "The Castle of Burgundy",
+    "description": "euro game",
+    "category": 7,
+    "price": "30.00",
+    "count": 19,
+    "release_date": "2023-06-10",
+    "sort_index": 2,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      9
+    ],
+    "tags": [
+      6
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 7,
+  "fields": {
+    "title": "Spirit Island",
+    "description": "coop",
+    "category": 11,
+    "price": "50.00",
+    "count": 489,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      11
+    ],
+    "tags": [
+      1
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 8,
+  "fields": {
+    "title": "War of the Ring",
+    "description": "LotR",
+    "category": 1,
+    "price": "50.00",
+    "count": 20,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      12
+    ],
+    "tags": [
+      1,
+      5
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 9,
+  "fields": {
+    "title": "Terraforming Mars",
+    "description": "Euro",
+    "category": 7,
+    "price": "50.00",
+    "count": 30,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      13
+    ],
+    "tags": [
+      1,
+      6
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 10,
+  "fields": {
+    "title": "Twiglight Imperium",
+    "description": "4x",
+    "category": 1,
+    "price": "100.00",
+    "count": 15,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": true,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      14
+    ],
+    "tags": [
+      1,
+      7
+    ],
+    "specifications": [
+      1,
+      4
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 11,
+  "fields": {
+    "title": "Ark Nova",
+    "description": "zoo",
+    "category": 7,
+    "price": "60.00",
+    "count": 40,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      15
+    ],
+    "tags": [
+      2,
+      6
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 12,
+  "fields": {
+    "title": "Gloomhaven",
+    "description": "dungeon",
+    "category": 6,
+    "price": "100.00",
+    "count": 19,
+    "release_date": "2023-06-05",
+    "sort_index": 1,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      16
+    ],
+    "tags": [
+      8
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 13,
+  "fields": {
+    "title": "Pandemic Legacy",
+    "description": "Legacy",
+    "category": 9,
+    "price": "60.00",
+    "count": 10,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": true,
+    "images": [
+      17
+    ],
+    "tags": [
+      4,
+      9
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 14,
+  "fields": {
+    "title": "Brass",
+    "description": "birmengem",
+    "category": 7,
+    "price": "50.00",
+    "count": 30,
+    "release_date": "2023-06-10",
+    "sort_index": 1,
+    "limited_edition": false,
+    "manufacturer": "qwe",
+    "is_active": true,
+    "images": [
+      18
+    ],
+    "tags": [
+      1,
+      6
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 15,
+  "fields": {
+    "title": "Alias",
+    "description": "words",
+    "category": 4,
+    "price": "10.00",
+    "count": 1000,
+    "release_date": "2022-12-20",
+    "sort_index": -1,
+    "limited_edition": false,
+    "manufacturer": "qwe",
+    "is_active": true,
+    "images": [
+      19
+    ],
+    "tags": [
+      10
+    ],
+    "specifications": [
+      5
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 16,
+  "fields": {
+    "title": "Codenames",
+    "description": "words",
+    "category": 4,
+    "price": "20.00",
+    "count": 200,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": false,
+    "manufacturer": "qwe",
+    "is_active": true,
+    "images": [
+      20
+    ],
+    "tags": [
+      4,
+      10
+    ],
+    "specifications": [
+      4
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 17,
+  "fields": {
+    "title": "Fabled Fruit",
+    "description": "FF",
+    "category": 9,
+    "price": "15.00",
+    "count": 4,
+    "release_date": "2023-06-10",
+    "sort_index": 9,
+    "limited_edition": true,
+    "manufacturer": "FF",
+    "is_active": true,
+    "images": [
+      33
+    ],
+    "tags": [
+      4,
+      10
+    ],
+    "specifications": [
+      6
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 18,
+  "fields": {
+    "title": "Monopoly",
+    "description": "bad old game",
+    "category": 9,
+    "price": "20.00",
+    "count": 10,
+    "release_date": "2023-06-10",
+    "sort_index": -2,
+    "limited_edition": false,
+    "manufacturer": "asd",
+    "is_active": false,
+    "images": [
+      10
+    ],
+    "tags": [
+      10
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 19,
+  "fields": {
+    "title": "War Chest",
+    "description": "chess",
+    "category": 1,
+    "price": "30.00",
+    "count": 30,
+    "release_date": "2023-06-10",
+    "sort_index": 5,
+    "limited_edition": false,
+    "manufacturer": "asf",
+    "is_active": true,
+    "images": [
+      34
+    ],
+    "tags": [
+      1,
+      5
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 20,
+  "fields": {
+    "title": "Hanabi",
+    "description": "coop",
+    "category": 11,
+    "price": "10.00",
+    "count": 10,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": false,
+    "manufacturer": "qwe",
+    "is_active": true,
+    "images": [
+      35
+    ],
+    "tags": [
+      4
+    ],
+    "specifications": [
+      6
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 21,
+  "fields": {
+    "title": "Love Letter",
+    "description": "Japanise",
+    "category": 12,
+    "price": "5.00",
+    "count": 7,
+    "release_date": "2023-06-10",
+    "sort_index": 6,
+    "limited_edition": true,
+    "manufacturer": "s",
+    "is_active": true,
+    "images": [
+      36
+    ],
+    "tags": [
+      10
+    ],
+    "specifications": [
+      1
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 22,
+  "fields": {
+    "title": "Bullet",
+    "description": "anime",
+    "category": 13,
+    "price": "40.00",
+    "count": 30,
+    "release_date": "2023-06-10",
+    "sort_index": 2,
+    "limited_edition": false,
+    "manufacturer": "a",
+    "is_active": true,
+    "images": [
+      37
+    ],
+    "tags": [
+      10
+    ],
+    "specifications": [
+      4
+    ]
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 23,
+  "fields": {
+    "title": "7 Wonders",
+    "description": "wonders",
+    "category": 9,
+    "price": "20.00",
+    "count": 200,
+    "release_date": "2023-06-10",
+    "sort_index": 0,
+    "limited_edition": false,
+    "manufacturer": "qwerty",
+    "is_active": true,
+    "images": [
+      38
+    ],
+    "tags": [
+      4
+    ],
+    "specifications": [
+      7
+    ]
+  }
+}
 ]
