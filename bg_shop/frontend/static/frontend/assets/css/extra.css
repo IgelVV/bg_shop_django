@@ -755,7 +755,9 @@
   background: #f3f4f9;
 }
 .Card-picture img {
-  width: 100%;
+  width: auto;
+  max-width: 100%;
+  max-height: 225;
   margin: 0;
 }
 .Card-date-block {
