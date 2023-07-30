@@ -60,7 +60,7 @@ bash scripts/init_load_data.sh
 
 - logs 
 ```shell
-docker logs bg
+docker logs app
 ```
 or
 ```shell
