@@ -2816,12 +2816,10 @@ a.Cart-title {
 }
 .Header-cart {
   position: relative;
-  display: block;
+  margin-left: 115px;
 }
 @media screen and (max-width: 990px) {
   .Header-cart {
-    transform: scale(0.7);
-    right: -19px;
   }
 }
 .Header-cartLabel {

@@ -2108,7 +2108,6 @@ label.toggle {
   width: 100%;
 }
 .row-block + .row-block {
-  margin-left: 2rem;
 }
 .row-block_fixed {
   flex-grow: 0;
