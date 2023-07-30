@@ -25,18 +25,20 @@ var mix = {
 					}
 				})
 				.catch(() => {
-					console.warn('Ошибка при получении заказа')
+					console.warn('Error when receiving the order')
+					alert('Error when receiving the order')
 				})
 		},
 		confirmOrder() {
 			if (this.orderId !== null) {
 				this.postData(`/api/orders/${this.orderId}/`, { ...this })
 					.then(() => {
-						alert('Заказ подтвержден')
+						alert('The order is confirmed')
 						location.replace(`/order-detail/${this.orderId}/`)
 					})
 					.catch(() => {
-						console.warn('Ошибка при подтверждения заказа')
+						console.warn('Order confirmation error')
+						alert('Order confirmation error')
 					})
 			}
 		},
@@ -49,7 +51,7 @@ var mix = {
 					location.assign(`/orders/${this.orderId}/`)
 				})
 				.catch(() => {
-					alert('Ошибка авторизации')
+					alert('Authorization error')
 				})
 		}
 	},

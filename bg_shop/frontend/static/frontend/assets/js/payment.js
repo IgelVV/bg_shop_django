@@ -31,7 +31,7 @@ var mix = {
 				code: this.code
 			})
 				.then(() => {
-					alert('Ждём подтверждения оплаты от платёжной системы')
+					alert('We are waiting for payment confirmation from the payment system')
 					this.number = ''
 					this.name = ''
 					this.year = ''
@@ -40,8 +40,8 @@ var mix = {
 					location.assign(`/order-detail/${orderId}/`)
 				})
 				.catch(() => {
-					console.warn('Ошибка при оплате')
-					alert('Ошибка при оплате')
+					console.warn('Payment error')
+					alert('Payment error')
 				})
 		}
 	},

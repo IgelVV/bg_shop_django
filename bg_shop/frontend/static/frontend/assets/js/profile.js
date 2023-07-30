@@ -7,12 +7,12 @@ var mix = {
                 this.phone = data.phone
                 this.email = data.email
             }).catch(() => {
-                console.warn('Ошибка при получении профиля')
+                console.warn('Error when getting a profile')
             })
         },
         changeProfile () {
             if(!this.fullName.trim().length || !this.phone.trim().length || !this.email.trim().length) {
-                alert('В форме присутствуют незаполненные поля')
+                alert('There are blank fields in the form')
                 return
             }
 
@@ -26,9 +26,10 @@ var mix = {
                 this.avatar = data.avatar
                 this.phone = data.phone
                 this.email = data.email
-               alert('Успешно сохранено')
+               alert('Successfully saved')
             }).catch(() => {
-                console.warn('Ошибка при обновлении профиля')
+                console.warn('Error updating profile')
+                alert('Error updating profile')
             })
         },
         changePassword () {
@@ -38,17 +39,18 @@ var mix = {
                 !this.passwordReply.trim().length ||
                 this.password !== this.passwordReply
             ) {
-                alert('В форме присутствуют незаполненные поля или пароли не совпадают')
+                alert('There are blank fields in the form or passwords do not match')
                 return
             }
             this.postData('/api/profile/password/', {'password': this.password})
               .then(({data}) => {
-                   alert('Успешно сохранено')
+                   alert('Successfully saved')
                     this.passwordCurrent = ''
                     this.password = ''
                     this.passwordReply = ''
                 }).catch(() => {
-                    console.warn('Ошибка при сохранении пароля')
+                    console.warn('Error saving password')
+                    alert('Error saving password')
                 })
         },
         setAvatar (event) {
@@ -62,7 +64,8 @@ var mix = {
             this.postData('/api/profile/avatar/', formData, {'Content-Type': 'multipart/form-data'}).then((data) => {
                 this.avatar = data.data
             }).catch(() => {
-                 console.warn('Ошибка при обновлении изображения')
+                 console.warn('Error updating the image')
+                 alert('Error updating the image')
             })
         },
         getCookie(name) {

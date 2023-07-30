@@ -5,7 +5,8 @@ var mix = {
                 .then(({data: { orderId }}) => {
                     location.assign(`/orders/${orderId}/`)
                 }).catch(() => {
-                    console.warn('Ошибка при создании заказа')
+                    console.warn('Error when creating an order')
+                    alert('Error when creating an order')
                 })
         },
         goLogin () {

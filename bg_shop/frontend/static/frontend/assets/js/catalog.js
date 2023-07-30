@@ -37,7 +37,7 @@ var mix = {
                 })))
                 .catch(() => {
                         this.topTags = []
-                        console.warn('Ошибка получения тегов')
+                        console.warn('Error getting tags')
                 })
         },
         getCatalogs(page = 1) {
@@ -71,7 +71,8 @@ var mix = {
                     this.lastPage = data.lastPage
                 })
                 .catch(() => {
-                    console.warn('Ошибка при получении каталога')
+                    console.warn('Error getting the catalog')
+                    alert('Error getting the catalog')
                 })
         }
     },

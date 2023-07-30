@@ -7,7 +7,8 @@ var mix = {
 					this.orders = data
 				}).catch(() => {
 				this.orders = []
-				console.warn('Ошибка при получении списка заказов')
+				console.warn('Error when receiving the list of orders')
+				alert('Error when receiving the list of orders')
 			})
 		}
 	},

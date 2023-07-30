@@ -23,7 +23,8 @@ var mix = {
                     this.activePhoto = 0
             }).catch(() => {
                 this.product = {}
-                console.warn('Ошибка при получении товара')
+                console.warn('Error when receiving the goods')
+                alert('Error when receiving the goods')
             })
         },
         submitReview () {
@@ -34,13 +35,14 @@ var mix = {
                 rate: this.review.rate
             }).then(({data}) => {
                 this.product.reviews = data
-                alert('Отзыв опубликован')
+                alert('Review published')
                 this.review.author = ''
                 this.review.email = ''
                 this.review.text = ''
 //                this.review.rate =
             }).catch(() => {
-                console.warn('Ошибка при публикации отзыва')
+                console.warn('Error when publishing a review')
+                alert('Error when publishing a review')
             })
         },
         setActivePhoto(index) {

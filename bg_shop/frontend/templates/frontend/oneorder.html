@@ -6,14 +6,14 @@
     <div class="Middle-top">
       <div class="wrap">
         <div class="Middle-header">
-          <h1 class="Middle-title">Заказ №${orderId}$
+          <h1 class="Middle-title">Order №${orderId}$
           </h1>
           <ul class="breadcrumbs Middle-breadcrumbs">
             <li class="breadcrumbs-item"><a href="/">Home</a>
             </li>
-            <li class="breadcrumbs-item"><a href="/history-order/">История заказов</a>
+            <li class="breadcrumbs-item"><a href="/history-order/">Order history</a>
             </li>
-            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Заказ №${orderId}$</span>
+            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Order №${orderId}$</span>
             </li>
           </ul>
         </div>
@@ -30,15 +30,15 @@
                 <div class="row">
                   <div class="row-block">
                     <div class="Order-info Order-info_date">
-                      <div class="Order-infoType">Дата заказа:</div>
+                      <div class="Order-infoType">Order date:</div>
                       <div class="Order-infoContent">${new Date(createdAt).toLocaleString('ru-RU')}$</div>
                     </div>
                     <div class="Order-info">
-                      <div class="Order-infoType">ФИО:</div>
+                      <div class="Order-infoType">Full name:</div>
                       <div class="Order-infoContent">${fullName}$</div>
                     </div>
                     <div class="Order-info">
-                      <div class="Order-infoType">Телефон:</div>
+                      <div class="Order-infoType">Phone:</div>
                       <div class="Order-infoContent">${phone}$</div>
                     </div>
                     <div class="Order-info">
@@ -48,36 +48,36 @@
                   </div>
                   <div class="row-block">
                     <div class="Order-info Order-info_delivery">
-                      <div class="Order-infoType">Тип доставки:</div>
+                      <div class="Order-infoType">Delivery type:</div>
                       <div class="Order-infoContent">${deliveryTypes[deliveryType]}$</div>
                     </div>
                     <div class="Order-info">
-                      <div class="Order-infoType">Город:</div>
+                      <div class="Order-infoType">City:</div>
                       <div class="Order-infoContent">${city}$</div>
                     </div>
                     <div class="Order-info">
-                      <div class="Order-infoType">Адрес:</div>
+                      <div class="Order-infoType">Address:</div>
                       <div class="Order-infoContent">${address}$</div>
                     </div>
                     <div class="Order-info">
-                      <div class="Order-infoType">Комментарий:</div>
+                      <div class="Order-infoType">Comment:</div>
                       <div class="Order-infoContent">${comment}$</div>
                     </div>
                     <div class="Order-info Order-info_pay">
-                      <div class="Order-infoType">Тип оплаты:</div>
+                      <div class="Order-infoType">Payment type:</div>
                       <div class="Order-infoContent">${paymentTypes[paymentType]}$</div>
                     </div>
                     <div class="Order-info Order-info_pay">
-                      <div class="Order-infoType">Оплата:</div>
-                      <div v-if="paid" class="Order-infoContent">Оплачено</div>
-                      <div v-else class="Order-infoContent">Не оплачено</div>
+                      <div class="Order-infoType">Payment:</div>
+                      <div v-if="paid" class="Order-infoContent">Paid</div>
+                      <div v-else class="Order-infoContent">Not paid</div>
                     </div>
                     <div class="Order-info Order-info_status">
-                      <div class="Order-infoType">Статус:</div>
+                      <div class="Order-infoType">Status:</div>
                       <div class="Order-infoContent">${orderStatuses[status]}$</div>
                     </div>
                     <div v-if="paymentError !== null" class="Order-info Order-info_error">
-                      <div class="Order-infoType">Оплата не прошла:</div>
+                      <div class="Order-infoType">Payment failed:</div>
                       <div class="Order-infoContent">${paymentError}$</div>
                     </div>
                   </div>
@@ -100,13 +100,13 @@
                     </div>
                   </div>
                   <div class="Cart-block Cart-block_row">
-                    <div class="Cart-block Cart-block_amount">${product.count}$ шт.</div>
+                    <div class="Cart-block Cart-block_amount">${product.count}$ pcs.</div>
                   </div>
                 </div>
                 <div class="Cart-product">
                   <div class="Cart-block Cart-block_row">
                     <div class="Cart-block Cart-block_info">
-                      <p class="Cart-title">Доставка</p>
+                      <p class="Cart-title">Delivery</p>
                     </div>
                     <div class="Cart-block Cart-block_price">
                       <div class="Cart-price">${deliveryCost}$$</div>
@@ -120,11 +120,11 @@
                   </div>
                   <div class="Cart-block" v-if="!paid">
                     <div class="Cart-block" v-if="status==='ED'">
-                      <a class="btn btn_primary btn_lg" :href="`/orders/${orderId}/`">Продолжить оформление</a>
+                      <a class="btn btn_primary btn_lg" :href="`/orders/${orderId}/`">Continue</a>
                     </div>
                     <div class="Cart-block" v-else>
-                      <a class="btn btn_primary btn_lg" v-if="paymentType==='SO'" :href="`/payment-someone/${orderId}/`">Оплатить</a>
-                      <a class="btn btn_primary btn_lg" v-else :href="`/payment/${orderId}/`">Оплатить</a>
+                      <a class="btn btn_primary btn_lg" v-if="paymentType==='SO'" :href="`/payment-someone/${orderId}/`">Pay</a>
+                      <a class="btn btn_primary btn_lg" v-else :href="`/payment/${orderId}/`">Pay</a>
                     </div>
                   </div>
                 </div>

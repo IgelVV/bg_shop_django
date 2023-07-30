@@ -47,7 +47,8 @@ var mix = {
 				    }
 				}).catch(() => {
 				this.order = {}
-				console.warn('Ошибка при получении последнего заказа')
+				console.warn('Error when receiving the last order')
+				alert('Error when receiving the last order')
 			})
 		},
 	},

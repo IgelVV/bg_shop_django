@@ -6,7 +6,7 @@ var mix = {
 					this.banners = data
 				}).catch(() => {
 				this.banners = []
-				console.warn('Ошибка при получении баннеров')
+				console.warn('Error when receiving banners')
 			})
 		},
 		getPopularProducts() {
@@ -17,7 +17,7 @@ var mix = {
 				.catch((error) => {
 					console.log('----', error)
 					this.popularCards = []
-					console.warn('Ошибка при получении списка популярных товаров')
+					console.warn('Error when getting a list of popular products')
 				})
 		},
 		getLimitedProducts() {
@@ -26,7 +26,7 @@ var mix = {
 					this.limitedCards = data
 				}).catch(() => {
 				this.limitedCards = []
-				console.warn('Ошибка при получении списка лимитированных товаров')
+				console.warn('Error when receiving a list of limited goods')
 			})
 		},
 	},
