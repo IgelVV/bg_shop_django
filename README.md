@@ -1,16 +1,24 @@
 # bg_shop_django
 
 ## Installation
-- install docker
-- install git
+1. install docker
+2. install git
 - git clone
 - docker compose up
 - docker exec bash script to load init db data from fixtures `scripts/init_load_data.sh`
+
+psql: ошибка: подключиться к серверу через сокет "/var/run/postgresql/.s.PGSQL.5432" не удалось: ВАЖНО:  роль "vvv" не существует
 
 ## Dev run
 - starting Docker 
 ```shell
 sudo systemctl start docker
+```
+
+- starting psql
+- 
+```shell
+docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres -d postgres:15.3
 ```
 
 - starting RabbitMQ
