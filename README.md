@@ -18,7 +18,7 @@ sudo systemctl start docker
 - starting psql
 - 
 ```shell
-docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres -d postgres:15.3
+docker run --name postgres -v postgres_datapostgres_data:/var/lib/postgresql/data/ -p 5432:5432 -e POSTGRES_PASSWORD=postgres -d --rm postgres:15.3
 ```
 
 - starting RabbitMQ
