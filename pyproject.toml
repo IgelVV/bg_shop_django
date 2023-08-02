@@ -15,9 +15,8 @@ celery = "^5.3.1"
 requests = "^2.31.0" # to imitate payment service
 python-dotenv = "^1.0.0"
 psycopg2-binary = "^2.9.6"
+uwsgi = "^2.0.22"
 
-#[tool.poetry.group.dev]
-#optional = true
 [tool.poetry.group.dev.dependencies]
 flake8 = "^6.0.0"
 flake8-docstrings = "^1.7.0"
@@ -25,6 +24,9 @@ flake8-bugbear = "^23.6.5"
 flake8-annotations = "^3.0.1"
 flake8-import-order = "^0.18.2"
 django-debug-toolbar = "^4.1.0"
+
+#[tool.poetry.group.dev]
+#optional = true
 
 [build-system]
 requires = ["poetry-core"]
