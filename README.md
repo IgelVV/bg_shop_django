@@ -10,6 +10,11 @@
 psql: ошибка: подключиться к серверу через сокет "/var/run/postgresql/.s.PGSQL.5432" не удалось: ВАЖНО:  роль "vvv" не существует
 
 ## Dev run
+- ssh connect
+```bash
+ssh -i yc-face-to-face vvv@84.201.172.37
+```
+
 - starting Docker 
 ```shell
 sudo systemctl start docker
@@ -75,6 +80,19 @@ or
 docker compose logs -f
 ```
 
+
+- uo container and do nothing
+```yaml
+    command:
+      - bash
+      - -c
+      - |
+        echo "Start"
+        for x in $$(seq 1 5); do sleep 1; echo "sleep $${x}/5"; done;
+        touch /migartion-done;
+        echo "OK";
+        for x in $$(seq 1 60); do sleep 10; echo "sleep $$((x * 10))/600";done;
+```
 
 ## Dev Notes (Cheat sheet)
 - get select related cache
