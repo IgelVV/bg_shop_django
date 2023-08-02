@@ -31,5 +31,8 @@ if settings.DEBUG:
         settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns.append(path("__debug__/", include("debug_toolbar.urls")))
 
+
+from bg_shop.settings.third_party.debug_toolbar import DebugToolbarSetup
+
+urlpatterns = DebugToolbarSetup.do_urls(urlpatterns)

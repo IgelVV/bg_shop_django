@@ -15,12 +15,9 @@ from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 load_dotenv(find_dotenv())
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = getenv(
@@ -53,8 +50,6 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "django_filters",
 ]
-if DEBUG:
-    THIRD_PARTY_APPS.append("debug_toolbar")
 
 LOCAL_APPS = [
     'frontend.apps.FrontendConfig',
@@ -87,8 +82,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-if DEBUG:
-    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ROOT_URLCONF = 'bg_shop.urls'
 
@@ -116,19 +109,13 @@ WSGI_APPLICATION = 'bg_shop.wsgi.application'
 DATABASE_DIR = BASE_DIR / "database"
 DATABASE_DIR.mkdir(exist_ok=True)
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': DATABASE_DIR / 'db.sqlite3',
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': getenv('POSTGRES_DB'),
         'USER': getenv('POSTGRES_USER'),
         'PASSWORD': getenv('POSTGRES_PASSWORD'),
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': 5432,
     }
 }
@@ -290,3 +277,9 @@ COMPANY_INFO = getenv("COMPANY_INFO", "lorem")
 LEGAL_ADDRESS = getenv("LEGAL_ADDRESS", "baker st. 221b")
 MAIN_PHONE = getenv("MAIN_PHONE", "+7(800)555-35-35")
 MAIN_EMAIL = getenv("MAIN_EMAIL", "bg_shop@dot.com")
+
+
+from bg_shop.settings.third_party.debug_toolbar import DebugToolbarSetup
+
+INSTALLED_APPS, MIDDLEWARE = DebugToolbarSetup.do_settings(
+    INSTALLED_APPS, MIDDLEWARE)
