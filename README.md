@@ -48,6 +48,8 @@ possibility of filtering and searching, divided into pages.
 In the Discounts section, the current discounts are 
 indicated, only one, the largest, applies to the product.
 
+![Product](readme_media/product_preview.png)
+
 On the detailed product page, there are several photos, 
 the price including discounts, and reviews with the 
 opportunity to leave your own.
@@ -56,9 +58,13 @@ There is a possibility of registration on the site.
 This makes it possible to place orders, leave feedback 
 and see the order history.
 
-The basket of goods is valid even for unauthorized users, 
+![Cart](readme_media/cart_preview.png)
+
+The cart is valid even for unauthorized users, 
 when registering, goods from it are transferred to the 
-user's basket.
+user's cart.
+
+![Order](readme_media/order_detail_preview.png)
 
 You can place an order from the shopping cart by filling 
 in the information fields and confirming.
