@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
@@ -41,7 +43,7 @@ class OrderedProductOutputSerializerTestCase(TestCase):
             text='Great product!',
         )
         Review.objects.create(
-            author_id=1,
+            author=user,
             product=product,
             rate=5,
             text='Excellent!',
@@ -66,21 +68,21 @@ class OrderedProductOutputSerializerTestCase(TestCase):
             "description": self.ordered_product.product.short_description,
             "freeDelivery": True,
             "images": [
-                {'src': '/media/media/test', "alt": None},
+                OrderedDict([('src', '/media/media/test'), ('alt', None)]),
             ],
             "tags": [
-                {'id': 1, 'name': 'Tag 1'},
-                {'id': 2, 'name': 'Tag 2'},
+                OrderedDict([('id', 3), ('name', 'Tag 1')]),
+                OrderedDict([('id', 4), ('name', 'Tag 2')])
             ],
             "reviews": 2,
             "rating": 4.5,
         }
-        self.assertEqual(serializer.data, expected_data, "Unexpected data.")
+        self.assertDictEqual(
+            serializer.data, expected_data, "Unexpected data.")
 
     def test_get_rating(self):
         serializer = OrderedProductOutputSerializer()
         expected_rating = 4.5
         actual_rating = serializer.get_rating(self.ordered_product)
-
         self.assertEqual(
             actual_rating, expected_rating, "Unexpected average rating.")
