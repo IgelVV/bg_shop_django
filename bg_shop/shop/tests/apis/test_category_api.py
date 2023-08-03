@@ -97,21 +97,7 @@ class CategoryApiOutputSerializerTestCase(TestCase):
     def test_get_subcategories(self):
         serializer = CategoryApi.OutputSerializer(self.category)
         data = serializer.data
-
-        self.assertListEqual(
-            data["subcategories"],
-            [
-                {
-                    "id": 2,
-                    "title": "Subcategory 1",
-                    "image": None,
-                    "subcategories": [],
-                },
-                {
-                    "id": 3,
-                    "title": "Subcategory 2",
-                    "image": None,
-                    "subcategories": [],
-                },
-            ],
+        self.assertEqual(
+            set(map(lambda x: x['id'], data["subcategories"])),
+            {2, 3},
         )

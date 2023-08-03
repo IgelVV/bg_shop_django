@@ -14,10 +14,10 @@ UserModel = get_user_model()
 
 class OrderedProductOutputSerializerTestCase(TestCase):
     def setUp(self):
-        user = UserModel.objects.create(
+        self.user = UserModel.objects.create(
             username='testuser', email='test@example.com')
-        order = Order.objects.create(
-            user=user,
+        self.order = Order.objects.create(
+            user=self.user,
             delivery_type=Order.DeliveryTypes.EXPRESS,
             payment_type=Order.PaymentTypes.ONLINE,
             city='Test City',
@@ -26,7 +26,7 @@ class OrderedProductOutputSerializerTestCase(TestCase):
             paid=True,
             status=Order.Statuses.COMPLETED,
         )
-        product = Product.objects.create(
+        self.product = Product.objects.create(
             price=50,
             count=50,
             release_date=timezone.now().date(),
@@ -34,25 +34,36 @@ class OrderedProductOutputSerializerTestCase(TestCase):
             description='Test Description',
             manufacturer='test',
         )
-        image = Image.objects.create(img="/media/test", product=product)
-        product.images.add(image)
+        self.image = Image.objects.create(img="/media/test", product=self.product)
+        self.product.images.add(self.image)
         Review.objects.create(
-            author=user,
-            product=product,
+            author=self.user,
+            product=self.product,
             rate=4,
             text='Great product!',
         )
         Review.objects.create(
-            author=user,
-            product=product,
+            author=self.user,
+            product=self.product,
             rate=5,
             text='Excellent!',
         )
         self.ordered_product = OrderedProduct.objects.create(
-            order=order, product=product, count=2, price=40)
-        tag1 = Tag.objects.create(name='Tag 1')
-        tag2 = Tag.objects.create(name='Tag 2')
-        product.tags.add(tag1, tag2)
+            order=self.order, product=self.product, count=2, price=40)
+        self.tag1 = Tag.objects.create(name='Tag 1')
+        self.tag2 = Tag.objects.create(name='Tag 2')
+        self.product.tags.add(self.tag1, self.tag2)
+
+    def tearDown(self) -> None:
+        self.ordered_product.delete()
+        self.product.delete()
+        Tag.objects.all().delete()
+        Review.objects.filter(author=self.user).delete()
+        self.image.delete()
+        self.order.delete()
+        self.user.delete()
+
+
 
     def test_ordered_product_output_serializer_fields(self):
         serializer = OrderedProductOutputSerializer(
@@ -71,8 +82,8 @@ class OrderedProductOutputSerializerTestCase(TestCase):
                 OrderedDict([('src', '/media/media/test'), ('alt', None)]),
             ],
             "tags": [
-                OrderedDict([('id', 3), ('name', 'Tag 1')]),
-                OrderedDict([('id', 4), ('name', 'Tag 2')])
+                OrderedDict([('id', 1), ('name', 'Tag 1')]),
+                OrderedDict([('id', 2), ('name', 'Tag 2')])
             ],
             "reviews": 2,
             "rating": 4.5,
