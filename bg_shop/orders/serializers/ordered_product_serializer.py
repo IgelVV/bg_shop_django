@@ -62,7 +62,7 @@ class OrderedProductOutputSerializer(drf_serializers.ModelSerializer):
     reviews = drf_serializers.SerializerMethodField()
     rating = drf_serializers.SerializerMethodField()
 
-    def boundary_of_free_delivery(self) -> float:
+    def init_boundary_of_free_delivery(self) -> float:
         """Get and save `boundary_of_free_delivery`."""
         if not hasattr(self, "boundary_of_free_delivery"):
             self.boundary_of_free_delivery = conf_selectors \
@@ -76,7 +76,7 @@ class OrderedProductOutputSerializer(drf_serializers.ModelSerializer):
         :param obj:
         :return:
         """
-        self.boundary_of_free_delivery()
+        self.init_boundary_of_free_delivery()
         if self.boundary_of_free_delivery:
             return obj.price >= self.boundary_of_free_delivery
 
