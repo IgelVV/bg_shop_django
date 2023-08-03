@@ -5,8 +5,8 @@ PURPLE='\033[0;35m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
-# Working directory
-cd /app || exit 1
+# Working directory # todo (-add args)
+#cd /app || exit 1
 
 # Migration
 echo -e "\n${PURPLE}Running migration...${NC}\n"
@@ -27,6 +27,9 @@ echo -e "\n${PURPLE}Loading data from fixtures...${NC}\n"
 # common
 python manage.py loaddata initial_image.json
 echo -e "${PURPLE}initial_image.json is loaded.${NC}\n"
+# profile
+python manage.py loaddata initial_profile.json
+echo -e "${PURPLE}initial_profile.json is loaded.${NC}\n"
 # shop
 python manage.py loaddata initial_category.json
 echo -e "${PURPLE}initial_category.json is loaded.${NC}\n"

@@ -1,0 +1,18 @@
+[
+  {
+    "model": "shop.specification",
+    "pk": 1,
+    "fields": {
+      "name": "test1",
+      "value": "1"
+    }
+  },
+  {
+    "model": "shop.specification",
+    "pk": 2,
+    "fields": {
+      "name": "test2",
+      "value": "2"
+    }
+  }
+]

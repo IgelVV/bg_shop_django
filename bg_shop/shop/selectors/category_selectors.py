@@ -10,7 +10,7 @@ class CategorySelector:
     def get_root_categories_queryset(
             only_active: bool = True) -> db_models.QuerySet:
         """
-        Returns categories witch has no parent.
+        Returns categories witch have no parent.
         :param only_active: if True, ignores categories with field active=False
         :return: queryset with categories without parent
         """
@@ -42,7 +42,7 @@ class CategorySelector:
             self,
             category_id: int,
             only_active: bool = True,
-    ) -> list[Optional[models.Category]]:
+    ) -> list[models.Category]:
         """
         Returns all subcategories recursively.
         :param category_id: start of chain
@@ -99,7 +99,4 @@ class CategorySelector:
     #                 )
     #                 category['subcategories'].extend(subcategory_info)
     #     return values
-    #
-    #
-    # def format_category(self):
-    #     ...
+

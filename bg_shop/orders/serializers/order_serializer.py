@@ -65,7 +65,7 @@ class OrderOutputSerializer(drf_serializers.ModelSerializer):
     try:
         products = ordered_product_serializer.OrderedProductOutputSerializer(
             source="orderedproduct_set", many=True, allow_null=True)
-    except utils.OperationalError:
+    except (utils.OperationalError, utils.ProgrammingError):
         products = None
 
     def get_totalCost(self, obj: models.Order) -> Decimal:

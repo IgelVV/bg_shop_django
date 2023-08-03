@@ -37,9 +37,11 @@ def third_party_payment_service(
     card_number = int(card_number)
     if (card_number % 2 == 0) and (card_number % 10 != 0):
         body["status"] = enums.PaymentStatuses.SUCCESS.value
+        print("Accepted")
     else:
         body["status"] = enums.PaymentStatuses.FAIL.value
         body["errors"].append("wrong number")
+        print("Rejected")
 
     url = "http://app:8000/api/payment/webhook/"  # temp for testing
     response = requests.post(url, json=body, headers=headers)

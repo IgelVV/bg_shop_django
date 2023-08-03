@@ -9,7 +9,7 @@ from rest_framework import serializers as drf_serializers
 from rest_framework import response as drf_response
 from rest_framework import request as drf_request
 
-from orders import services, serializers, selectors, tasks
+from orders import services, serializers, selectors, models
 from account import validators as acc_validators
 
 
@@ -52,8 +52,6 @@ class OrdersApi(views.APIView):
             request: drf_request.Request,
             **kwargs
     ) -> drf_response.Response:
-        # todo orderedproducts must contain actual prices after this method
-        #  it displayed on order-detail page
         """
         Create new order.
 
@@ -100,17 +98,20 @@ class OrderDetailApi(views.APIView):
         Order[OrderedProduct].
         """
 
-        id = drf_serializers.IntegerField()
-        createdAt = drf_serializers.DateTimeField()
-        fullName = drf_serializers.CharField(max_length=300)
-        email = drf_serializers.EmailField()
+        id = drf_serializers.IntegerField(required=False,)
+        createdAt = drf_serializers.DateTimeField(required=False,)
+        fullName = drf_serializers.CharField(max_length=300, required=False,)
+        email = drf_serializers.EmailField(required=False, allow_null=True)
         phone = drf_serializers.CharField(
-            validators=[acc_validators.PhoneRegexValidator()])
-        deliveryType = drf_serializers.CharField()
-        paymentType = drf_serializers.CharField()  # todo choice
+            validators=[acc_validators.PhoneRegexValidator()], required=False,)
+        deliveryType = drf_serializers.ChoiceField(
+            choices=models.Order.DeliveryTypes.choices)
+        paymentType = drf_serializers.ChoiceField(
+            choices=models.Order.PaymentTypes.choices)
         totalCost = drf_serializers.DecimalField(
-            max_digits=8, decimal_places=2,)
-        status = drf_serializers.CharField()
+            max_digits=8, decimal_places=2, required=False)
+        status = drf_serializers.ChoiceField(
+            choices=models.Order.Statuses.choices, required=False)
         city = drf_serializers.CharField()
         address = drf_serializers.CharField()
         comment = drf_serializers.CharField(allow_null=True, allow_blank=True)
@@ -168,8 +169,4 @@ class OrderDetailApi(views.APIView):
         service = services.OrderService()
         service.confirm(
             order_id=order_id, user=request.user, order_data=validated_data)
-
-        tasks.order_confirmed.delay(order_id)
-
-        return drf_response.Response(
-            data=validated_data, status=status.HTTP_200_OK)
+        return drf_response.Response(status=status.HTTP_200_OK)

@@ -4,7 +4,10 @@ from shop import models
 
 
 class TagSelector:
-    def get_category_tags(self, category_id: int) -> db_models.QuerySet:
+    def get_category_tags(
+            self,
+            category_id: int
+    ) -> db_models.QuerySet[models.Tag]:
         """Returns all tags related to all products that related
         to passed category"""
         return (models.Tag.objects

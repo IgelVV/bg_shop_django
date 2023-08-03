@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Avg, QuerySet
+from django.db.models import QuerySet
 
 from shop import models
 
@@ -7,7 +7,10 @@ User = get_user_model()
 
 
 class ReviewSelector:
-    def get_reviews_for_product(self, product_id: int) -> QuerySet:
+    def get_reviews_for_product(
+            self,
+            product_id: int
+    ) -> QuerySet[models.Review]:
         """Product related Reviews"""
         return models.Review.objects.filter(product=product_id)
 

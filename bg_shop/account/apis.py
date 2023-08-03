@@ -2,7 +2,12 @@
 
 from typing import Any
 
-from django.contrib.auth import get_user_model, authenticate, logout
+from django.contrib.auth import (
+    get_user_model,
+    authenticate,
+    logout,
+    validators,
+)
 from django.core import exceptions as django_exceptions
 
 from rest_framework import serializers, status, permissions, views
@@ -32,6 +37,7 @@ class SignInApi(views.APIView):
         """
         Log user in using request credentials.
 
+        If User is inactive, authenticate() returns -> None.
         :param request: DRF request
         :return: DRF response
         """
@@ -41,9 +47,8 @@ class SignInApi(views.APIView):
         user = authenticate(
             username=data.get('username'), password=data.get('password'))
         if user is None:
-            raise drf_exceptions.NotAuthenticated(
+            raise drf_exceptions.PermissionDenied(
                 detail={'username': ['Wrong username or password']},
-                code=status.HTTP_401_UNAUTHORIZED
             )
         else:
             services.AccountService().login(request, user)
@@ -57,8 +62,23 @@ class SignUpApi(views.APIView):
         """For using in POST."""
 
         name = serializers.CharField(
-            max_length=150, required=False, allow_blank=True)
+            max_length=150,
+            source="first_name",
+            required=False,
+            allow_blank=True
+        )
         username = serializers.CharField(max_length=150)
+
+        def validate_username(self, value):
+            """
+            Validate username.
+
+            Only ACSII simbols are allowed.
+            :param value:
+            :return:
+            """
+            validators.ASCIIUsernameValidator().__call__(value)
+            return value
 
     permission_classes = (permissions.AllowAny,)
     serializer_class = InputSerializer
@@ -75,7 +95,6 @@ class SignUpApi(views.APIView):
         serializer.is_valid(raise_exception=True)
         service = services.AccountService()
         data = serializer.validated_data
-        data['first_name'] = data.pop('name')
         user = service.register_user(**data)
         if not user:
             ex = drf_exceptions.APIException(
@@ -151,8 +170,9 @@ class UpdateAvatarApi(views.APIView):
 
     def post(self, request: drf_request.Request) -> drf_response.Response:
         """
-        First, creates new Image and relates to current user.
+        Set or update Image related to Profile.
 
+        First, creates new Image and relates to current user.
         Second, gets data about new avatar to send back.
         :param request: DRF request
         :return: DRF response
@@ -161,7 +181,10 @@ class UpdateAvatarApi(views.APIView):
         input_serializer = self.InputSerializer(data=request.data)
         input_serializer.is_valid(raise_exception=True)
         data = input_serializer.validated_data
-        service.update_avatar(user=request.user, avatar=data['avatar'])
+        try:
+            service.update_avatar(user=request.user, avatar=data['avatar'])
+        except django_exceptions.ValidationError as e:
+            raise drf_exceptions.ValidationError(e.message_dict)
 
         selector = selectors.AccountSelector()
         profile = service.get_or_create_profile(request.user)
@@ -184,7 +207,6 @@ class ProfileApi(views.APIView):
     class OutputSerializer(serializers.Serializer):
         """User and profile info for displaying."""
 
-        # todo import from common
         class AvatarSerializer(serializers.Serializer):
             """Image info."""
 

@@ -41,7 +41,7 @@ class BaseProductFilter(django_filters.FilterSet):
         :return: filtered qs
         """
         if value:
-            boundary = conf_selectors.AdminConfigSelector() \
+            boundary = conf_selectors.DynamicConfigSelector() \
                 .boundary_of_free_delivery
             if boundary:
                 queryset = queryset.annotate(
@@ -55,7 +55,8 @@ class BaseProductFilter(django_filters.FilterSet):
                     )
                 )
             else:
-                queryset = queryset.annotate(freeDelivery=False)
+                queryset = queryset.annotate(
+                    freeDelivery=db_models.Value(False))
 
             return queryset.filter(**{name: True})
         return queryset
@@ -64,7 +65,8 @@ class BaseProductFilter(django_filters.FilterSet):
             self, queryset, name, value: bool) -> db_models.QuerySet:
         """
         Checks if amount(count) of Product is greater than 0, if value is True,
-        if False, returns original queryset (qs)
+        if value is False, returns original queryset (qs).
+        And filter inactive products.
         :param queryset: qs of Products
         :param name: doesn't meter
         :param value: bool
@@ -73,6 +75,7 @@ class BaseProductFilter(django_filters.FilterSet):
         if value:
             return queryset.filter(**{
                 "count__gt": 0,
+                "is_active": True,
             })
         return queryset
 
@@ -87,6 +90,6 @@ class BaseProductFilter(django_filters.FilterSet):
         if value:
             return queryset.filter(**{
                 "tags__in": value,
-            })
+            }).distinct()
         else:
             return queryset

@@ -44,7 +44,7 @@ class ProductShortSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.boundary_of_free_delivery = conf_selectors \
-            .AdminConfigSelector().boundary_of_free_delivery
+            .DynamicConfigSelector().boundary_of_free_delivery
         self.today = timezone.now().date()
 
     def get_price(self, obj) -> Decimal:
@@ -58,6 +58,8 @@ class ProductShortSerializer(serializers.ModelSerializer):
     def get_freeDelivery(self, obj) -> bool:
         if self.boundary_of_free_delivery:
             return obj.price >= self.boundary_of_free_delivery
+        else:
+            return False
 
     def get_reviews(self, obj) -> int:
         if hasattr(obj, 'review_set'):

@@ -6,7 +6,7 @@
     <div class="Middle-top">
       <div class="wrap">
         <div class="Middle-header">
-          <h1 class="Middle-title">Megano Product
+          <h1 class="Middle-title">Product
           </h1>
           <ul class="breadcrumbs Middle-breadcrumbs">
             <li class="breadcrumbs-item"><a href="/">home</a></li>
@@ -86,10 +86,10 @@
           <div class="Tabs Tabs_default">
             <div class="Tabs-links">
               <a class="Tabs-link_ACTIVE Tabs-link" href="#description">
-                <span>Описание</span>
+                <span>Description</span>
               </a>
               <a class="Tabs-link" href="#reviews">
-                <span>Отзывы (${ product.reviews ? product.reviews.length : 0 }$)</span>
+                <span>Reviews (${ product.reviews ? product.reviews.length : 0 }$)</span>
               </a>
             </div>
             <div class="Tabs-wrap">
@@ -102,9 +102,9 @@
                 <div class="table">
                   <table>
                     <tr>
-                      <th>Характеристика
+                      <th>Characteristic
                       </th>
-                      <th>Значение
+                      <th>Value
                       </th>
                     </tr>
                     <tr v-for="spec in product.specifications">
@@ -116,7 +116,7 @@
               </div>
               <div class="Tabs-block" id="reviews">
                 <header class="Section-header">
-                  <h3 class="Section-title">${ product.reviews ? (product.reviews.length || 0) : 0 }$ Отзывов</h3>
+                  <h3 class="Section-title">${ product.reviews ? (product.reviews.length || 0) : 0 }$ reviews</h3>
                 </header>
                 <div class="Comments">
                   <div v-for="review in product.reviews" class="Comment">
@@ -126,9 +126,9 @@
                     <div class="Comment-column">
                       <header class="Comment-header">
                         <div>
-                          <strong class="Comment-title">Автор: ${ review.author }$</strong>
-                          <span class="Comment-date">Дата : ${ review.date }$</span><br>
-                          <span class="Comment-date">Оценка: ${ review.rate }$</span><br>
+                          <strong class="Comment-title">Author: ${ review.author }$</strong>
+                          <span class="Comment-date">Date : ${ review.date }$</span><br>
+                          <span class="Comment-date">Score: ${ review.rate }$</span><br>
                         </div>
                       </header>
                       <div class="Comment-content">${ review.text }$</div>

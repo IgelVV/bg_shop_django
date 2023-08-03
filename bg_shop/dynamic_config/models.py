@@ -14,8 +14,6 @@ class DynamicConfig(models.Model):
         verbose_name = _("dynamic config")
         verbose_name_plural = _("dynamic configs")
 
-    id = models.IntegerField(primary_key=True, default=1)
-
     ordinary_delivery_cost = models.DecimalField(
         default=0,
         max_digits=8,
@@ -74,10 +72,11 @@ class DynamicConfig(models.Model):
         """
         self.pk = 1
         super().save(*args, **kwargs)
+        # todo self.set_to_cache()
 
-    def delete(self, *args, **kwargs):
-        """To prevent deletion by the django admin."""
-        pass
+    # def delete(self, *args, **kwargs):
+    #     """To prevent deletion by the django admin."""
+    #     pass
 
     # @classmethod
     # def load(cls):

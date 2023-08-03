@@ -6,6 +6,7 @@ from django.conf import settings
 from rest_framework import request as drf_request
 
 from orders import models, services, selectors
+from shop import selectors as shop_selectors
 
 User = get_user_model()
 
@@ -41,6 +42,10 @@ class CartService:
         :param override_quantity: If True, replace previous quantity by new one
         :return:
         """
+        is_available = shop_selectors.ProductSelector() \
+            .is_available(product_id=product_id)
+        if not is_available:
+            raise ValueError("Product is unavailable.")
         if self.request.user.is_anonymous:
             self._add_to_session(product_id, quantity, override_quantity)
         else:
@@ -140,11 +145,14 @@ class CartService:
         cart_order = selectors.OrderSelector() \
             .get_or_create_cart_order(user=self.request.user)
         ord_prod_service = services.OrderedProductService()
-        ord_prod_service.reduce_or_delete(
-            order=cart_order,
-            product_id=product_id,
-            quantity=quantity,
-        )
+        try:
+            ord_prod_service.reduce_or_delete(
+                order=cart_order,
+                product_id=product_id,
+                quantity=quantity,
+            )
+        except models.OrderedProduct.DoesNotExist:
+            return None
 
     def merge_carts(self, session_cart: dict[str, int]) -> None:
         """

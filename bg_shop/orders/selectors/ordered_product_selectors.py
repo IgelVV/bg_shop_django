@@ -39,12 +39,11 @@ class OrderedProductSelector:
             ordered_products = models.OrderedProduct.objects \
                 .filter(order_id=order_id)
         ordered_product: Optional[models.OrderedProduct] = None
-        if ordered_products:
-            try:
-                # todo it hits db even if ordered prod were prefetched
-                ordered_product = ordered_products.get(product_id=product_id)
-                # ordered_product = ordered_products[0] it does not hit db
-            except models.OrderedProduct.DoesNotExist:
-                ordered_product = None
-
+        try:
+            for ord_product in ordered_products:
+                if ord_product.product_id == product_id:
+                    ordered_product = ord_product
+                    break
+        except models.OrderedProduct.DoesNotExist:
+            ordered_product = None
         return ordered_product

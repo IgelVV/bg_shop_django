@@ -32,5 +32,3 @@ class Profile(models.Model):
         blank=True,
         verbose_name=_("avatar"),
     )
-
-#  todo create Role model

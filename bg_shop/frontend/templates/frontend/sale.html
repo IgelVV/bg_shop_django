@@ -6,7 +6,7 @@
     <div class="Middle-top">
       <div class="wrap">
         <div class="Middle-header">
-          <h1 class="Middle-title">Megano Sales
+          <h1 class="Middle-title">Sales
           </h1>
           <ul class="breadcrumbs Middle-breadcrumbs">
             <li class="breadcrumbs-item"><a href="/">Home</a>
@@ -23,15 +23,19 @@
 
           <!-- Получаем товар по скидке -->
           <div v-for="card in salesCards" class="Card">
-            <a :href="`/product/${card.id}`"><div class="Card-picture" >
-              <img v-if="card.images.length > 0" :src="card.images[0].src" :alt="card.images[0].alt"/>
-            </div>
-              <div v-if="card.dateFrom" class="Card-date">
-                <strong class="Card-date-number">${ card.dateFrom }$</strong>
+            <a :href="`/product/${card.id}`">
+              <div class="Card-picture" >
+                <img v-if="card.images.length > 0" :src="card.images[0].src" :alt="card.images[0].alt"/>
               </div>
-              <div v-if="card.dateTo" class="Card-date Card-date_to">
-                <strong class="Card-date-number">${ card.dateTo }$</strong>
+              <div class="Card-date-block">
+                <div v-if="card.dateFrom" class="Card-date">
+                  <strong class="Card-date-number">${ card.dateFrom }$</strong>
+                </div>
+                <div v-if="card.dateTo" class="Card-date Card-date_to">
+                  <strong class="Card-date-number">${ card.dateTo }$</strong>
+                </div>
               </div>
+
               <div class="Card-content">
                 <strong class="Card-title">${ card.title }$</strong>
                 <div class="Card-description"><s><${ card.price }$</s></div>

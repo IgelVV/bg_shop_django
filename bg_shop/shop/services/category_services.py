@@ -12,7 +12,7 @@ class CategoryService:
     def update_or_create(
             self,
             *,
-            instance: models.Category,
+            instance: Optional[models.Category],
             commit: bool = True,
             **attrs
     ) -> models.Category:

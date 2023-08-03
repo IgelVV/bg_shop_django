@@ -1,7 +1,11 @@
 import os
 from celery import Celery
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bg_shop.settings')
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv())
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bg_shop.settings.base')
 
 app = Celery('bg_shop')
 

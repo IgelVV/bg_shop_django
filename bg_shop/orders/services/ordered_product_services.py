@@ -17,7 +17,7 @@ class OrderedProductService:
             product_id: int,
             quantity: int,
             commit: bool = True,
-    ) -> None:
+    ) -> models.OrderedProduct:
         """
         Create new OrderedProduct.
 
@@ -33,10 +33,11 @@ class OrderedProductService:
             product_id=product_id,
             count=quantity
         )
-        self.update_price(ordered_product=ordered_product, commit=False)
+        self.refresh_price_from_product(ordered_product=ordered_product, commit=False)
         if commit:
             ordered_product.full_clean()
             ordered_product.save()
+        return ordered_product
 
     def add_item(
             self,
@@ -45,11 +46,10 @@ class OrderedProductService:
             quantity: int,
             override_quantity: bool = False,
     ) -> None:
-        # todo redo, it hits db a lot. and use create_ord_prod()
-        #  it is better to use orderedproduct obj directly.
         """
         Increase `count` of OrderedProduct or overrides it.
 
+        If OrderedProduct doesn't exist creates it.
         Saves OrderedProduct.
         :param order: Order obj.
         :param product_id: Product.pk.
@@ -58,12 +58,11 @@ class OrderedProductService:
         :return: None.
         """
         if quantity < 0:
-            OrderedProductService().reduce_or_delete(
+            return OrderedProductService().reduce_or_delete(
                 order=order,
                 product_id=product_id,
                 quantity=-quantity,
             )
-
         ord_prod_selector = selectors.OrderedProductSelector()
         ordered_product = ord_prod_selector.get_ordered_product_from_order(
             order=order,
@@ -80,7 +79,6 @@ class OrderedProductService:
                 product_id=product_id,
                 count=quantity
             )
-        ordered_product.full_clean()
         ordered_product.save()
 
     def reduce_or_delete(
@@ -88,7 +86,6 @@ class OrderedProductService:
             order: models.Order,
             product_id: int,
             quantity: int,
-            remove_all: bool = False,
     ) -> None:
         """
         Decrease OrderedProduct.count if possible.
@@ -98,30 +95,25 @@ class OrderedProductService:
         :param product_id: Product.pk,
             if Product is not related to the OrderedProduct raises ValueError.
         :param quantity: amount to deduct.
-        :param remove_all: if True, deletes OrderedProduct.
         :return: None.
         """
-        # todo redo, it hits db a lot. and use create_ord_prod()
-        #  it is better to use orderedproduct obj directly.
         ord_prod_selector = selectors.OrderedProductSelector()
         ordered_product = ord_prod_selector.get_ordered_product_from_order(
             order=order,
             product_id=product_id,
         )
         if ordered_product:
-            if remove_all:
-                ordered_product.delete()
-            else:
-                if ordered_product.count > quantity:
-                    ordered_product.count -= quantity
-                    ordered_product.full_clean()
-                    ordered_product.save()
-                else:
-                    ordered_product.delete()
-        else:
-            raise ValueError(f"{order} has no Product with id {product_id}")
+            if ordered_product.count > quantity:
+                ordered_product.count -= quantity
+                ordered_product.save()
 
-    def update_price(
+            else:
+                ordered_product.delete()
+        else:
+            raise models.OrderedProduct.DoesNotExist(
+                f"{order} has no Product with id {product_id}")
+
+    def refresh_price_from_product(
             self,
             ordered_product: models.OrderedProduct,
             commit: bool = True

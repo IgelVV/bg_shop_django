@@ -40,7 +40,7 @@ class OrderSelector:
             prefetch_ordered_products: bool = True,
     ) -> models.Order:
         """
-        Get or create Order related to user, with status=CART.
+        Get or create Order related to user, with status=CART, is_active=True.
 
         :param user: User object.
         :param prefetch_ordered_products: if True prefetches
@@ -62,7 +62,7 @@ class OrderSelector:
             prefetch_ordered_products: bool = True
     ) -> Optional[models.Order]:
         """
-        Get Order related to user, with status=CART.
+        Get Order related to user, with status=CART, is_active=True.
 
         :param user: User object.
         :param prefetch_ordered_products: if True prefetches
@@ -188,6 +188,22 @@ class OrderSelector:
             order = None
         return order
 
+    def check_if_order_belongs_to_user(
+            self,
+            order_id: int,
+            user: UserType,
+    ) -> bool:
+        """Check if order is related to user."""
+        try:
+            models.Order.objects.get(
+                user=user,
+                pk=order_id,
+            )
+        except models.Order.DoesNotExist:
+            return False
+        else:
+            return True
+
     def get_editing_order_of_user(
             self,
             order_id: int,
@@ -283,7 +299,7 @@ class OrderSelector:
                 order.delivery_type == models.Order.DeliveryTypes.EXPRESS
             )
             main_cost = self.get_order_main_cost(order=order)
-        conf_selector = dynamic_selectors.AdminConfigSelector()
+        conf_selector = dynamic_selectors.DynamicConfigSelector()
         delivery_cost = Decimal(0)
         if main_cost < conf_selector.boundary_of_free_delivery:
             delivery_cost += conf_selector.ordinary_delivery_cost

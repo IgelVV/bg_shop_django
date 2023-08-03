@@ -6,12 +6,12 @@
     <div class="Middle-top">
       <div class="wrap">
         <div class="Middle-header">
-          <h1 class="Middle-title">Корзина
+          <h1 class="Middle-title">Cart
           </h1>
           <ul class="breadcrumbs Middle-breadcrumbs">
             <li class="breadcrumbs-item"><a href="/">home</a>
             </li>
-            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Корзина</span>
+            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Cart</span>
             </li>
           </ul>
         </div>
@@ -19,7 +19,7 @@
     </div>
     <div class="Section">
       <div class="wrap">
-        <h2 v-if="isBasketEmpty()">Корзина пуста</h2>
+        <h2 v-if="isBasketEmpty()">The Cart is empty</h2>
         <form class="form Cart" @submit.prevent="">
           {% csrf_token %}
           <!-- Данные по товару в корзине -->
@@ -67,9 +67,9 @@
             </div>
             <div class="Cart-block" v-if="basketCount.count">
               {% if user.is_authenticated %}
-              <button type="submit" class="btn btn_success btn_lg" @click="submitBasket" >Оформить заказ</button>
+              <button type="submit" class="btn btn_success btn_lg" @click="submitBasket" >Place an order</button>
               {% else %}
-              <button type="submit" class="btn btn_success btn_lg" @click="goLogin" >Оформить заказ</button>
+              <button type="submit" class="btn btn_success btn_lg" @click="goLogin" >Place an order</button>
               {% endif %}
             </div>
           </div>

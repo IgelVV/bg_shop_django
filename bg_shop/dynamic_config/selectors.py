@@ -1,12 +1,13 @@
 from typing import Any
-from django.contrib.auth import get_user_model
 
 from dynamic_config import models
 
 
-class AdminConfigSelector:  # todo cache
-    def __init__(self):
-        self.config = models.DynamicConfig.objects.get(pk=1)
+class DynamicConfigSelector:  # todo cache delete cache post_save _signal
+    def get_instance(self):
+        if not hasattr(self, "config"):
+            self.config = models.DynamicConfig.objects.get(pk=1)
+        return self.config
 
     def get_config(self, key: str) -> Any:
         """
@@ -14,6 +15,7 @@ class AdminConfigSelector:  # todo cache
         :param key: a name of field in DynamicConfig
         :return: value of the field
         """
+        self.get_instance()
         if hasattr(self.config, key):
             return getattr(self.config, key)
         else:
@@ -25,6 +27,7 @@ class AdminConfigSelector:  # todo cache
         Shortcut.
         :return: value of `boundary_of_free_delivery` field.
         """
+        self.get_instance()
         return self.get_config(key="boundary_of_free_delivery")
 
     @property
@@ -33,6 +36,7 @@ class AdminConfigSelector:  # todo cache
         Shortcut.
         :return: value of `ordinary_delivery_cost` field.
         """
+        self.get_instance()
         return self.get_config(key="ordinary_delivery_cost")
 
     @property
@@ -41,4 +45,5 @@ class AdminConfigSelector:  # todo cache
         Shortcut.
         :return: value of `express_delivery_extra_charge` field.
         """
+        self.get_instance()
         return self.get_config(key="express_delivery_extra_charge")

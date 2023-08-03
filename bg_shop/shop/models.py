@@ -6,8 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 
-# todo Удаление товаров, заказов, пользователей и категорий товаров
-#  осуществляется только с использованием механизма мягкого удаления.
 class Product(models.Model):
     class Meta:
         verbose_name = _("product")
@@ -90,6 +88,7 @@ class Category(models.Model):
     image = models.ForeignKey(
         "common.Image",
         null=True,
+        blank=True,
         on_delete=models.SET_NULL,
         verbose_name=_("image")
     )

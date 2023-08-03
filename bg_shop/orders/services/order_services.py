@@ -105,12 +105,12 @@ class OrderService:
         simple_products = self._simplify_products(products=products)
         ordered_products: db_models.QuerySet[models.OrderedProduct] = \
             order.orderedproduct_set.all().select_related("product") \
-            .prefetch_related("product__sale_set")
+                .prefetch_related("product__sale_set")
         for ord_prod in ordered_products:
             if ord_prod.product_id not in simple_products:
                 ord_prod.delete()
             else:
-                ordered_product_service.update_price(ord_prod, commit=False)
+                ordered_product_service.refresh_price_from_product(ord_prod, commit=False)
                 ord_prod.count = simple_products.pop(ord_prod.product_id)
                 ord_prod.full_clean()
                 ord_prod.save()
@@ -125,7 +125,6 @@ class OrderService:
         :param products: info about product in order.
         :return: important product info.
         """
-        # todo it should be in serializer maybe (or create parse method)
         simple_products = {}
         for product in products:
             simple_products[product['id']] = product['count']
@@ -147,25 +146,27 @@ class OrderService:
         :param order_data: {field: value,}
         :return: None
         """
-        # todo with transaction atomic
         selector = selectors.OrderSelector()
         ordered_product_service = ord_prod_services.OrderedProductService()
 
         order = selector.get_editing_order_of_user(
             order_id=order_id, user=user, or_404=True)
         order_attrs = self._parse_order_data(order_data=order_data)
-        order = self.edit(order=order, order_attrs=order_attrs, commit=False)
 
-        ordered_products = order.orderedproduct_set.all()
-        ordered_product_service.deduct_amount_from_product(
-            ord_prod_qs=ordered_products)
-        for ord_prod in ordered_products:
-            ordered_product_service.update_price(
-                ordered_product=ord_prod, commit=True)
+        with transaction.atomic():
+            order = self.edit(
+                order=order, order_attrs=order_attrs, commit=False)
 
-        order.status = order.Statuses.ACCEPTED
-        order.full_clean()
-        order.save()
+            ordered_products = order.orderedproduct_set.all()
+            ordered_product_service.deduct_amount_from_product(
+                ord_prod_qs=ordered_products)
+            for ord_prod in ordered_products:
+                ordered_product_service.refresh_price_from_product(
+                    ordered_product=ord_prod, commit=True)
+
+            order.status = order.Statuses.ACCEPTED
+            order.full_clean()
+            order.save()
 
     def _parse_order_data(self, order_data: dict) -> dict:
         """
@@ -176,28 +177,8 @@ class OrderService:
         """
         order_attrs: dict[str, Any | None] = dict()
 
-        delivery_type = order_data["deliveryType"]
-        if delivery_type == "express" or delivery_type == "EX":
-            order_attrs["delivery_type"] = models.Order.DeliveryTypes.EXPRESS
-        elif delivery_type == "ordinary" or delivery_type == "OR":
-            order_attrs["delivery_type"] = models.Order.DeliveryTypes.ORDINARY
-        else:
-            raise ValueError(
-                "Order.delivery_type must be: "
-                "'express'('EX') or 'ordinary'('OR')")
-
-        payment_type = order_data["paymentType"]
-        if payment_type == "ON":
-            order_attrs["payment_type"] = models.Order.PaymentTypes.ONLINE
-        elif payment_type == "SO":
-            order_attrs["payment_type"] = models.Order.PaymentTypes.SOMEONE
-        elif payment_type == "CA":
-            order_attrs["payment_type"] = models.Order.PaymentTypes.CASH
-        else:
-            raise ValueError(
-                "Order.payment_type must be: "
-                "'ON'(online), or 'SO'(someone), or 'CA'(cash)")
-
+        order_attrs["delivery_type"] = order_data["deliveryType"]
+        order_attrs["payment_type"] = order_data["paymentType"]
         order_attrs["city"] = order_data.get("city", None)
         order_attrs["address"] = order_data["address"]
         order_attrs["comment"] = order_data.get("comment", None)

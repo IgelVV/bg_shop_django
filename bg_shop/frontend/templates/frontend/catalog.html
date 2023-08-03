@@ -6,12 +6,12 @@
     <div class="Middle-top">
       <div class="wrap">
         <div class="Middle-header">
-          <h1 class="Middle-title">Catalog Megano
+          <h1 class="Middle-title">Catalog
           </h1>
           <ul class="breadcrumbs Middle-breadcrumbs">
             <li class="breadcrumbs-item"><a href="/">Home</a>
             </li>
-            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Каталог</span>
+            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Catalog</span>
             </li>
           </ul>
         </div>
@@ -22,7 +22,7 @@
         <div class="Section-column">
           <div class="Section-columnSection">
             <header class="Section-header">
-              <strong class="Section-title">Фильтр
+              <strong class="Section-title">Filter
               </strong>
             </header>
             <div class="Section-columnContent">
@@ -62,7 +62,7 @@
                           name="title"
                           type="text"
                           v-model="filter.name"
-                          placeholder="Название"
+                          placeholder="Title"
                   />
                 </div>
                 <div class="form-group">
@@ -71,21 +71,21 @@
                   <label class="toggle">
                     <input type="checkbox" name="available" v-model="filter.available"/>
                     <span class="toggle-box"></span>
-                    <span class="toggle-text">Только товары в наличии</span>
+                    <span class="toggle-text">Only products in stock</span>
                   </label>
                 </div>
                 <div class="form-group">
                   <label class="toggle">
                     <input type="checkbox" name="freeDelivery" v-model="filter.freeDelivery"/>
                     <span class="toggle-box"></span>
-                    <span class="toggle-text">С бесплатной доставкой</span>
+                    <span class="toggle-text">With free delivery</span>
                   </label>
                 </div>
                 <div class="form-group">
                   <div class="buttons">
                     <button type="submit"
                             class="btn btn_square btn_dark btn_narrow" >
-                      Фильтровать
+                      Filter
                     </button>
                   </div> <!-- TODO отправка формы фильтрации -->
                 </div>
@@ -94,7 +94,7 @@
           </div>
           <div class="Section-columnSection">
             <header class="Section-header">
-              <strong class="Section-title">Популярные теги
+              <strong class="Section-title">Popular tags
               </strong>
             </header>
             <div class="Section-columnContent">
@@ -116,7 +116,7 @@
         </div>
         <div class="Section-content">
           <div class="Sort">
-            <div class="Sort-title">Сортировать по:</div>
+            <div class="Sort-title">Sort by:</div>
             <div class="Sort-variants">
               <div v-for="sort in sortRules"
                    :key="sort.id"
@@ -152,27 +152,25 @@
               </div>
             </div>
             <!-- Получаем товары по фильтрам -->
-
           </div>
+        </div>
 
-          <!-- Доработать апгинацию!  -->
-          <div class="Pagination">
-            <div class="Pagination-ins">
-              <a class="Pagination-element Pagination-element_prev" @click.prevent="getCatalogs(1)" href="#">
-                <img src="/static/frontend/assets/img/icons/prevPagination.svg" alt="prevPagination.svg"/>
-              </a>
-              <a v-for="page in lastPage" class="Pagination-element" :class="{'Pagination-element_current': page == currentPage}" @click.prevent="getCatalogs(page)" href="#">
-                <span class="Pagination-text">${page}$</span>
-              </a>
-              <a class="Pagination-element Pagination-element_prev" @click.prevent="getCatalogs(lastPage)" href="#">
-                <img src="/static/frontend/assets/img/icons/nextPagination.svg" alt="nextPagination.svg"/>
-              </a>
-            </div>
-          </div>
-          <!-- Доработать пагинацию!  -->
-
+      </div>
+      <!-- Доработать апгинацию!  -->
+      <div class="Pagination">
+        <div class="Pagination-ins">
+          <a class="Pagination-element Pagination-element_prev" @click.prevent="getCatalogs(1)" href="#">
+            <img src="/static/frontend/assets/img/icons/prevPagination.svg" alt="prevPagination.svg"/>
+          </a>
+          <a v-for="page in lastPage" class="Pagination-element" :class="{'Pagination-element_current': page == currentPage}" @click.prevent="getCatalogs(page)" href="#">
+            <span class="Pagination-text">${page}$</span>
+          </a>
+          <a class="Pagination-element Pagination-element_prev" @click.prevent="getCatalogs(lastPage)" href="#">
+            <img src="/static/frontend/assets/img/icons/nextPagination.svg" alt="nextPagination.svg"/>
+          </a>
         </div>
       </div>
+      <!-- Доработать пагинацию!  -->
     </div>
   </div>
 {% endblock %}

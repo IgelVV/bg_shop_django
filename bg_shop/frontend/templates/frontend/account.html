@@ -6,12 +6,12 @@
     <div class="Middle-top">
       <div class="wrap">
         <div class="Middle-header">
-          <h1 class="Middle-title">Личный кабинет
+          <h1 class="Middle-title">Personal account
           </h1>
           <ul class="breadcrumbs Middle-breadcrumbs">
             <li class="breadcrumbs-item"><a href="/">Home</a>
             </li>
-            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Личный кабинет</span>
+            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Personal account</span>
             </li>
           </ul>
         </div>
@@ -22,7 +22,7 @@
         <div class="Section-column">
           <div class="Section-columnSection">
             <header class="Section-header">
-              <strong class="Section-title">Навигация
+              <strong class="Section-title">Navigation
               </strong>
             </header>
             <div class="Section-columnContent">
@@ -30,7 +30,7 @@
                 <ul class="menu menu_vt">
 <!--                  <li class="menu-item"><a class="menu-link" href="/profile">Профиль</a>-->
 <!--                  </li>-->
-                  <li class="menu-item"><a class="menu-link" href="/history-order">История заказов</a>
+                  <li class="menu-item"><a class="menu-link" href="/history-order">Order history</a>
                   </li>
 <!--                  <li class="menu-item"><a class="menu-link" href="/historyview">История просмотра</a>-->
 <!--                  </li>-->
@@ -51,39 +51,44 @@
                 <div class="Account-name">${ fullName }$</div>
                 <div class="Account-email">Email: ${ email }$</div>
                 <div class="Account-phone">Phone: ${ phone }$</div>
-                <a class="Account-editLink" href="/profile">Редактировать профиль</a>
+                <a class="Account-editLink" href="/profile">Edit Profile</a>
               </div>
             </div>
-            <h2>Последний заказ</h2>
+            <h2>Last order</h2>
             <div class="Account-group">
               <div class="Account-column Account-column_full">
                 <div class="Order Order_anons">
                   <div class="Order-personal">
-                    <div class="row">
+                    <div v-if="order" class="row">
                       <div class="row-block">
                         <a class="Order-title" :href="`/order-detail/${order.id}/`">
-                          Заказ&#32;<span class="Order-numberOrder">№${order.id}$</span>
-                          &#32;от&#32;<span class="Order-dateOrder">${ new Date(order.createdAt).toLocaleString('ru-RU') }$</span>
+                          Order&#32;<span class="Order-numberOrder">№${order.id}$</span>
+                          &#32;from&#32;<span class="Order-dateOrder">${ new Date(order.createdAt).toLocaleString('ru-RU') }$</span>
                         </a>
                       </div>
                       <div class="row-block">
                         <div class="Order-info Order-info_delivery">
-                          <div class="Order-infoType">Тип доставки:</div>
+                          <div class="Order-infoType">Type of delivery:</div>
                           <div class="Order-infoContent">${deliveryTypes[order.deliveryType]}$</div>
                         </div>
                         <div class="Order-info Order-info_pay">
-                          <div class="Order-infoType">Оплата:</div>
+                          <div class="Order-infoType">Payment:</div>
                           <div class="Order-infoContent">${paymentTypes[order.paymentType]}$</div>
                         </div>
                         <div class="Order-info">
-                          <div class="Order-infoType">Общая стоимость:</div>
+                          <div class="Order-infoType">Total cost:</div>
                           <div class="Order-infoContent">${order.totalCost}$$</div>
                         </div>
                         <div class="Order-info Order-info_status">
-                          <div class="Order-infoType">Статус:</div>
+                          <div class="Order-infoType">Status:</div>
                           <div class="Order-infoContent">${orderStatuses[order.status]}$</div>
                         </div>
                           </div>
+                        </div>
+                      </div>
+                      <div v-else class="row">
+                        <div class="row-block">
+                          <div class="Order-infoType">No orders</div>
                         </div>
                       </div>
                     </div>
