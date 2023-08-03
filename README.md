@@ -21,9 +21,9 @@
 to load init demo db data from fixtures
 
 Script fills db with initial demo data, and it creates
-superuser with unsafe password (! do not run script in
-production !). Demo images are stored in `static/` so it 
-can cause unexpected troubles with deleting or updating.
+superuser with unsafe password. Demo images are stored 
+in `static/`, so it can cause unexpected troubles with
+deleting or updating.
 
 It is advisable to upload new images using admin panel for
 each Image object, and change superuser password.
