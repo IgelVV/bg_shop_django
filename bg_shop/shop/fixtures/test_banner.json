@@ -1,0 +1,16 @@
+[
+  {
+    "model": "shop.banner",
+    "pk": 1,
+    "fields": {
+      "product": 1
+    }
+  },
+  {
+    "model": "shop.banner",
+    "pk": 2,
+    "fields": {
+      "product": 2
+    }
+  }
+]

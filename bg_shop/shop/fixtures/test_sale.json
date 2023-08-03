@@ -1,0 +1,62 @@
+[
+  {
+    "model": "shop.sale",
+    "pk": 1,
+    "fields": {
+      "product": 1,
+      "discount": 10,
+      "date_from": "2023-06-10",
+      "date_to": "2029-05-17"
+    }
+  },
+  {
+    "model": "shop.sale",
+    "pk": 2,
+    "fields": {
+      "product": 2,
+      "discount": 26,
+      "date_from": "2023-06-04",
+      "date_to": "2023-06-10"
+    }
+  },
+  {
+    "model": "shop.sale",
+    "pk": 3,
+    "fields": {
+      "product": 3,
+      "discount": 5,
+      "date_from": "2023-06-10",
+      "date_to": "2023-09-16"
+    }
+  },
+  {
+    "model": "shop.sale",
+    "pk": 4,
+    "fields": {
+      "product": 4,
+      "discount": 11,
+      "date_from": "2023-06-14",
+      "date_to": "2029-02-14"
+    }
+  },
+  {
+    "model": "shop.sale",
+    "pk": 5,
+    "fields": {
+      "product": 1,
+      "discount": 16,
+      "date_from": "2023-04-05",
+      "date_to": "2023-08-10"
+    }
+  },
+  {
+    "model": "shop.sale",
+    "pk": 6,
+    "fields": {
+      "product": 1,
+      "discount": 20,
+      "date_from": "2023-05-15",
+      "date_to": "2023-06-01"
+    }
+  }
+]

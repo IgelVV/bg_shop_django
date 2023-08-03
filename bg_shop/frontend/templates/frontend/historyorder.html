@@ -1,0 +1,88 @@
+{% extends "frontend/base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="Middle Middle_top">
+    <div class="Middle-top">
+      <div class="wrap">
+        <div class="Middle-header">
+          <h1 class="Middle-title">Order history
+          </h1>
+          <ul class="breadcrumbs Middle-breadcrumbs">
+            <li class="breadcrumbs-item"><a href="/">home</a>
+            </li>
+            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Order history</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="Section Section_column Section_columnLeft">
+      <div class="wrap">
+        <div class="Section-column">
+          <div class="Section-columnSection">
+            <header class="Section-header">
+              <strong class="Section-title">Navigation
+              </strong>
+            </header>
+            <div class="Section-columnContent">
+              <div class="NavigateProfile">
+                <ul class="menu menu_vt">
+                  <li class="menu-item"><a class="menu-link" href="/account">Profile</a>
+                  </li>
+<!--                  <li class="menu-item"><a class="menu-link" href="/history-order">Order history</a>-->
+<!--                  </li>-->
+<!--                  <li class="menu-item"><a class="menu-link" href="/historyview">Order history</a>-->
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="Section-content">
+          <div class="Orders">
+            <div v-for="order in orders" class="Order Order_anons">
+              <div class="Order-personal">
+                <div class="row">
+                  <div class="row-block">
+                    <a class="Order-title" :href="`/order-detail/${order.id}/`">
+                      Order&#32;
+                      <span class="Order-numberOrder">№${order.id}$</span>
+                      &#32;from&#32;<span class="Order-dateOrder">${new Date(order.createdAt).toLocaleString('ru-RU')}$</span>
+                    </a>
+                  </div>
+                  <div class="row-block">
+                    <div class="Order-info Order-info_delivery">
+                      <div class="Order-infoType">Delivery type:</div>
+                      <div class="Order-infoContent">${deliveryTypes[order.deliveryType]}$</div>
+                    </div>
+                    <div class="Order-info Order-info_pay">
+                      <div class="Order-infoType">Payment:</div>
+                      <div v-if="order.paid" class="Order-infoContent">Paid</div>
+                      <div v-else class="Order-infoContent">Not paid</div>
+                    </div>
+                    <div class="Order-info">
+                      <div class="Order-infoType">Total cost:
+                      </div>
+                      <div class="Order-infoContent">
+                        <span class="Order-price">$${order.totalCost}$</span>
+                      </div>
+                    </div>
+                    <div class="Order-info Order-info_status">
+                      <div class="Order-infoType">Status:</div>
+                      <div class="Order-infoContent">${orderStatuses[order.status]}$</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block mixins %}
+<script src="{% static 'frontend/assets/js/historyOrder.js' %}"></script>
+{% endblock %}

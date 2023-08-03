@@ -1,0 +1,142 @@
+{% extends "frontend/base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="Middle Middle_top">
+    <div class="Middle-top">
+      <div class="wrap">
+        <div class="Middle-header">
+          <h1 class="Middle-title">Order №${orderId}$
+          </h1>
+          <ul class="breadcrumbs Middle-breadcrumbs">
+            <li class="breadcrumbs-item"><a href="/">Home</a>
+            </li>
+            <li class="breadcrumbs-item"><a href="/history-order/">Order history</a>
+            </li>
+            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Order №${orderId}$</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="Section">
+      <div class="wrap">
+        <div class="Section-content">
+          <div class="Orders">
+          </div>
+          <div class="Order">
+            <div class="Order-infoBlock">
+              <div class="Order-personal">
+                <div class="row">
+                  <div class="row-block">
+                    <div class="Order-info Order-info_date">
+                      <div class="Order-infoType">Order date:</div>
+                      <div class="Order-infoContent">${new Date(createdAt).toLocaleString('ru-RU')}$</div>
+                    </div>
+                    <div class="Order-info">
+                      <div class="Order-infoType">Full name:</div>
+                      <div class="Order-infoContent">${fullName}$</div>
+                    </div>
+                    <div class="Order-info">
+                      <div class="Order-infoType">Phone:</div>
+                      <div class="Order-infoContent">${phone}$</div>
+                    </div>
+                    <div class="Order-info">
+                      <div class="Order-infoType">E-mail:</div>
+                      <div class="Order-infoContent">${email}$</div>
+                    </div>
+                  </div>
+                  <div class="row-block">
+                    <div class="Order-info Order-info_delivery">
+                      <div class="Order-infoType">Delivery type:</div>
+                      <div class="Order-infoContent">${deliveryTypes[deliveryType]}$</div>
+                    </div>
+                    <div class="Order-info">
+                      <div class="Order-infoType">City:</div>
+                      <div class="Order-infoContent">${city}$</div>
+                    </div>
+                    <div class="Order-info">
+                      <div class="Order-infoType">Address:</div>
+                      <div class="Order-infoContent">${address}$</div>
+                    </div>
+                    <div class="Order-info">
+                      <div class="Order-infoType">Comment:</div>
+                      <div class="Order-infoContent">${comment}$</div>
+                    </div>
+                    <div class="Order-info Order-info_pay">
+                      <div class="Order-infoType">Payment type:</div>
+                      <div class="Order-infoContent">${paymentTypes[paymentType]}$</div>
+                    </div>
+                    <div class="Order-info Order-info_pay">
+                      <div class="Order-infoType">Payment:</div>
+                      <div v-if="paid" class="Order-infoContent">Paid</div>
+                      <div v-else class="Order-infoContent">Not paid</div>
+                    </div>
+                    <div class="Order-info Order-info_status">
+                      <div class="Order-infoType">Status:</div>
+                      <div class="Order-infoContent">${orderStatuses[status]}$</div>
+                    </div>
+                    <div v-if="paymentError !== null" class="Order-info Order-info_error">
+                      <div class="Order-infoType">Payment failed:</div>
+                      <div class="Order-infoContent">${paymentError}$</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="Cart Cart_order">
+                <div v-for="product in products" class="Cart-product">
+                  <div class="Cart-block Cart-block_row">
+                    <div class="Cart-block Cart-block_pict">
+                      <a class="Cart-pict" :href="`/product/${product.id}`">
+                        <img class="Cart-img" v-if="product.images.length > 0" :src="product.images[0].src" :alt="product.images[0].alt"/>
+                      </a>
+                    </div>
+                    <div class="Cart-block Cart-block_info">
+                      <a class="Cart-title" :href="`/product/${product.id}`">${product.title}$</a>
+                      <div class="Cart-desc">${product.shortDescription}$</div>
+                    </div>
+                    <div class="Cart-block Cart-block_price">
+                      <div class="Cart-price">${product.price}$$</div>
+                    </div>
+                  </div>
+                  <div class="Cart-block Cart-block_row">
+                    <div class="Cart-block Cart-block_amount">${product.count}$ pcs.</div>
+                  </div>
+                </div>
+                <div class="Cart-product">
+                  <div class="Cart-block Cart-block_row">
+                    <div class="Cart-block Cart-block_info">
+                      <p class="Cart-title">Delivery</p>
+                    </div>
+                    <div class="Cart-block Cart-block_price">
+                      <div class="Cart-price">${deliveryCost}$$</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="Cart-total">
+                  <div class="Cart-block Cart-block_total">
+                    <strong class="Cart-title">Итого:<span class="Cart-price">${totalCost}$$</span>
+                    </strong>
+                  </div>
+                  <div class="Cart-block" v-if="!paid">
+                    <div class="Cart-block" v-if="status==='ED'">
+                      <a class="btn btn_primary btn_lg" :href="`/orders/${orderId}/`">Continue</a>
+                    </div>
+                    <div class="Cart-block" v-else>
+                      <a class="btn btn_primary btn_lg" v-if="paymentType==='SO'" :href="`/payment-someone/${orderId}/`">Pay</a>
+                      <a class="btn btn_primary btn_lg" v-else :href="`/payment/${orderId}/`">Pay</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block mixins %}
+<script src="{% static 'frontend/assets/js/order-detail.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,46 @@
+[
+  {
+    "model": "shop.review",
+    "pk": 1,
+    "fields": {
+      "author": 1,
+      "product": 1,
+      "text": "best",
+      "rate": 10,
+      "date": "2023-06-10T15:55:23Z"
+    }
+  },
+  {
+    "model": "shop.review",
+    "pk": 2,
+    "fields": {
+      "author": 1,
+      "product": 3,
+      "text": "so so",
+      "rate": 5,
+      "date": "2023-06-10T15:55:45Z"
+    }
+  },
+  {
+    "model": "shop.review",
+    "pk": 3,
+    "fields": {
+      "author": 1,
+      "product": 1,
+      "text": "<h1>I like this game</h1>",
+      "rate": 9,
+      "date": "2023-06-19T14:29:17Z"
+    }
+  },
+  {
+    "model": "shop.review",
+    "pk": 4,
+    "fields": {
+      "author": 1,
+      "product": 2,
+      "text": "nice one",
+      "rate": 7,
+      "date": "2023-06-28T16:39:12Z"
+    }
+  }
+]
