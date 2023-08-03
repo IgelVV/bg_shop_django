@@ -38,11 +38,10 @@ var mix = {
 					this.month = ''
 					this.code = ''
 					location.assign(`/order-detail/${orderId}/`)
-				})
-				.catch(() => {
-					console.warn('Payment error')
-					alert('Payment error')
-				})
+				}).catch((error) => {
+                console.warn(error.response.data)
+                alert(JSON.stringify(error.response.data))
+            })
 		}
 	},
 	data() {

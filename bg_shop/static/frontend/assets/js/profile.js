@@ -6,8 +6,9 @@ var mix = {
                 this.avatar = data.avatar
                 this.phone = data.phone
                 this.email = data.email
-            }).catch(() => {
-                console.warn('Error when getting a profile')
+            }).catch((error) => {
+                console.warn(error.response.data)
+                alert(JSON.stringify(error.response.data))
             })
         },
         changeProfile () {
@@ -27,9 +28,9 @@ var mix = {
                 this.phone = data.phone
                 this.email = data.email
                alert('Successfully saved')
-            }).catch(() => {
-                console.warn('Error updating profile')
-                alert('Error updating profile')
+            }).catch((error) => {
+                console.warn(error.response.data)
+                alert(JSON.stringify(error.response.data))
             })
         },
         changePassword () {
@@ -48,10 +49,10 @@ var mix = {
                     this.passwordCurrent = ''
                     this.password = ''
                     this.passwordReply = ''
-                }).catch(() => {
-                    console.warn('Error saving password')
-                    alert('Error saving password')
-                })
+                }).catch((error) => {
+                console.warn(error.response.data)
+                alert(JSON.stringify(error.response.data))
+            })
         },
         setAvatar (event) {
             const target = event.target
@@ -63,9 +64,9 @@ var mix = {
 
             this.postData('/api/profile/avatar/', formData, {'Content-Type': 'multipart/form-data'}).then((data) => {
                 this.avatar = data.data
-            }).catch(() => {
-                 console.warn('Error updating the image')
-                 alert('Error updating the image')
+            }).catch((error) => {
+                console.warn(error.response.data)
+                alert(JSON.stringify(error.response.data))
             })
         },
         getCookie(name) {

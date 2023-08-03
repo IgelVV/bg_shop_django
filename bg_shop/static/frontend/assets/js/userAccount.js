@@ -48,7 +48,6 @@ var mix = {
 				}).catch(() => {
 				this.order = {}
 				console.warn('Error when receiving the last order')
-				alert('Error when receiving the last order')
 			})
 		},
 	},

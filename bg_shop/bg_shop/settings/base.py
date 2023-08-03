@@ -227,10 +227,11 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {
         "file": {
-            "class": "logging.FileHandler",
+            "class": "logging.handlers.RotatingFileHandler",
             "filename": "general.log",
             "level": "DEBUG",
             "formatter": "verbose",
+            "maxBytes": 1024 * 1024 * 100,  # 100 mb
         },
         "console": {
             "class": "logging.StreamHandler",
@@ -242,7 +243,7 @@ LOGGING = {
         "": {
             "level": LOGLEVEL,
             "handlers": [
-                # "console",
+                "file",
             ],
         },
     },

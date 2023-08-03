@@ -35,11 +35,10 @@ var mix = {
 					.then(() => {
 						alert('The order is confirmed')
 						location.replace(`/order-detail/${this.orderId}/`)
-					})
-					.catch(() => {
-						console.warn('Order confirmation error')
-						alert('Order confirmation error')
-					})
+					}).catch((error) => {
+                        console.warn(error.response.data)
+                        alert(JSON.stringify(error.response.data))
+                    })
 			}
 		},
 		auth() {
@@ -49,10 +48,10 @@ var mix = {
             this.postData('/api/sign-in/', { username, password })
 				.then(({ data, status }) => {
 					location.assign(`/orders/${this.orderId}/`)
-				})
-				.catch(() => {
-					alert('Authorization error')
-				})
+				}).catch((error) => {
+                    console.warn(error.response.data)
+                    alert(JSON.stringify(error.response.data))
+                })
 		}
 	},
 	mounted() {

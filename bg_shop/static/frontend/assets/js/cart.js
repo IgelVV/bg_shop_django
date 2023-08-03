@@ -4,10 +4,10 @@ var mix = {
             this.postData('/api/orders/', Object.values(this.basket))
                 .then(({data: { orderId }}) => {
                     location.assign(`/orders/${orderId}/`)
-                }).catch(() => {
-                    console.warn('Error when creating an order')
-                    alert('Error when creating an order')
-                })
+                }).catch((error) => {
+                        console.warn(error.response.data)
+                        alert(JSON.stringify(error.response.data))
+                    })
         },
         goLogin () {
             location.assign(`/sign-in/`)

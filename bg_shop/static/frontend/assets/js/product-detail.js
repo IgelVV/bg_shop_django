@@ -40,9 +40,9 @@ var mix = {
                 this.review.email = ''
                 this.review.text = ''
 //                this.review.rate =
-            }).catch(() => {
-                console.warn('Error when publishing a review')
-                alert('Error when publishing a review')
+            }).catch((error) => {
+                console.warn(error.response.data)
+                alert(JSON.stringify(error.response.data))
             })
         },
         setActivePhoto(index) {

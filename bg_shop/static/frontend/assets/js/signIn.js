@@ -8,6 +8,10 @@ var mix = {
 				.then(({ data, status }) => {
 					location.assign(`/`)
 				})
+				.catch((error) => {
+                console.warn(error.response.data)
+                alert(JSON.stringify(error.response.data))
+            })
 		}
 	},
 	mounted() {

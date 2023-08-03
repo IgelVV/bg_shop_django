@@ -12,7 +12,7 @@ var mix = {
                 !passwordReply.trim().length ||
                 password !== passwordReply
             ) {
-                alert('В форме присутствуют незаполненные поля или пароли не совпадают')
+                alert('There are blank fields in the form or passwords do not match')
                 return
             }
 			// this.postData('/api/sign-up/', JSON.stringify({ name, username, password }))
@@ -23,7 +23,10 @@ var mix = {
 			})
 				.then(({ data, status }) => {
 					location.assign(`/`)
-				})
+				}).catch((error) => {
+                console.warn(error.response.data)
+                alert(JSON.stringify(error.response.data))
+            })
 		}
 	},
 	mounted() {
