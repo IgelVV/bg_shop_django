@@ -80,8 +80,7 @@ or
 docker compose logs -f
 ```
 
-
-- uo container and do nothing
+- up container and do nothing
 ```yaml
     command:
       - bash

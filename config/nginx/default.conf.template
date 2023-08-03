@@ -19,6 +19,6 @@ server {
     }
 
     location /favicon.ico {
-        alias /code/bg_shop/frontend/static/frontend/F-icon.png;
+        alias /code/bg_shop/static/frontend/F-icon.png;
     }
 }
