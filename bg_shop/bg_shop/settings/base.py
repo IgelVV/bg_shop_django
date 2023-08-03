@@ -39,6 +39,8 @@ INTERNAL_IPS = [
     "0.0.0.0",
 ]
 
+CSRF_TRUSTED_ORIGINS = getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+
 if DEBUG:
     import socket
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
