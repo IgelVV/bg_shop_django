@@ -141,7 +141,7 @@ class ProductSelector:
                 # sales - number of products sold. Subquery
                 sales = order_models.OrderedProduct.objects \
                     .filter(product=OuterRef("pk")) \
-                    .filter(order__status=order_models.Order.Statuses.COMPLETED) \
+                    .filter(order__status=order_models.Order.Statuses.ACCEPTED) \
                     .values("product") \
                     .annotate(sales=Sum("count")).values("sales")
                 query_set = query_set.annotate(popularity=Subquery(sales))
