@@ -1252,7 +1252,7 @@ a.Cart-title {
   }
 }
 .CartBlock-block + .CartBlock-block {
-  margin-left: 23px;
+  margin-left: 20px;
 }
 .CartBlock-block + .CartBlock-block .CartBlock-img {
   margin-left: 21px;
@@ -1275,6 +1275,7 @@ a.Cart-title {
   border-radius: 100px;
 }
 .CartBlock-price {
+  min-width: 43px;
   font-size: 13px;
   color: #777;
   font-weight: 500;
@@ -2826,7 +2827,7 @@ a.Cart-title {
 }
 .Header-cart {
   position: relative;
-  margin-left: 115px;
+  margin-left: 70px;
 }
 @media screen and (max-width: 990px) {
   .Header-cart {
@@ -2853,6 +2854,8 @@ a.Cart-title {
   }
 }
 .Header-logo a {
+  width: auto;
+  max-width:400px;
   border: none !important;
 }
 .Header-btn {

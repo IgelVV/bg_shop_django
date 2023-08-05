@@ -1154,7 +1154,7 @@ label.toggle {
   visibility: visible;
 }
 .logo-title {
-  width: 400px;
+  max-width: 100%;
 }
 
 /*-----------  media  -----------*/
