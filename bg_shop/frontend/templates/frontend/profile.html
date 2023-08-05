@@ -57,16 +57,36 @@
                     </div>
                     <div class="form-group">
                       <label class="form-label" for="name">Full name</label>
-                      <input class="form-input" id="name" name="name" type="text" required v-model="fullName"/>
-                    </div>
-                    <div class="form-group">
-                      <label class="form-label" for="phone">Phone</label>
-                      <input class="form-input" id="phone" name="phone" type="tel" required v-model="phone" />
+                      <input class="form-input"
+                             id="name"
+                             name="name"
+                             type="text"
+                             placeholder="FirstName LastName"
+                             required v-model="fullName"
+                      />
                     </div>
                     <div class="form-group">
                       <label class="form-label" for="mail">E-mail</label>
-                      <input class="form-input" id="mail" name="mail" type="email" required v-model="email" />
+                      <input class="form-input"
+                             id="mail"
+                             name="mail"
+                             type="email"
+                             required
+                             v-model="email"
+                      />
                     </div>
+                    <div class="form-group">
+                      <label class="form-label" for="phone">Phone</label>
+                      <input class="form-input"
+                             id="phone"
+                             name="phone"
+                             type="tel"
+                             required
+                             placeholder="1234567890"
+                             v-model="phone"
+                      />
+                    </div>
+
                     <div class="form-group">
                     <div class="form-group">
                         <button class="btn btn_success" type="submit">Save</button>
@@ -77,15 +97,33 @@
                     <form action="" @submit.prevent="changePassword">
                     <div class="form-group">
                       <label class="form-label" for="passwordCurrent">Current password</label>
-                      <input class="form-input" id="passwordCurrent" name="passwordCurrent" type="password" placeholder="Enter the current password" v-model="passwordCurrent"/>
+                      <input class="form-input"
+                             id="passwordCurrent"
+                             name="passwordCurrent"
+                             type="password"
+                             placeholder="Enter the current password"
+                             v-model="passwordCurrent"
+                      />
                     </div>
                       <div class="form-group">
                       <label class="form-label" for="password">Password</label>
-                      <input class="form-input" id="password" name="password" type="password" placeholder="Here you can change the password" v-model="password"/>
+                      <input class="form-input"
+                             id="password"
+                             name="password"
+                             type="password"
+                             placeholder="Here you can change the password"
+                             v-model="password"
+                      />
                     </div>
                     <div class="form-group">
                       <label class="form-label" for="passwordReply">Password Confirmation</label>
-                      <input class="form-input" id="passwordReply" name="passwordReply" type="password" placeholder="Enter the password again" v-model="passwordReply"/>
+                      <input class="form-input"
+                             id="passwordReply"
+                             name="passwordReply"
+                             type="password"
+                             placeholder="Enter the password again"
+                             v-model="passwordReply"
+                      />
                     </div>
                     <div class="form-group">
                         <button class="btn btn_success" type="submit">Save</button>
