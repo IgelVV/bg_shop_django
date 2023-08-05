@@ -428,6 +428,9 @@ textarea {
   background: transparent;
   color: #fff;
 }
+.btn:active {
+  transform: scale(0.95)
+}
 @media screen and (min-width: 990px) {
   .btn:hover {
     transition: all 200ms;

@@ -114,6 +114,11 @@
   margin-left: 10px;
   margin-right: 0;
 }
+.Amount-remove:active,
+.Amount-add:active {
+  transform: scale(0.95);
+}
+
 .Amount-add:before {
   position: absolute;
   content: '';
@@ -924,6 +929,9 @@
 }
 .Card-btn + .Card-btn {
   margin-left: 12px;
+}
+.Card-btn:active {
+  transform: scale(0.95);
 }
 .Card-hover {
   position: absolute;
