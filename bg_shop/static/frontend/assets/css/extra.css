@@ -3790,7 +3790,9 @@ a.Cart-title {
 
 .Profile {
   visibility: visible;
+  width: 100%;
 }
+
 .Profile-file {
   display: block;
   opacity: 0;
