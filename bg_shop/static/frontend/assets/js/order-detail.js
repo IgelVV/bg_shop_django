@@ -24,10 +24,15 @@ var mix = {
 						this.paymentError = data.paymentError
 					}
 				})
-				.catch(() => {
-					console.warn('Error when receiving the order')
-					alert('Error when receiving the order')
-				})
+				.catch((error) => {
+                    console.warn('error:', error.response.data)
+                    if (error.response.status === 403){
+                        location.assign(`/sign-in/`)
+                    }
+                    else{
+                        alert(JSON.stringify(error.response.data))
+                    }
+                })
 		},
 		confirmOrder() {
 			if (this.orderId !== null) {

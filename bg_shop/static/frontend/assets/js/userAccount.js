@@ -37,6 +37,14 @@ var mix = {
                 this.orders = data.orders
                 this.email = data.email
                 this.phone = data.phone
+            }).catch((error) => {
+                console.warn('error:', error.response.data)
+                if (error.response.status === 403){
+                    location.assign(`/sign-in/`)
+                }
+                else{
+                    alert(JSON.stringify(error.response.data))
+                }
             })
         },
 		getLastOrder() {
