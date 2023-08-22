@@ -19,19 +19,28 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from django.views.generic import TemplateView
+
+from drf_spectacular import views as spect_views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("frontend.urls")),
+
+    path("api/schema/", spect_views.SpectacularAPIView.as_view(), name="schema"),
+    path('api/schema/swagger/', TemplateView.as_view(
+        template_name='swagger-ui.html',
+        extra_context={'schema_url': 'schema'}
+    ), name='swagger'),
+
     path("api/", include("api.urls")),
 ]
-
 if settings.DEBUG:
     urlpatterns += static(
         settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
 
 from bg_shop.settings.third_party.debug_toolbar import DebugToolbarSetup
 

@@ -16,6 +16,7 @@ requests = "^2.31.0"
 python-dotenv = "^1.0.0"
 psycopg2-binary = "^2.9.6"
 gunicorn = "^21.2.0"
+drf-spectacular = "^0.26.4"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^6.0.0"

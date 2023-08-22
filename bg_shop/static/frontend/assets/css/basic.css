@@ -428,6 +428,9 @@ textarea {
   background: transparent;
   color: #fff;
 }
+.btn:active {
+  transform: scale(0.95)
+}
 @media screen and (min-width: 990px) {
   .btn:hover {
     transition: all 200ms;
@@ -918,6 +921,17 @@ select + select {
 .form-group + .form-group {
   margin-top: 25px;
 }
+.form-group .form-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 25px;
+    border-radius: 0px;
+    border: 1px solid #e0e0e0;
+    font-size: 18px;
+    background-color: #f9fafc;
+    line-height: 46px;
+}
+
 .form_contacts .form-input {
   min-width: auto;
 }
@@ -1151,7 +1165,7 @@ label.toggle {
   visibility: visible;
 }
 .logo-title {
-  width: 400px;
+  max-width: 100%;
 }
 
 /*-----------  media  -----------*/

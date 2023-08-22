@@ -3,7 +3,7 @@ import django_filters
 
 from django.db import models as db_models
 
-from shop import models
+from shop import models, selectors
 from dynamic_config import selectors as conf_selectors
 
 
@@ -23,8 +23,9 @@ class BaseProductFilter(django_filters.FilterSet):
         method="filter_free_delivery",)
     available = django_filters.BooleanFilter(
         method="filter_available_in_stock",)
-    category = django_filters.NumberFilter(
-        field_name='category', lookup_expr='exact')
+    # category = django_filters.NumberFilter(
+    #     field_name='category', lookup_expr='exact')
+    category = django_filters.Filter(method="filter_category",)
     tags = django_filters.AllValuesMultipleFilter(method="filter_tags",)
 
     class Meta:
@@ -90,6 +91,17 @@ class BaseProductFilter(django_filters.FilterSet):
         if value:
             return queryset.filter(**{
                 "tags__in": value,
+            }).distinct()
+        else:
+            return queryset
+
+    def filter_category(self, queryset, name, value) -> db_models.QuerySet:
+        if value:
+            ids = selectors.CategorySelector()\
+                .get_category_and_subcategory_ids(parent_id=value)
+
+            return queryset.filter(**{
+                "category__in": ids
             }).distinct()
         else:
             return queryset
