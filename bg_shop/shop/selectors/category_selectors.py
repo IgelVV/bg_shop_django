@@ -59,6 +59,13 @@ class CategorySelector:
             result.extend(sub_descendants)
         return result
 
+    def get_category_and_subcategory_ids(self, parent_id: int) -> list[int]:
+        ids = [parent_id, ]
+        subcategories = self.get_subcategories(category_id=parent_id)
+        subcategories_ids = subcategories.values_list("id", flat=True,)
+        ids.extend(subcategories_ids)
+        return ids
+
     # def get_category_tree(
     #         self,
     #         start_node_id: int = None,

@@ -7,8 +7,13 @@ var mix = {
                 this.phone = data.phone
                 this.email = data.email
             }).catch((error) => {
-                console.warn(error.response.data)
-                alert(JSON.stringify(error.response.data))
+                console.warn('error:', error.response.data)
+                if (error.response.status === 403){
+                    location.assign(`/sign-in/`)
+                }
+                else{
+                    alert(JSON.stringify(error.response.data))
+                }
             })
         },
         changeProfile () {

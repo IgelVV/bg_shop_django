@@ -141,7 +141,10 @@ class ProductSelector:
                 # sales - number of products sold. Subquery
                 sales = order_models.OrderedProduct.objects \
                     .filter(product=OuterRef("pk")) \
-                    .filter(order__status=order_models.Order.Statuses.COMPLETED) \
+                    .filter(order__status__in=[
+                        order_models.Order.Statuses.ACCEPTED,
+                        order_models.Order.Statuses.COMPLETED
+                    ]) \
                     .values("product") \
                     .annotate(sales=Sum("count")).values("sales")
                 query_set = query_set.annotate(popularity=Subquery(sales))
@@ -153,14 +156,14 @@ class ProductSelector:
                 query_set = query_set.annotate(date=F("release_date"))
 
         if (order is None) or (order == 'dec'):
-            sort_field = "-" + sort_field
+            query_set = query_set.order_by(F(sort_field).desc(nulls_last=True))
         elif order == 'inc':
-            pass
+            query_set = query_set.order_by(F(sort_field).asc(nulls_first=True))
         else:
             raise ValueError(f"Argument `order` should be str('inc'), "
                              f"str('dec') or None type, but '{order}' instead")
 
-        query_set = query_set.order_by(sort_field)
+        # query_set = query_set.order_by(sort_field)
         return query_set
 
     def get_products_in_banners(self) -> QuerySet[models.Product]:

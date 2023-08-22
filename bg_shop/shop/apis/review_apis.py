@@ -14,8 +14,16 @@ class ReviewApi(views.APIView):
         # todo rebuild. Hire is a lot of fields that are unnecessary
         """"""
         author = serializers.CharField(
-            max_length=300, required=False, allow_null=True)  # useless (from current user)
-        email = serializers.EmailField(required=False, allow_null=True)  #useless (from current user)
+            max_length=300,
+            required=False,
+            allow_null=True,
+            allow_blank=True
+        )  # useless (from current user)
+        email = serializers.EmailField(
+            required=False,
+            allow_null=True,
+            allow_blank=True,
+        )  #useless (from current user)
         text = serializers.CharField(
             max_length=1024, allow_null=True, allow_blank=True, required=False)
         rate = serializers.IntegerField(

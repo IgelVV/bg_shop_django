@@ -51,6 +51,7 @@ if DEBUG:
 THIRD_PARTY_APPS = [
     "rest_framework",
     "django_filters",
+    "drf_spectacular",
 ]
 
 LOCAL_APPS = [
@@ -159,10 +160,10 @@ LOCALE_PATHS = [
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-STATIC_ROOT = str(BASE_DIR / "static")
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static",
-# ]
+# STATIC_ROOT = str(BASE_DIR / "static")
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 STATIC_URL = 'static/'
 
 # MEDIA
@@ -187,12 +188,21 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     # "EXCEPTION_HANDLER": "styleguide_example.api.exception_handlers.drf_default_with_modifications_exception_handler",
     # # 'EXCEPTION_HANDLER': 'styleguide_example.api.exception_handlers.hacksoft_proposed_exception_handler',
     # "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     # "DEFAULT_AUTHENTICATION_CLASSES": [
     #     "rest_framework.authentication.BasicAuthentication",
     # ],
+}
+
+# OpenApi generator
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Face to Face API',
+    'DESCRIPTION': 'Online shop',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 # Sessions

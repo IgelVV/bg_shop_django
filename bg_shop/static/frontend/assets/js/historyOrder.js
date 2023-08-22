@@ -5,11 +5,16 @@ var mix = {
 				.then(data => {
 					console.log(data)
 					this.orders = data
-				}).catch(() => {
-				this.orders = []
-				console.warn('Error when receiving the list of orders')
-				alert('Error when receiving the list of orders')
-			})
+				}).catch((error) => {
+                    this.orders = []
+                    console.warn('error:', error.response.data)
+                    if (error.response.status === 403){
+                        location.assign(`/sign-in/`)
+                    }
+                    else{
+                        alert(JSON.stringify(error.response.data))
+                    }
+                })
 		}
 	},
 	mounted() {

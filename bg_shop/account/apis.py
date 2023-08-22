@@ -7,6 +7,7 @@ from django.contrib.auth import (
     authenticate,
     logout,
     validators,
+    update_session_auth_hash,
 )
 from django.core import exceptions as django_exceptions
 
@@ -147,6 +148,7 @@ class ChangePasswordApi(views.APIView):
                 user=request.user, password=data['password'])
         except ValueError as e:
             raise drf_exceptions.APIException({'password': e})
+        update_session_auth_hash(request, request.user)
 
         return drf_response.Response(status=status.HTTP_200_OK)
 
